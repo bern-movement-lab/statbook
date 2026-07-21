@@ -1,3 +1,9 @@
+<br>
+
+![](illustrations/cc.png){width="15%"}
+
+***  
+
 # Einführung {.unnumbered}
 
 > All models are wrong, but some are useful.
@@ -40,4 +46,4 @@ Falls Sie beim Lesen des Skripts Fehler entdecken, melden Sie diese an nathanael
 
 ## Danksagung
 
-Viele Inhalte dieses Skripts basieren auf der Arbeit von Dr. Lukas Stammler und wurden von mir, Nathanael Lutz, für diesen Kurs angepasst und erweitert. Ich danke Lukas von Herzen für das zur Verfügungstellen seiner aussergewöhnlichen Vorarbeit, seine kreativen Ideen, die intensiven Recherchen nach geeigneten Datensätzen und nicht zuletzt für sein unermüdliches Engagement, komplexe Sachverhalte didaktisch so aufzubereiten, dass sie für Studierende zugänglich und verständlich sind. Ebenfalls bedanken möchte ich mich bei André Meichtry für seine großartige Unterstützung beim Korrekturlesen. Sein präzises Gespür für Details, kombiniert mit seiner umfassenden Expertise im Bereich der Statistik, hat dieses Skript nachhaltig verbessert.
+Viele Inhalte dieses Skripts basieren auf der Arbeit von Dr. Lukas Stammler und wurden von mir, Nathanael Lutz, für diesen Kurs angepasst und erweitert. Ich danke Lukas von Herzen für das zur Verfügungstellen seiner aussergewöhnlichen Vorarbeit, seine kreativen Ideen, die intensiven Recherchen nach geeigneten Datensätzen und nicht zuletzt für sein unermüdliches Engagement, komplexe Sachverhalte didaktisch so aufzubereiten, dass sie für Studierende zugänglich und verständlich sind. Ebenfalls bedanken möchte ich mich bei André Meichtry für das Beisteuern weiterer Kapitel sowie seine grossartige Unterstützung beim Korrekturlesen. Sein präzises Gespür für Details, kombiniert mit seiner umfassenden Expertise im Bereich der Statistik, hat dieses Skript nachhaltig verbessert.
