@@ -26,20 +26,20 @@ book:
     - 11_survival.qmd
     - 12_LMM.qmd
     - references.qmd
-  downloads: [pdf]
+  # downloads: [pdf]
 
 bibliography: references.bib
 
 format:
   html:
     theme: journal
-  pdf:
-    documentclass: book
-    pdf-engine: xelatex
-    toc: true
-    number-sections: true
-    keep-tex: true
-    output-file: skript-statistik.pdf
+  # pdf:
+  #   documentclass: book
+  #   pdf-engine: xelatex
+  #   toc: true
+  #   number-sections: true
+  #   keep-tex: true
+  #   output-file: skript-statistik.pdf
 
 editor: source
 
