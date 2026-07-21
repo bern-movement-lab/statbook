@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; Multiple lineare Regression – Skript zum Modul Angewandte Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./08_inf_cat_data.html" rel="next">
+<link href="./06_simple_linear-regression.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07_multiple_linear-regression.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skript zum Modul Angewandte Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Einführung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link active" data-scroll-target="#lernziele"><span class="header-section-number">7.1</span> Lernziele</a></li>
+  <li><a href="#mehrere-quantitative-prädiktoren" id="toc-mehrere-quantitative-prädiktoren" class="nav-link" data-scroll-target="#mehrere-quantitative-prädiktoren"><span class="header-section-number">7.2</span> Mehrere quantitative Prädiktoren</a>
+  <ul class="collapse">
+  <li><a href="#grafische-darstellung-einer-multiplen-regression" id="toc-grafische-darstellung-einer-multiplen-regression" class="nav-link" data-scroll-target="#grafische-darstellung-einer-multiplen-regression"><span class="header-section-number">7.2.1</span> Grafische Darstellung einer multiplen Regression</a></li>
+  <li><a href="#multiple-lineare-regression-mit-r" id="toc-multiple-lineare-regression-mit-r" class="nav-link" data-scroll-target="#multiple-lineare-regression-mit-r"><span class="header-section-number">7.2.2</span> Multiple lineare Regression mit R</a></li>
+  </ul></li>
+  <li><a href="#qualitative-prädiktoren-mit-2-kategorien" id="toc-qualitative-prädiktoren-mit-2-kategorien" class="nav-link" data-scroll-target="#qualitative-prädiktoren-mit-2-kategorien"><span class="header-section-number">7.3</span> Qualitative Prädiktoren mit &gt; 2 Kategorien</a></li>
+  <li><a href="#f-test" id="toc-f-test" class="nav-link" data-scroll-target="#f-test"><span class="header-section-number">7.4</span> F-Test</a>
+  <ul class="collapse">
+  <li><a href="#wie-funktioniert-der-f-test-exkurs" id="toc-wie-funktioniert-der-f-test-exkurs" class="nav-link" data-scroll-target="#wie-funktioniert-der-f-test-exkurs"><span class="header-section-number">7.4.1</span> Wie funktioniert der F-Test (Exkurs)</a></li>
+  <li><a href="#post-hoc-tests" id="toc-post-hoc-tests" class="nav-link" data-scroll-target="#post-hoc-tests"><span class="header-section-number">7.4.2</span> Post-hoc tests</a></li>
+  </ul></li>
+  <li><a href="#vorgehen-beim-erstellen-einer-multiplen-linearen-regression." id="toc-vorgehen-beim-erstellen-einer-multiplen-linearen-regression." class="nav-link" data-scroll-target="#vorgehen-beim-erstellen-einer-multiplen-linearen-regression."><span class="header-section-number">7.5</span> Vorgehen beim Erstellen einer multiplen linearen Regression.</a></li>
+  <li><a href="#sec-wahl-der-prädiktoren" id="toc-sec-wahl-der-prädiktoren" class="nav-link" data-scroll-target="#sec-wahl-der-prädiktoren"><span class="header-section-number">7.6</span> Wahl der Prädiktoren</a></li>
+  <li><a href="#residuendiagnostik" id="toc-residuendiagnostik" class="nav-link" data-scroll-target="#residuendiagnostik"><span class="header-section-number">7.7</span> Residuendiagnostik</a></li>
+  <li><a href="#anhang-hilfreiche-r-codes-für-die-multiple-lineare-regression" id="toc-anhang-hilfreiche-r-codes-für-die-multiple-lineare-regression" class="nav-link" data-scroll-target="#anhang-hilfreiche-r-codes-für-die-multiple-lineare-regression"><span class="header-section-number">7.8</span> Anhang: hilfreiche <code>R</code> Codes für die multiple lineare Regression</a></li>
+  <li><a href="#anhang-kleinste-quadrate-schätzer-exkurs-für-mathematisch-interessierte" id="toc-anhang-kleinste-quadrate-schätzer-exkurs-für-mathematisch-interessierte" class="nav-link" data-scroll-target="#anhang-kleinste-quadrate-schätzer-exkurs-für-mathematisch-interessierte"><span class="header-section-number">7.9</span> Anhang: Kleinste-Quadrate Schätzer (Exkurs für mathematisch Interessierte)</a>
+  <ul class="collapse">
+  <li><a href="#das-allgemeine-lineare-model" id="toc-das-allgemeine-lineare-model" class="nav-link" data-scroll-target="#das-allgemeine-lineare-model"><span class="header-section-number">7.9.1</span> Das Allgemeine Lineare Model</a></li>
+  <li><a href="#kleinste-quadrate-schätzer" id="toc-kleinste-quadrate-schätzer" class="nav-link" data-scroll-target="#kleinste-quadrate-schätzer"><span class="header-section-number">7.9.2</span> Kleinste-Quadrate Schätzer</a></li>
+  <li><a href="#erwartungswerte-varianz-und-verteilung-der-schätzer" id="toc-erwartungswerte-varianz-und-verteilung-der-schätzer" class="nav-link" data-scroll-target="#erwartungswerte-varianz-und-verteilung-der-schätzer"><span class="header-section-number">7.9.3</span> Erwartungswerte, Varianz und Verteilung der Schätzer</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p>Zugegeben, die einfache lineare Regression ist vielleicht nicht ganz so einfach. Dafür ist die multiple lineare Regression nicht viel schwieriger.</p>
+</blockquote>
+<p>Mittels einer einfachen linearen Regression möchte man eine kontinuierliche abhängige Variable mit Hilfe <strong>einer</strong> unabhängigen Variable erklären. Mittels multipler linearer Regression möchte man eine kontinuierliche abhängige Variable mit Hilfe <strong>mehrerer</strong> unabhängiger Variablen erklären. Die multiple lineare Regression wird daher manchmal auch <em>mehrfache lineare Regression</em> genannt.</p>
+<p>Stellen Sie sich vor, sie wollen das Blutvolumen auf Grundlage des Körpergewichts schätzen (= einfache lineare Regression). Könnte diese Schätzung eventuell genauer ausfallen, wenn wir zusätzlich noch andere Variablen wie das Geschlecht oder die Muskelmasse als erklärende Variablen ins Modell einschliessen? ( = multiple lineare Regression).</p>
+<p>aus</p>
+<p><span class="math display">\[
+\widehat{Blutvolumen} = \hat{\beta}_0 + \hat{\beta}_1 Körpergewicht
+\]</span></p>
+<p>wird</p>
+<p><span class="math display">\[
+\widehat{Blutvolumen} = \hat{\beta}_0 + \hat{\beta}_1 Körpergewicht + \hat{\beta}_2 Geschlecht+\hat{\beta}_3Muskelmasse.
+\]</span></p>
+<section id="lernziele" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="lernziele"><span class="header-section-number">7.1</span> Lernziele</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Definiere die erklärenden Variablen als unabhängige Variablen (Prädiktoren) und die Antwortvariable als abhängige Variable.</p></li>
+<li><p>Bei einem Modell mit <span class="math inline">\(Y\)</span> als abhängiger Variable, <span class="math inline">\(m\)</span> Eingangrössen und <span class="math inline">\(n\)</span> Beobachtungen wird das lineare Regressionsmodell gebildet als</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2}+ \dots + \beta_m x_{im} + \epsilon_i, \quad i = 1, \dots, n,
+\]</span></p>
+<p>wobei der Koeffizient <span class="math inline">\(\beta_0\)</span> den Schnittpunkt mit der y-Achse (Achsenabschnitt, engl. intercept) und die Koeffizienten <span class="math inline">\(\beta_1, \beta_2, ..., \beta_m\)</span> die <span class="math inline">\(m\)</span> die jeweiligen Steigungen einer “Hyperebene” beschreiben. Das Modell hat also <span class="math inline">\(p=m+1\)</span> Parameter. Die Punktschätzungen (aus den beobachteten Daten) für <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1, \beta_2, ..., \beta_m\)</span> sind <span class="math inline">\(\hat{\beta}_0\)</span> bzw. <span class="math inline">\(\hat{\beta}_1, \hat{\beta}_2, ..., \hat{\beta}_m\)</span>. Beachte, dass bei für einen kategoriellen Prädiktor mit <span class="math inline">\(k\)</span> Ausprägungen <span class="math inline">\(k-1\)</span> Steigungen geschätzt werden.</p></li>
+<li><p>Definiere Residuen <span class="math inline">\(r_i\)</span> als Differenz zwischen den beobachteten <span class="math inline">\(y_i\)</span> und den durch das Modell vorhergesagten (gefitteten) <span class="math inline">\(\hat{y}_i\)</span> Werten der abhängigen Variablen.</p></li>
+<li><p>Beachte, dass die Regressionskoeffizienten, wie bei der einfachen linearen Regression, so gewählt werden, dass die Summe der quadrierten Residuen minimiert wird.</p></li>
+<li><p>Nenne die Bedingungen dafür, dass die Konfidenzintervalle und Hypothesentests für die Regressionskoeffizienten gültig sind und überprüfe diese:</p>
+<ol type="a">
+<li>Fehler haben Erwartungswert 0 → Residuen-Plot</li>
+<li>Fehler haben konstante Variabilität (Homoskedastizität) → Residuen-Plot</li>
+<li>Fehler sind unabhängig und normalverteilt → QQ-Plot</li>
+</ol></li>
+<li><p>Interpretiere die Steigungen <span class="math inline">\(\beta_1, \beta_2, ..., \beta_m\)</span> wie folgt:</p>
+<ul>
+<li>“Für jede Einheit, um die sich der Wert <span class="math inline">\(x\)</span> der jeweiligen Eingangsgrösse erhöht, erwarten wir, dass <span class="math inline">\(Y\)</span> im Durchschnitt um <span class="math inline">\(|\beta_1|\)</span> Einheiten grösser bzw. kleiner wird.” Dies unter der Berücksichtigung, dass alle anderen unabhängigen Variablen fixiert, das heisst gleich gehalten werden.</li>
+<li>Beachte dass es vom Vorzeichen der Steigung abhängig ist, ob der Wert der abhängigen Variable zu- oder abnimmt.</li>
+</ul></li>
+<li><p>Interpretiere <span class="math inline">\(\beta_0\)</span> (intercept) folgendermassen: “Wenn alle unabhängigen Variablen <span class="math inline">\(x_1=x_2= \dots= x_m = 0\)</span>, nimmt <span class="math inline">\(Y\)</span> im Durchschnitt den Wert von <span class="math inline">\(\beta_0\)</span> an.”</p></li>
+<li><p>Berechne den Schätzwert der abhängigen Variablen für Einheit <span class="math inline">\(i\)</span> durch Einsetzen von <span class="math inline">\(x_{i1}\dots,x_{im}\)</span> in den linearen Prädiktor mit den Schätzwerten der Parameter:</p>
+<p><span class="math display">\[
+\hat{Y}_i=\hat{\beta}_0+\hat{\beta}_1x_{i1}+\hat{\beta}_2x_{i2}+\hat{\beta}_3x_{i3} + \dots + \hat{\beta}_mx_{im}
+\]</span></p>
+<ul>
+<li>Verwende nur Werte für <span class="math inline">\(x_{i1}\dots, x_{im}\)</span>, die im Bereich der beobachteten Daten liegen.</li>
+<li>Extrapoliere nicht über die Variationsbreite hinaus, ausser du bist dir sicher, dass das lineare Muster darüber hinaus gültig ist.</li>
+</ul></li>
+<li><p>Definiere das Bestimmtheitsmass <span class="math inline">\(R^2\)</span> als den Anteil der Variabilität der abhängigen Variablen, der durch die unabhängige Variable erklärt wird:</p>
+<p><span class="math display">\[
+R^2 = \frac{SS_{model}}{SS_{total}}
+\]</span></p></li>
+<li><p>Interpretiere den F-Test als statistischen Test, welcher die folgende Nullhypothese prüft:</p>
+<p><span class="math display">\[
+\beta_1=\beta_2= \dots= \beta_m = 0
+\]</span></p></li>
+<li><p>Führe die multiple lineare Regression in <code>R</code> durch.</p></li>
+<li><p>Interpretiere jede Zeile des <code>R</code> Outputs.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="mehrere-quantitative-prädiktoren" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="mehrere-quantitative-prädiktoren"><span class="header-section-number">7.2</span> Mehrere quantitative Prädiktoren</h2>
+<p>Wir verwenden als Beispiel einen Datensatz, welcher Daten für 50 Säuglinge im Alter von etwa 2 Monaten enthält <span class="citation" data-cites="dalgaard2008">(<a href="references.html#ref-dalgaard2008" role="doc-biblioref">Dalgaard 2008</a>)</span>. Die Säuglinge wurden unmittelbar vor und nach jedem Stillen gewogen, um die Aufnahme von Muttermilch zu bestimmen. Dazu wurden verschiedene andere Daten registriert.</p>
+<p>Codebook zum Datensatz:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>no</code></td>
+<td>ein numerischer Vektor, Identifikationsnummer.</td>
+</tr>
+<tr class="even">
+<td><code>dl.milk</code></td>
+<td>ein numerischer Vektor, Muttermilchaufnahme (dl/24h).</td>
+</tr>
+<tr class="odd">
+<td><code>sex</code></td>
+<td>ein Faktor mit den Ausprägungen <code>boy</code> und <code>girl</code>.</td>
+</tr>
+<tr class="even">
+<td><code>weight</code></td>
+<td>ein numerischer Vektor, Gewicht des Kindes (kg).</td>
+</tr>
+<tr class="odd">
+<td><code>ml.suppl</code></td>
+<td>ein numerischer Vektor, Zusatzmilchersatz (ml/24h).</td>
+</tr>
+<tr class="even">
+<td><code>mat.height</code></td>
+<td>ein numerischer Vektor, Größe der Mutter (cm).</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-layout-align="center">
+<div id="tbl-breast-feeding-desc" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-breast-feeding-desc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.1: Deskriptive Statistik zum Datensatz df.breast.feeding
+</figcaption>
+<div aria-describedby="tbl-breast-feeding-desc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="lightable-classic cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">dl.milk</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">sex</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">weight</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">ml.suppl</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">mat.height</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. : 4.440</td>
+<td style="text-align: left;">boy :25</td>
+<td style="text-align: left;">Min. :4.120</td>
+<td style="text-align: left;">Min. : 0.00</td>
+<td style="text-align: left;">Min. :153.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.: 6.555</td>
+<td style="text-align: left;">girl:25</td>
+<td style="text-align: left;">1st Qu.:4.977</td>
+<td style="text-align: left;">1st Qu.: 16.25</td>
+<td style="text-align: left;">1st Qu.:162.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median : 7.660</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Median :5.352</td>
+<td style="text-align: left;">Median : 57.50</td>
+<td style="text-align: left;">Median :167.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean : 7.504</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Mean :5.319</td>
+<td style="text-align: left;">Mean : 96.00</td>
+<td style="text-align: left;">Mean :167.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.: 8.428</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">3rd Qu.:5.637</td>
+<td style="text-align: left;">3rd Qu.:103.75</td>
+<td style="text-align: left;">3rd Qu.:172.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :10.430</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Max. :6.578</td>
+<td style="text-align: left;">Max. :590.00</td>
+<td style="text-align: left;">Max. :185.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>In <a href="#tbl-breast-feeding-desc" class="quarto-xref">Tabelle&nbsp;<span>7.1</span></a> sehen Sie einige deskriptiven Statistiken zum Datensatz. Ziel der multiplen linearen Regression ist es, die abhängige Variable <code>dl.milk</code> durch mehrere unabhängige Variablen zu erklären.</p>
+<section id="grafische-darstellung-einer-multiplen-regression" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="grafische-darstellung-einer-multiplen-regression"><span class="header-section-number">7.2.1</span> Grafische Darstellung einer multiplen Regression</h3>
+<p>Bei Korrelationsanalysen, bzw. bei der einfachen linearen Regression ist es Standard, sich die Daten zuerst in einem Scatterplot anzuschauen. Für das Model <span class="math inline">\(\widehat{dl.milk} = \hat{\beta}_0 + \hat{\beta}_1weight\)</span> sieht dieser wie folgt aus:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-slr-milk" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-slr-milk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="07_multiple_linear-regression_files/figure-html/fig-plot-slr-milk-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-slr-milk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.1: Einfache lineare Regression mit dl.milk als abhängige Variable und weight als unabhängige Variable. Rot eingezeichnet die Regressionsgerade.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Da wir in diesem Fall nur zwei Variablen haben (eine abhängige und eine unabhängige), reichen zwei Achsen aus, um die Daten darzustellen. Kommen weitere unabhängige Variablen dazu, was bei multiplen Regressionen immer der Fall ist, geht das aber nicht mehr. Ein Spezialfall ist die Situation mit einer abhängigen und zwei unabhängigen Variablen, wo man insgesamt drei Variablen hat und daher einen dreidimensionalen Plot zeichnen kann (jede der drei Achsen repräsentiert eine Variable). In der Praxis verwendet man dreidimensionale Plots eher selten. <a href="#fig-plot-mlr-milk" class="quarto-xref">Abbildung&nbsp;<span>7.2</span></a> wird hier nur gezeigt, damit Sie das Prinzip der multiplen linearen Regression besser verstehen.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-mlr-milk" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-mlr-milk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="07_multiple_linear-regression_files/figure-html/fig-plot-mlr-milk-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-mlr-milk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.2: Multiple lineare Regression mit dl.milk als abhängige Variable, weight und mat.height als unabhängige Variablen
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wie man in <a href="#fig-plot-mlr-milk" class="quarto-xref">Abbildung&nbsp;<span>7.2</span></a> sieht, wird bei einer multiplen linearen Regression nicht mehr eine Gerade, sondern eine Ebene (bei mehr als zwei Eingangsgrössen “Hyperebene”) angepasst. Und zwar ist es die Ebene, welche die quadrierten Abstände zu den beobachteten Werten (rot) minimiert! Das Prinzip ist also genau gleich wie bei der einfachen linearen Regression. Diese Fläche kann nun verwendet werden, um die abhängige Variable <code>dl.milk</code> mit Hilfe der beiden unabhängigen Variablen <code>weight</code> und <code>mat.height</code> zu schätzen. Man sieht, dass <code>dl.milk</code> durchschnittlich stiegt, wenn die Variable <code>weight</code> grössere Werte annimmt (das konnte man bereits in <a href="#fig-plot-slr-milk" class="quarto-xref">Abbildung&nbsp;<span>7.1</span></a> feststellen). Man sieht aber auch, dass <code>dl.milk</code> durchschnittlich stiegt, wenn die Variable <code>mat.height</code> grössere Werte annimmt. Es scheint also, dass mit Hilfe der Information von <code>weight</code> und <code>mat.height</code> die Varialble <code>dl.milk</code> besser geschätzt werden kann, als wenn man nur eine der beiden unabhängigen Variablen zur Verfügung hätte. Genau das ist die Idee multipler Regressionsmodelle: Man möchte durch Hinzunahme weiterer Infomationsquellen (Prädiktoren) die Schätzung und somit die Güte eines Modells verbessern.</p>
+</section>
+<section id="multiple-lineare-regression-mit-r" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="multiple-lineare-regression-mit-r"><span class="header-section-number">7.2.2</span> Multiple lineare Regression mit R</h3>
+<p>Wir schauen uns zunächst den R-Output des einfachen linearen angepassten Regressionsmodells für <span class="math inline">\(\widehat{dl.milk} = \hat{\beta}_0 + \hat{\beta}_1weight\)</span> an:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dl.milk ~ weight, data = df.breast.feeding)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.9467 -0.8973  0.1148  0.8757  2.5186 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -1.821      1.641  -1.110    0.273    
+weight         1.753      0.307   5.711 6.92e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.178 on 48 degrees of freedom
+Multiple R-squared:  0.4046,    Adjusted R-squared:  0.3921 
+F-statistic: 32.61 on 1 and 48 DF,  p-value: 6.915e-07</code></pre>
+</div>
+</div>
+<p>Zuoberst im Output ist die Formel ersichtlich, damit man weiss, um was für ein Modell es sich handelt. Als Nächstes ist dem Output zu entnehmen, dass der Median der Residuen zwar nicht genau, aber sehr nahe bei 0 liegt und dass die Quartile sowie das Minimum und das Maximum symmetrisch um den Median verteilt sind. Mehr zur Residuendiagnostik folgt weiter unten.</p>
+<p>Das geschätzte Intercept <span class="math inline">\(\hat{\beta}_0\)</span> beträgt -1.821 und unterscheidet sich nicht signifikant von 0, was allerdings inhaltlich nicht sinnvoll interpretierbar ist (Kinder mit einem Gewicht von 0 kg sind wohl nicht von Interesse in dieser Analyse). Die Steigung der Variable <code>weight,</code> <span class="math inline">\(\hat{\beta}_1\)</span>, beträgt 1.753 mit einem sehr kleinen P-Wert. Durchschnittlich steigt also die Milchaufnahme um 1.753 dl, pro zusätzliches kg Körpergewicht des Kindes. Denken Sie bei der Interpretation der P-Werte von Koeffizienten immer daran, was die dazugehörige Nullhypothese ist.<br>
+Im letzten Abschnitt folgen die Standardabweichung der Residuen (=1.178), die Anzahl Freiheitsgrade (im Modell wurden zwei Koeffizienten geschäzt, <span class="math inline">\(n-2=48\)</span>), <span class="math inline">\(R^2\)</span>, sowie die F-Statistik. Beachten Sie, dass in <em>diesem</em> einfachen Modell 40.46% der Variabilität der abhängigen Variable <code>dl.milk</code> erklärt werden kann. Beachten Sie auch, dass in einem einfachen linearen Regressionsmodell der P-Wert des F-Tests der gleiche ist, wie jener von <span class="math inline">\(\hat{\beta}_1\)</span>.</p>
+<p>Im nächsten Modell wird nun die Variable <code>mat.height</code> ergänzt: <span class="math inline">\(\widehat{dl.milk} = \hat{\beta}_0 + \hat{\beta}_1weight + \hat{\beta}_2mat.height\)</span>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generieren des multiplen Regressionsmodells:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>lm.milk.weight.height <span class="ot">&lt;-</span> <span class="fu">lm</span>(dl.milk <span class="sc">~</span> weight <span class="sc">+</span> mat.height, <span class="at">data =</span> df.breast.feeding) </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.milk.weight.height) <span class="co"># Ausgabe einer Zusammenfassung des Modells</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dl.milk ~ weight + mat.height, data = df.breast.feeding)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.19598 -0.82149  0.01822  0.75582  2.83375 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.92014    4.07325  -2.926  0.00527 ** 
+weight        1.42862    0.31338   4.559 3.67e-05 ***
+mat.height    0.07063    0.02636   2.680  0.01013 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.109 on 47 degrees of freedom
+Multiple R-squared:  0.4835,    Adjusted R-squared:  0.4615 
+F-statistic:    22 on 2 and 47 DF,  p-value: 1.811e-07</code></pre>
+</div>
+</div>
+<p>Was hat sich verändert? Abgesehen von den Werten selbst ist die wichtigste Änderung, dass unter <em>Coefficients</em> eine neue Zeile mit den Angaben zu <span class="math inline">\(\hat{\beta}_2\)</span>, der Steigung der Variable <code>mat.height</code> hinzugekommen ist. Schauen wir uns die Koeffizienten noch einmal von oben nach unten an.</p>
+<p><span class="math inline">\(\hat{\beta}_0\)</span> beträgt -11.92. Warum ist <span class="math inline">\(\hat{\beta}_0\)</span> im multiplen Modell ein ganz anderer Wert als im einfachen Modell? Weil <span class="math inline">\(\hat{\beta}_0\)</span> auch inhaltlich etwas ganz anderes bedeutet. Es ist nicht mehr der durchschnittliche Wert von <code>dl.milk</code> wenn <code>weight</code> = 0, sondern es ist der durchschnittliche Wert von <code>dl.milk</code> wenn <code>weight</code> = 0 <strong>UND</strong> <code>mat.height</code> = 0.</p>
+<p><span class="math inline">\(\hat{\beta}_1\)</span> ist immer noch signifikant verschieden von 0, hat sich aber im Vergleich mit dem einfachen Modell von 1.753 auf 1.429 reduziert. In multiplen Regressionsmodellen sind Steigungen immer unter Berücksichtigung aller anderen Variablen im Modell zu interpretieren. <em>Unter Berücksichtigung</em> bedeutet, dass die anderen Variablen fix gehalten werden. Konkret bedeutet <span class="math inline">\(\hat{\beta}_1\)</span> in diesem Fall, dass die Milchaufnahme pro Kilogramm Körpergewicht des Kindes um 1.429 dl steigt, <strong>bei gleicher Körpergrösse der Mutter</strong>. Man könnte es auch so ausdrücken, dass der Effekt des Körpergewichts des Kindes für die Körpergrösse der Mutter korrigiert oder <strong>adjustiert</strong> wurde. Das Körpergewicht des Kindes und die Körpergrösse der Mutter sind also nicht ganz unabhängig voneinander. Man kann dies einfach prüfen, in dem man den Korrelationskoeffizient <span class="math inline">\(r\)</span> für <code>weight</code> und <code>mat.height</code> berechnet. Dieser beträgt immerhin 0.387. Weil also ein Teil der Information von <code>weight</code> auch in <code>mat.height</code> steckt, hat sich der Koeffizient <span class="math inline">\(\hat{\beta}_1\)</span> entsprechend angepasst. Je stärker die unabhängigen Variablen mit einander korrelieren, desto stärker ist dieser Effekt.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Regressionskoeffizienten einer einfachen und einer multiplen Regression stimmen nur dann überein, wenn die Prädiktoren unkorreliert sind, was im Allgemeinen nicht der Fall ist. Eine multiple Regression sagt also viel mehr aus als eine einfache Regression.</p>
+</div>
+</div>
+<p>Die Steigung von <code>mat.height</code>, <span class="math inline">\(\hat{\beta}_2\)</span>, beträgt unter Berücksichtigung der Variable <code>weight</code> 0.071 und ist mit einem P-Wert von 0.01 statistisch signifikant unterschiedlich von 0. Beachten Sie wiederum, dass diese Steigung anders ausfallen würde, wenn man nicht für die Variable <code>weight</code> korrigiert (tatsächlich wäre die Steigung dann 0.117).</p>
+<p>Wie auch bei der einfachen linearen Regression kann man sich mit dem R-Befehl <code>confint()</code> die Vertrauensintervalle aller Regressionskoeffizienten ausgeben lassen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(lm.milk.weight.height)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   2.5 %     97.5 %
+(Intercept) -20.11445621 -3.7258288
+weight        0.79817372  2.0590682
+mat.height    0.01760219  0.1236553</code></pre>
+</div>
+</div>
+<p>Konfidenzintervalle bekommen wir auch mit</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter   | Coefficient |   SE |          95% CI | t(47) |      p
+-------------------------------------------------------------------
+(Intercept) |      -11.92 | 4.07 | [-20.11, -3.73] | -2.93 | 0.005 
+weight      |        1.43 | 0.31 | [  0.80,  2.06] |  4.56 | &lt; .001
+mat height  |        0.07 | 0.03 | [  0.02,  0.12] |  2.68 | 0.010 </code></pre>
+</div>
+</div>
+<p>Man kann die geschätzten Regressionskoeffizienten nun in die Gleichung einsetzten und für ein bestimmtes Körpergewicht vom Kind (z.B. 4kg) und eine bestimmte Körpergrösse der Mutter (z.B. 165cm) die Milchaufnahme schätzen:</p>
+<p><span class="math display">\[
+\widehat{dl.milk} = \hat{\beta}_0 + \hat{\beta}_1weight + \hat{\beta}_  2mat.height
+\]</span></p>
+<p><span class="math display">\[
+\widehat{dl.milk} = -11.92014 + 1.42862 \times 4 + 0.07063 \times 165 = 5.44829
+\]</span></p>
+<p>Dieses Vorgehen ist analog für Modelle mit mehr als zwei unabhängigen Variablen.</p>
+<p>Im letzten Abschnitt des Outputs sehen wir, dass das Modell nun nur noch 47 Freiheitsgrade hat, da drei Koeffizienten geschätzt wurden. <span class="math inline">\(R^2\)</span> ist neu 0.4835, man kann mit dem multiplen Modell also etwas mehr der Variabilität von <code>dl.milk</code> erklären als mit dem einfachen Modell. <span class="math inline">\(R^2\)</span> wird bei multiplen linearen Regressionen genau gleich berechnet wie beim einfachen linearen Regressionsmodell (siehe <a href="06_simple_linear-regression.html#sec-das-bestimmtheitsmass-r2" class="quarto-xref"><span>Section 6.4.5</span></a> )</p>
+<p><span class="math display">\[
+R^2 = \frac{SS_{model}}{SS_{total}}
+\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>SS.tot <span class="ot">&lt;-</span> <span class="fu">sum</span>((df.breast.feeding<span class="sc">$</span>dl.milk <span class="sc">-</span> <span class="fu">mean</span>(df.breast.feeding<span class="sc">$</span>dl.milk))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>SS.res <span class="ot">&lt;-</span> <span class="fu">sum</span>(lm.milk.weight.height<span class="sc">$</span>residuals<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>SS.model <span class="ot">&lt;-</span> SS.tot <span class="sc">-</span> SS.res</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>(R2 <span class="ot">&lt;-</span> SS.model<span class="sc">/</span>SS.tot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4834617</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="qualitative-prädiktoren-mit-2-kategorien" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="qualitative-prädiktoren-mit-2-kategorien"><span class="header-section-number">7.3</span> Qualitative Prädiktoren mit &gt; 2 Kategorien</h2>
+<p>Im Kapitel zur einfachen linearen Regression haben Sie gesehen, dass auch qualitative Prädiktoren verwendet werden können, um <span class="math inline">\(Y\)</span> zu erklären. Im Falle einer binären Prädiktorvariable entspricht die einfache lineare Regression exakt einem t-Test (siehe <a href="06_simple_linear-regression.html#sec-einfache-lineare-regression-mit-dichotomen-praediktorvariablen" class="quarto-xref"><span>Section 6.7</span></a> ). Stellen Sie sich nun vor, Sie haben eine qualitative Prädiktorvariable mit mehr als zwei Kategorien. Wir illustrieren diese Situation anhand eines Beispiels, wo die Auswirkungen von vier verschiedenen Herzklappentypen (<code>type</code>) auf den maximalen Flussgradienten in mmHg (<code>flow</code>) in einem Simulator des menschlichen Kreislaufsystems verglichen wurden.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-heart-valves-boxplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-heart-valves-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="07_multiple_linear-regression_files/figure-html/fig-plot-heart-valves-boxplot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-heart-valves-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.3: Maximaler Flussgradient von verschiedenen künstlichen Herzklappen. Der blaue Punkt repräsentiert den Mittelwert.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wenn in einer multiplen Regression die erklärenden Variablen kategorial sind, sprechen gewisse Leute lieber von <em>Analysis of Variance</em>, kurz ANOVA und nicht von einer multiplen linearen Regression. In Situationen mit nur einer qualitativen Prädiktorvariable (wie in unserem Beispiel), ist teilweise der Begriff One-Way-ANOVA gebräuchlich. Damit keine Verwirrung aufkommt: Eine ANOVA und eine multiple lineare Regression führen zum gleichen Resultat, wie Sie in den folgenden Kapiteln noch sehen werden. Wir sind jedoch der Meinung, dass der Output von <code>lm()</code> informativer ist und bevorzugen deshalb diesen Approach.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-heart-valves-descr" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-heart-valves-descr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.2: Maximaler Flussgradient von verschiedenen künstlichen Herzklappen - deskriptive Statistik
+</figcaption>
+<div aria-describedby="tbl-heart-valves-descr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="lightable-paper cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">type</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sd</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">4.917</td>
+<td style="text-align: right;">1.730</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">4.583</td>
+<td style="text-align: right;">1.730</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">6.917</td>
+<td style="text-align: right;">1.832</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">7.417</td>
+<td style="text-align: right;">2.392</td>
+<td style="text-align: right;">12</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Bevor wir uns den Details widmen, schauen wir den Regressionsoutput an:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lm.heart <span class="ot">&lt;-</span> <span class="fu">lm</span>(flow <span class="sc">~</span> type, <span class="at">data =</span> df.hv)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.heart)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = flow ~ type, data = df.hv)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4167 -1.6667 -0.1667  1.5833  3.5833 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   4.9167     0.5601   8.777 3.18e-11 ***
+type2        -0.3333     0.7922  -0.421  0.67596    
+type3         2.0000     0.7922   2.525  0.01526 *  
+type4         2.5000     0.7922   3.156  0.00289 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.94 on 44 degrees of freedom
+Multiple R-squared:  0.3037,    Adjusted R-squared:  0.2562 
+F-statistic: 6.396 on 3 and 44 DF,  p-value: 0.001082</code></pre>
+</div>
+</div>
+<p>Dem Output ist zu entnehmen, dass vier Parameter geschätzt wurden: Das Intercept und drei Steigungen. Bei linearen Regressionsmodellen werden für eine qualitative Prädiktorvariable mit <span class="math inline">\(k\)</span> Kategorien immer <span class="math inline">\(m = k-1\)</span> Steigungen und ein Intercept geschätzt. Analog zur einfachen linearen Regression mit einer binären Prädiktorvariable, repräsentiert das Intercept den Mittelwert der Referenzgruppe (in diesem Fall <code>type == 1</code>) und die drei Steigungen repräsentieren die jeweiligen Mittelwertsdifferenzen zu dieser Referenzgruppe. In der hintersten Spalte sehen Sie die P-Werte für die einzelnen Regressionskoeffizienten. Die t-Tests, welche diese P-Werte liefern, testen jeweils die Nullhypothese, dass diese Regressionskoeffizienten 0 sind. Analog zur einfachen linearen Regression erhalten Sie mit <code>confint()</code> die 95% CI’s für die Koeffizienten.</p>
+<p>Die Regressionsgleichung kann wie gehabt aufgestellt werden:</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1 \times type_{i2} + \beta_2 \times type_{i3} + \beta_3 \times type_{i4} + \epsilon_i
+\]</span></p>
+<p>mit den <strong>Indikatorvariablen</strong></p>
+<p><span class="math display">\[\begin{equation*}
+  type_{ik}=
+   \begin{cases}
+    1&amp; \text{Beobachtung\,} i \text{\,gehört zu\, Kategorie\,} k\\
+    0&amp; \text{\,sonst}.
+  \end{cases}
+\end{equation*}\]</span></p>
+<p>Interessierte können sich die Codierung der Prädiktorvariable <code>type</code> mit <code>model.matrix(lm.heart)</code> anschauen.</p>
+<p>Es werden also die Effekte <strong>relativ zu einer Referenzkategorie</strong> (die alphabetisch erste, wenn man die Kategorien nicht sonst ordnet) als Parameter gesetzt. Der erste Parameter <span class="math inline">\(\beta_0\)</span> steht dann für den Erwartungswert in der Referenzgruppe (Intercept), alle anderen Parameter für den erwarteten Unterschied zur Referenzgruppe:</p>
+<ul>
+<li><span class="math inline">\(\beta_0=\mu_1\)</span>: Durchschnitt Referenzgruppe</li>
+<li><span class="math inline">\(\beta_1=\mu_2-\mu_1\)</span>: Erwarteter Unterschied der zweiten Gruppe zur Referenz</li>
+<li><span class="math inline">\(\beta_2=\mu_3-\mu_1\)</span>: Erwarteter Unterschied der dritten Gruppe zur Referenz</li>
+<li><span class="math inline">\(\beta_3=\mu_4-\mu_1\)</span>: Erwarteter Unterschied der <span class="math inline">\(k\)</span>-ten Gruppe zur Referenz</li>
+</ul>
+<p>Mit dem angepassten Modell haben wir</p>
+<p><span class="math display">\[
+\hat{Y}_i = \hat{\beta_0} + \hat{\beta_1} \times type_{i2} + \hat{\beta_2} \times type_{i3} + \hat{\beta_3} \times type_{i4}.
+\]</span></p>
+<p>Was ist also der geschätzte Mittelwert für die Herzklappe vom Typ 3?</p>
+<p><span class="math display">\[
+\hat{Y} = \hat{\beta_0} + \hat{\beta_1} \times 0 + \hat{\beta_2} \times 1 + \hat{\beta_3} \times 0 = \hat{\beta_0} + \hat{\beta_2} = 4.9167 + 2 = 6.9167=\mu_3.
+\]</span></p>
+<p>Sie können dies für einen belieben Typ tun und das Resultat anhand <a href="#tbl-heart-valves-descr" class="quarto-xref">Tabelle&nbsp;<span>7.2</span></a> verifizieren.</p>
+</section>
+<section id="f-test" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="f-test"><span class="header-section-number">7.4</span> F-Test</h2>
+<p>Wenn wir zwei Mittelwerte miteinander Vergleichen, dann können wir einen t-Test durchführen, um die Hypothese <span class="math inline">\(\mu_1 = \mu_2\)</span> zu testen. Die Ergebnisse dieser t-Tests sehen sie wie oben erwähnt im Output der multiplen Regression. Z. B. ist für die Mittelwertsdifferenz zwischen dem Typ 1 und dem Typ 3 <span class="math inline">\(p = 0.015\)</span>. Es ist allerdings problematisch, für alle <span class="math inline">\(\frac{k(k-1)}{2}\)</span> paarweisen Vergleiche einen t-Test durchzuführen, weil bei jedem t-Test eine gewisse Wahrscheinlichkeit für einen <span class="math inline">\(\alpha\)</span>-Fehler besteht und sich diese Wahrscheinlichkeit mit zunehmender Anzahl Tests kumuliert. Wenn wir <span class="math inline">\(k&gt;2\)</span> Mittelwerte miteinander vergleichen, brauchen wir eine Methode, welche die Nullhypothese <span class="math inline">\(\mu_1 = \mu_2 = \dots = \mu_k\)</span> <strong>simultan</strong> testet. Beachten Sie, dass die Nullhypothese <span class="math inline">\(\mu_1 = \mu_2 = \dots = \mu_k\)</span> gleichbedeutend ist wie <span class="math inline">\(\beta_1 = \beta_2 = \dots = \beta_{m} = 0\)</span>, wobei <span class="math inline">\(m = k-1\)</span>. Wenn diese Nullhypothese verworfen wird, dann wissen wir, dass sich mindestens ein Mittelwert von den anderen unterscheidet. Welche/r das ist/sind, muss mit spezifischen Methoden untersucht werden (Post-hoc Tests).</p>
+<p>Beim Beispiel mit den künstlichen Herzklappen haben wir <span class="math inline">\(k=4\)</span> Gruppen und somit <span class="math inline">\(m=k-1=3\)</span> Steigungen:</p>
+<p><span class="math display">\[
+H_0: \beta_1=\beta_2= \beta_3 = 0,~ bzw.~ \mu_1 = \mu_2 = \mu_3 = \mu_4
+\]</span></p>
+<p><span class="math display">\[
+H_A: mindestens~ ein~ \beta_j \ne 0; (j = 1, ..., m)
+\]</span></p>
+<p>Die oben formulierte Nullhypothese testet man mit einem <strong>F-Test</strong>. Das Resultat des F-Tests sehen Sie im Regressionsoutput ganz unten. Der F-Test ergibt <span class="math inline">\(p = 0.001\)</span>. Somit wird <span class="math inline">\(H_0\)</span> zugunsten von <span class="math inline">\(H_A\)</span> verworfen. Dies ist keine grosse Überraschung, weil ja schon bei zwei der drei Steigungen sehr kleine P-Werte resultierten. Dies muss aber nicht immer der Fall sein, wie das folgende Beispiel zeigt:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ group, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.0757 -2.1820  0.2733  1.8138  6.4643 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  10.2364     0.5989  17.092   &lt;2e-16 ***
+group2        1.1983     0.8470   1.415    0.160    
+group3        2.0703     0.8470   2.444    0.016 *  
+group4        0.6393     0.8470   0.755    0.452    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.28 on 116 degrees of freedom
+Multiple R-squared:  0.05266,   Adjusted R-squared:  0.02816 
+F-statistic:  2.15 on 3 and 116 DF,  p-value: 0.09779</code></pre>
+</div>
+</div>
+<p>Obwohl sich laut t-Test die Gruppe 3 vermeintlich statistisch signifikant von Gruppe 1 (Referenzgruppe) unterscheidet, kann anhand des globalen F-Tests die Nullhypothese <span class="math inline">\(\mu_1 = \mu_2 = \mu_3 = \mu_4\)</span> nicht verworfen werden! Es ist daher wichtig, immer zuerst den globalen F-Test zu betrachten und erst dann allfällige (vordefinierte) Paarvergleiche anzustellen.</p>
+<p>Das Resultat des F-Tests sieht man auch im Output der <code>aov()</code> Funktion, auch wenn dieser Output, wie oben bereits erwähnt, etwas magerer ist:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(model))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value Pr(&gt;F)  
+group         3   69.4   23.13    2.15 0.0978 .
+Residuals   116 1248.2   10.76                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<section id="wie-funktioniert-der-f-test-exkurs" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="wie-funktioniert-der-f-test-exkurs"><span class="header-section-number">7.4.1</span> Wie funktioniert der F-Test (Exkurs)</h3>
+<p>Die Teststatistik <span class="math inline">\(F\)</span> wird anhand der Sum of Squares (SS) berechnet, welche Sie bereits im letzten Kapitel kennengelernt haben. Im Beispiel mit den künstlichen Herzklappen haben wir <span class="math inline">\(k=4\)</span> Gruppen mit jeweils <span class="math inline">\(n_j = 12\)</span> Beobachtungen. <span class="math inline">\(SS_{total}\)</span> beschreibt die totale Variabilität und ist nichts anderes als die Summe der quadrierten Abstände zwischen den einzelnen Beobachtungen und dem Gesamtmittelwert <span class="math inline">\(\bar{y}_{tot}\)</span>:</p>
+<p><span class="math display">\[
+SS_{total} = \sum_{j = 1}^k \sum_{i = 1}^{n_j} (y_{ij} - \bar{y}_{tot})^2
+\]</span> In <code>R</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(SS.tot <span class="ot">&lt;-</span> <span class="fu">sum</span>((df.hv<span class="sc">$</span>flow <span class="sc">-</span> <span class="fu">mean</span>(df.hv<span class="sc">$</span>flow))<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 237.9167</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(SS_{total}\)</span> ist also die Variabilität des maximalen Flussgradienten, wenn wir die verschiedenen Typen von Herzklappen nicht unterscheiden würden. Wir schauen uns als nächstes an, wie gross die Variabilität innerhalb der Gruppen ist. <span class="math inline">\(SS_{residual}\)</span> (manchmal auch <span class="math inline">\(SS_{within}\)</span>) ist die Summe der quadrierten Abstände zwischen den einzelnen Beobachtungen <span class="math inline">\(i\)</span> zu ihrem eigenen Gruppenmittelwert <span class="math inline">\(\bar{y}_j\)</span>:</p>
+<p><span class="math display">\[
+SS_{residual} = \sum_{j = 1}^k \sum_{i = 1}^{n_j} (y_{ij} - \bar{y}_{j})^2
+\]</span> In <code>R</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate mean for each group</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> df.hv <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(flow)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(mean)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># add group mean as variable to data frame</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>df.hv<span class="sc">$</span>means <span class="ot">&lt;-</span> <span class="fu">rep</span>(means<span class="sc">$</span>mean, <span class="at">each =</span> <span class="dv">12</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calc SS within group</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>(SS.residual <span class="ot">&lt;-</span> <span class="fu">sum</span>((df.hv<span class="sc">$</span>flow <span class="sc">-</span> df.hv<span class="sc">$</span>means)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 165.6667</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(SS_{residual}\)</span> ist die Variabilität der Daten, welche trotz Kenntnis über die verschiedenen Typen von Herzklappen nicht erklärt werden kann (res steht für Residuals). Somit ist klar, dass die Variabilität durch die Berücksichtigung des Typs um <span class="math inline">\(SS_{model} = SS_{total} - SS_{residual} = 237.9167 - 165.6667 = 72.25\)</span> reduziert werden konnte. Relativ gesehen sind das <span class="math inline">\(\frac{SS_{model}}{SS_{total}} = \frac{72.25}{237.9167} = 0.3037\)</span>. Das entspricht exakt dem <span class="math inline">\(R^2\)</span> aus dem Output oben.</p>
+<p>Um die F-Statistik zu berechnen, braucht man zuerst die Mean Sum of Squares (<span class="math inline">\(MS\)</span>). Diese erhält man, wenn man die SS durch die jeweiligen Freiheitsgrade <span class="math inline">\(df\)</span> teilt. Für die vorliegende Situation sind die Freiheitsgrade wie folgt:</p>
+<ul>
+<li><span class="math inline">\(df_{reg} = k - 1\)</span>, für unseren Fall also <span class="math inline">\(4-1=3\)</span></li>
+<li><span class="math inline">\(df_{res} = N - k\)</span>, wo bei <span class="math inline">\(N = \sum_{j = 1}^k n_j\)</span>, für unseren Fall also <span class="math inline">\(48-4=44\)</span></li>
+</ul>
+<p>Somit sind</p>
+<ul>
+<li><span class="math inline">\(MS_{reg} = \frac{SS_{model}}{df_{reg}} = \frac{72.25}{3} = 24.08333\)</span></li>
+<li><span class="math inline">\(MS_{res} = \frac{SS_{residual}}{df_{res}} = \frac{165.6667}{44} = 3.765152\)</span></li>
+</ul>
+<p>Wenn <span class="math inline">\(H_0\)</span> wahr ist, dann gibt es keinen Effekt der Prädiktoren. Mann kann dann zeigen, dass der Quotient <span class="math inline">\(F=\frac{MS_{re
+g}}{MS_{res}}\)</span> unter <span class="math inline">\(H_0\)</span> einer <span class="math inline">\(F\)</span>-Verteilung folgt mit Zählerfreiheitsgrad <span class="math inline">\(k-1\)</span> und Nennerfreiheitsgrad <span class="math inline">\(N-k\)</span>: <span class="math display">\[\begin{equation}
+    \boxed{F=\frac{MS_{reg}}{MS_{res}}\sim F_{k-1,N-k}}
+  \end{equation}\]</span></p>
+<p>Die <span class="math inline">\(F\)</span>-Verteilung ist in <code>R</code> implementiert mit <code>rf(),df(),qf(),pf()</code>.</p>
+<p>Der Wert der <span class="math inline">\(F\)</span>-Statistik beträgt nun <span class="math inline">\(\frac{MS_{reg}}{MS_{res}} = \frac{24.08333}{3.76515}=6.396377\)</span>. Diese Statistik ist <span class="math inline">\(F\)</span>-Verteilt mit den Freiheitsgraden 3 und 44:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="07_multiple_linear-regression_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir können den P-Wert, also die Wahrscheinlichkeit für eine solche oder extremere Teststatistik unter <span class="math inline">\(H_0\)</span> mit <code>R</code> abrufen. Das ist dann der <span class="math inline">\(F\)</span>-test:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(<span class="fl">6.396377</span>, <span class="dv">3</span>, <span class="dv">44</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.001082042</code></pre>
+</div>
+</div>
+<p>Alle diese Informationen finden sich im Output der Funktion <code>aov()</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(lm.heart))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+type         3  72.25  24.083   6.396 0.00108 **
+Residuals   44 165.67   3.765                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="post-hoc-tests" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="post-hoc-tests"><span class="header-section-number">7.4.2</span> Post-hoc tests</h3>
+<p>In einer klassischen One-Way-ANOVA-Situation wie beim Beispiel mit den Herzklappen kann es bei einem signifikanten F-Test sinnvoll sein, (gewisse) Paarweise Vergleiche zu machen. Idealerweise werden diese Vergleiche a priori definiert. Wie oben erläutert, ist es allerdings problematisch, zu diesem Zweck mehrere t-Tests durchzuführen. Die Thematik rund um das multiple Testen, verwandte Probleme und mögliche Lösungsvorschläge sprengen den Rahmen dieses Kurses bei weitem. Weil diese Art von Post-hoc Tests im Rahmen von Master-Thesen häufig gewünscht werden, möchte ich hier eine Möglichkeit in Form der Tukey’s ‘Honest Significant Difference’ Methode aufzeigen. Der Output der Funktion <code>TukeyHSD()</code> liefert für alle <span class="math inline">\(k(k-1)/2\)</span> Vergleiche einen für multiples Testen adjustierten P-Wert und ein CI. Diese Methode sollte nur verwendet werden, wenn die Stichpobengrösse der verschiedenen Gruppen in etwa gleich ist (siehe Hilfemenü).</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(<span class="fu">aov</span>(lm.heart))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = lm.heart)
+
+$type
+          diff        lwr      upr     p adj
+2-1 -0.3333333 -2.4484181 1.781751 0.9746327
+3-1  2.0000000 -0.1150848 4.115085 0.0698549
+4-1  2.5000000  0.3849152 4.615085 0.0147590
+3-2  2.3333333  0.2182485 4.448418 0.0254869
+4-2  2.8333333  0.7182485 4.948418 0.0046107
+4-3  0.5000000 -1.6150848 2.615085 0.9214382</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="vorgehen-beim-erstellen-einer-multiplen-linearen-regression." class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="vorgehen-beim-erstellen-einer-multiplen-linearen-regression."><span class="header-section-number">7.5</span> Vorgehen beim Erstellen einer multiplen linearen Regression.</h2>
+<p>Wie viele unabhängige Variablen kann man überhaupt in ein multiples lineares Regressionsmodell einschliessen? Grundsätzlich gilt, je grösser <span class="math inline">\(n\)</span>, desto mehr unabhängige Variablen können eingeschlossen werden. Eine gute Daumenregel ist, dass <span class="math inline">\(n \ge 10p\)</span>, wobei <span class="math inline">\(p\)</span> = Anzahl geschätzter Regressionsparameter <span class="citation" data-cites="harrell2015">(<a href="references.html#ref-harrell2015" role="doc-biblioref">Harrell , 2015a</a>)</span>.</p>
+<p>Es ist eine Tatsache, dass <span class="math inline">\(R^2\)</span> mit zunehmender Anzahl Prädiktoren immer steigt und nie kleiner wird. Dies ist selbst dann der Fall, wenn der neue Prädiktor überhaupt nichts mit der abhänggigen Variablen zu tun hat. Gehen wir zurück zum Beispiel mit der Milchaufnahme von Säuglingen. Sie sehen im Code unten, dass per Zufall jeder Frau eine Haarfarbe zugeordnet wird. Obwohl dies zufällig geschieht (und die Haarfarbe wohl kaum etwas mit der Milchaufnahme des Kindes zu tun hat), ist <span class="math inline">\(R^2\)</span> des Modells mit Haarfarbe leicht höher! Beachten Sie dabei, dass <code>R</code> die Variable <code>hair</code> alphabetisch sortiert. Das heisst <span class="math inline">\(\hat{\beta}_0\)</span> ist der durchschnittliche Wert von <code>dl.milk</code> von Kindern mit 0 kg Körpergewicht, Müttern mit 0 cm Körpergrösse und Müttern mit schwarzen Haaren (<code>black</code> kommt im Alphabet zuerst und wird darum mit 0 kodiert).</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erstellen eines Vektors mit Haarfarben (zufällig)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>df.breast.feeding<span class="sc">$</span>hair <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"brown"</span>, <span class="st">"blond"</span>), <span class="dv">50</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitten des Modells</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>lm.milk.weight.height.hair <span class="ot">&lt;-</span> <span class="fu">lm</span>(dl.milk <span class="sc">~</span> weight <span class="sc">+</span> mat.height <span class="sc">+</span> hair, <span class="at">data =</span> df.breast.feeding) </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.milk.weight.height.hair)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dl.milk ~ weight + mat.height + hair, data = df.breast.feeding)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.2570 -0.8251  0.1361  0.6682  2.7040 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.06733    4.23522  -3.085 0.003471 ** 
+weight        1.32521    0.33163   3.996 0.000236 ***
+mat.height    0.07912    0.02759   2.868 0.006270 ** 
+hairblond     0.38680    0.40037   0.966 0.339151    
+hairbrown     0.42984    0.41686   1.031 0.307980    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.118 on 45 degrees of freedom
+Multiple R-squared:  0.4979,    Adjusted R-squared:  0.4533 
+F-statistic: 11.16 on 4 and 45 DF,  p-value: 2.259e-06</code></pre>
+</div>
+</div>
+<p>Obwohl <span class="math inline">\(R^2\)</span> trotz dieser offensichtlich unsinnigen Variable <code>hair</code> grösser geworden ist (vergleiche mit oben), heisst das nicht, dass <code>hair</code> ein wichtiger Prädiktor ist. Es ist aus diesem Grund besser, bei multiplen linearen Regressionen das <strong><em>Adjusted</em></strong> <span class="math inline">\(R^2\)</span> zu betrachten. Dieses ist eine korrigierte Version des normalen <span class="math inline">\(R^2\)</span>, das Modellkomplexität (mehr Parameter) bestraft. Tatsächlich ist in diesem Fall das <em>Adjusted</em> <span class="math inline">\(R^2\)</span> des Modells ohne die Haarfarbe besser.</p>
+<p>Zu Übungszwecken schätzen wir anhand des neuen Modells noch einmal den durchschnittlichen Wert von <code>dl.milk</code> für ein Kind mit 4.5 kg Körpergewicht, eine Mutter mit einer Körpergrösse von 176 cm und braunen Haaren.</p>
+<p><span class="math display">\[
+\widehat{dl.milk} = \hat{\beta}_0 + \hat{\beta}_1weight + \hat{\beta}_2mat.height + \hat{\beta}_3blond + \hat{\beta}_4brown
+\]</span></p>
+<p><span class="math display">\[
+\widehat{dl.milk} = -13.06733 + 1.32521 \times 4.5 + 0.07912 \times 176 + 0.38680\times 0 + 0.42984 \times 1 = 7.25
+\]</span></p>
+<p>Die Variable <code>hair</code> wurde von <code>R</code> automatisch mit 0 und 1 codiert (sogenanntes dummy coding). In der folgenden Tabelle sehen Sie, wie das dummy coding im Falle der Haarfarbe funktioniert und wie sich für die verschiedenen Ausprägungen der Variable <code>hair</code> die entsprechende Regressionsgleichung zusammenstellt.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Haarfarbe</th>
+<th>Koeffizeint <span class="math inline">\(\hat{\beta}_3\)</span> <code>hairblond</code></th>
+<th>Koeffizient <span class="math inline">\(\hat{\beta}_4\)</span> <code>hairbrown</code></th>
+<th>Verwendete Koeffizienten in Bezug auf <code>hair</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Black</td>
+<td>0</td>
+<td>0</td>
+<td>Nur das Intercept</td>
+</tr>
+<tr class="even">
+<td>Blond</td>
+<td>1</td>
+<td>0</td>
+<td>Intercept + <span class="math inline">\(\hat{\beta}_3\)</span></td>
+</tr>
+<tr class="odd">
+<td>Brown</td>
+<td>0</td>
+<td>1</td>
+<td>Intercept + <span class="math inline">\(\hat{\beta}_4\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Weil im Beispiel oben die Frau braune Haare hat, wird der Koeffizient <code>hairblond</code> mit 0 multipliziert, jener bei <code>hairbrown</code> mit 1 (unterste Zeile der Tabelle). Hätte die Frau schwarze Haare, würden beide Koeffizeinten <code>hairblond</code> und <code>hairbrown</code> mit 0 multipliziert werden (erste Zeile).</p>
+<p>Natürlich kann man die Gleichung im Fall oben entsprechend vereinfachen:</p>
+<p><span class="math display">\[
+\widehat{dl.milk} = -13.06733 + 1.32521 \times 4.5 + 0.07912 \times 176 + 0.38680 \times 0 + 0.42984 \times 1 = 7.25
+\]</span></p>
+<p><span class="math display">\[
+= -13.06733 + 1.32521 \times  4.5 + 0.07912 \times 176 + 0.42984 = 7.25
+\]</span></p>
+</section>
+<section id="sec-wahl-der-prädiktoren" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="sec-wahl-der-prädiktoren"><span class="header-section-number">7.6</span> Wahl der Prädiktoren</h2>
+<p>Aber wie nun entscheiden, welche Variablen ins Modell eingeschlossen werden sollen und welche nicht? Auf diese Frage gibt es leider keine eindeutige Antwort. In diesem Kurs geht es darum, dass Sie Regressionsmodelle in <code>R</code>, basierend auf einer Vorlage, erstellen können und insbesondere, dass Sie den Output interpretieren können. Die Methoden, wie man diese Modelle genau anpasst, würden den Rahmen des Kurses sprengen. Aus diesem Grund folgt hier eine <strong>stark vereinfachte</strong> Methode, damit Sie ein Gefühl dafür bekommen, wie solche Modelle <strong>schrittweise</strong> aufgebaut werden. Interessierte Leser:innen verweise ich gerne auf die Fachliteratur (z.B. <span class="citation" data-cites="harrell2015a field2012a">(<a href="references.html#ref-harrell2015a" role="doc-biblioref">Harrell , 2015b</a>; <a href="references.html#ref-field2012a" role="doc-biblioref">Field et al. 2012</a>)</span>).</p>
+<p>Wie oben angedeutet, erfolgt das Prozedere zur Anpassung eines Modells in den meisten Fällen schrittweise. Hier wird der sogenannte <em>backwards stepwise approach</em> gezeigt. Zusammengefasst funktioniert dieser Ansatz so, dass man zuerst ein Modell mit allen Prädiktoren erstellt und dann schrittweise jeweils den Prädiktor entfernt, welcher den höchsten P-Wert hat. Bei jedem Schritt überprüft man, ob sich das Modell dadurch verschlechtert hat. Dies kann man einerseits durch Beobachtung des <em>Adjusted</em> <span class="math inline">\(R^2\)</span> tun, man kann dafür aber auch einen statistischen Test durchführen, d.h. testen, ob sich das Modell mit und ohne Prädiktor statistisch unterscheidet. Man tut das so lange, bis alle “unnötigen” Prädiktoren entfernt wurden.</p>
+<p>Zuerst wird also das komplexeste Modell erstellt:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>lm.full <span class="ot">&lt;-</span> <span class="fu">lm</span>(dl.milk <span class="sc">~</span> sex <span class="sc">+</span> weight <span class="sc">+</span> ml.suppl <span class="sc">+</span> mat.height <span class="sc">+</span> hair, <span class="at">data =</span> df.breast.feeding)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dl.milk ~ sex + weight + ml.suppl + mat.height + 
+    hair, data = df.breast.feeding)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.8450 -0.7037  0.1388  0.6313  2.4858 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.126959   4.154279  -3.160 0.002888 ** 
+sexgirl      -0.479456   0.311962  -1.537 0.131643    
+weight        1.264352   0.322850   3.916 0.000317 ***
+ml.suppl     -0.002393   0.001219  -1.963 0.056097 .  
+mat.height    0.084283   0.026736   3.152 0.002949 ** 
+hairblond     0.437250   0.385702   1.134 0.263224    
+hairbrown     0.325088   0.401998   0.809 0.423150    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.072 on 43 degrees of freedom
+Multiple R-squared:  0.5589,    Adjusted R-squared:  0.4974 
+F-statistic: 9.082 on 6 and 43 DF,  p-value: 2.015e-06</code></pre>
+</div>
+</div>
+<p>Wie zu erwarten war, haben die Steigungen für <code>hair</code> den grössten P-Wert. Wir sehen im Regressionsoutput nur die P-Werte für die Steigungen <code>hairblond</code> und <code>hairbrown</code>, dedoch nicht für die Variable <code>hair</code> insgesamt. Um zu untersuchen, ob die Variable <code>hair</code> insgesamt ein statistisch signifikanter Prädiktor für <code>dl.milk</code> ist, kann man wiederum den F-Test durchführen. Am einfachsten geht das über die Funktion `drop1()?:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(lm.full, <span class="at">test =</span> <span class="st">"F"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions
+
+Model:
+dl.milk ~ sex + weight + ml.suppl + mat.height + hair
+           Df Sum of Sq    RSS    AIC F value    Pr(&gt;F)    
+&lt;none&gt;                  49.377 13.373                      
+sex         1    2.7124 52.089 14.047  2.3621 0.1316426    
+weight      1   17.6112 66.988 26.625 15.3368 0.0003167 ***
+ml.suppl    1    4.4262 53.803 15.665  3.8546 0.0560973 .  
+mat.height  1   11.4115 60.788 21.769  9.9377 0.0029488 ** 
+hair        2    1.5423 50.919 10.911  0.6715 0.5161981    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Im Output von <code>drop1()</code> sehen wir, dass die Variable <code>hair</code> den höchsten P-Wert hat. Folglich wird als erstes ein neues Modell, ohne die Variable <code>hair</code> erstellt:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>lm.sex.weight.suppl.height <span class="ot">&lt;-</span> <span class="fu">lm</span>(dl.milk <span class="sc">~</span> sex <span class="sc">+</span> weight <span class="sc">+</span> ml.suppl <span class="sc">+</span> mat.height, <span class="at">data =</span> df.breast.feeding)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.sex.weight.suppl.height)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dl.milk ~ sex + weight + ml.suppl + mat.height, 
+    data = df.breast.feeding)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.77312 -0.81196 -0.00683  0.76988  2.52240 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -12.112571   3.997860  -3.030  0.00405 ** 
+sexgirl      -0.494675   0.308875  -1.602  0.11626    
+weight        1.372524   0.306612   4.476 5.14e-05 ***
+ml.suppl     -0.002313   0.001190  -1.943  0.05824 .  
+mat.height    0.076363   0.025560   2.988  0.00454 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.064 on 45 degrees of freedom
+Multiple R-squared:  0.5452,    Adjusted R-squared:  0.5047 
+F-statistic: 13.48 on 4 and 45 DF,  p-value: 2.658e-07</code></pre>
+</div>
+</div>
+<p>Da das <em>Adjusted</em> <span class="math inline">\(R^2\)</span> sogar gestiegen ist, ist es sicher eine gute Idee, <code>hair</code> aus dem Modell zu nehmen. Man kann auch statistisch zwei Modelle miteinander vergleichen und in diesem Fall zeigen, dass das Modell ohne <code>hair</code> nicht signifikant schlechter ist als das mit <code>hair</code>. Dazu kann man die <code>anova()</code> Funktion verwenden:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm.sex.weight.suppl.height, lm.full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: dl.milk ~ sex + weight + ml.suppl + mat.height
+Model 2: dl.milk ~ sex + weight + ml.suppl + mat.height + hair
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1     45 50.919                           
+2     43 49.377  2    1.5422 0.6715 0.5162</code></pre>
+</div>
+</div>
+<p>Weil sich die Modelle, welche oben verglichen werden nur durch die Variable <code>hair</code> unterscheiden, ist der P-Wert der gleiche wie aus <code>drop1()</code>. Auch hier wird zum Vergleich der beiden Modelle ein F-Test gemacht. Wir entnehmen dem hohen P-Wert rechts unten, dass man das reduzierte Modell nicht verwerfen kann, wir nehmen <code>hair</code> also definitiv raus.</p>
+<p>Wie weiter? Als nächstes scheint es, dass das Geschlecht keinen Einfluss auf die Milchaufnahme hat. Zwar nehmen Mädchen durchschnittlich 0.495 dl weniger Milch auf, diese Schätzung ist aber mit grosser Unsicherheit verbunden (grosser Standardfehler) und statistisch nicht signifikant. Im nächsten Modell wird also <code>sex</code> entfernt.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dl.milk ~ weight + ml.suppl + mat.height, data = df.breast.feeding)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.06540 -0.74758 -0.02408  0.67488  2.79882 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -13.064926   4.020073  -3.250  0.00216 ** 
+weight        1.464781   0.306231   4.783 1.81e-05 ***
+ml.suppl     -0.002237   0.001209  -1.850  0.07074 .  
+mat.height    0.077600   0.025979   2.987  0.00451 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.082 on 46 degrees of freedom
+Multiple R-squared:  0.5192,    Adjusted R-squared:  0.4879 
+F-statistic: 16.56 on 3 and 46 DF,  p-value: 1.953e-07</code></pre>
+</div>
+</div>
+<p>Das <em>Adjusted</em> <span class="math inline">\(R^2\)</span> ist zwar minimal gesunken, statistisch gesehen ist das Modell ohne <code>hair</code> und ohne <code>sex</code> aber nicht signifikant unterschiedlich vom komplexen Modell:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm.weight.suppl.height, lm.full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: dl.milk ~ weight + ml.suppl + mat.height
+Model 2: dl.milk ~ sex + weight + ml.suppl + mat.height + hair
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1     46 53.821                           
+2     43 49.377  3    4.4445 1.2902 0.2899</code></pre>
+</div>
+</div>
+<p>Man könnte argumentieren, das der Stichprobenumfang genügend gross ist für vier Prädiktoren und dass man das Geschlecht ja sowieso weiss und nicht aufwändig messen muss. Weil dieses Beispiel aber in erster Linie Illustrationszwecken dient, fahren wir nach dem gleichen Schema fort. Ob man Milchersatz gibt oder nicht, scheint knapp keinen statistisch signifikanten Einfluss auf die Milchaufnahme zu haben. Lassen Sie sich vom kleinen Wert dieser Steigung nicht täuschen! Die Steigung besagt, dass die Milchaufnahme 0.002 dl geringer ist pro Milliliter Milchersatz in 24h und unter Berücksichtigung der Variablen <code>weight</code> und <code>mat.heigt</code>. Wenn man in 24 h also 300 Milliliter Milchersatz gibt, dann ist die Milchaufnahme durchschnittlich <span class="math inline">\(300*0.002 = 0.6 dl\)</span> tiefer!</p>
+<p>Ich entferne nun noch die Variable <code>ml.suppl</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>lm.weight.height <span class="ot">&lt;-</span> <span class="fu">lm</span>(dl.milk <span class="sc">~</span> weight <span class="sc">+</span> mat.height, <span class="at">data =</span> df.breast.feeding)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.weight.height)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dl.milk ~ weight + mat.height, data = df.breast.feeding)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.19598 -0.82149  0.01822  0.75582  2.83375 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -11.92014    4.07325  -2.926  0.00527 ** 
+weight        1.42862    0.31338   4.559 3.67e-05 ***
+mat.height    0.07063    0.02636   2.680  0.01013 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.109 on 47 degrees of freedom
+Multiple R-squared:  0.4835,    Adjusted R-squared:  0.4615 
+F-statistic:    22 on 2 and 47 DF,  p-value: 1.811e-07</code></pre>
+</div>
+</div>
+<p>Erneut ist <em>Adjusted</em> <span class="math inline">\(R^2\)</span> minimal gesunken, statistisch gesehen ist das Modell ohne <code>hair</code>, ohne <code>sex</code> und ohne <code>ml.suppl</code> aber noch immer nicht signifikant unterschiedlich vom komplexen Modell:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm.weight.height, lm.full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: dl.milk ~ weight + mat.height
+Model 2: dl.milk ~ sex + weight + ml.suppl + mat.height + hair
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1     47 57.826                           
+2     43 49.377  4     8.449 1.8395 0.1388</code></pre>
+</div>
+</div>
+<p><code>weight</code> und <code>mat.height</code> sind also die beiden einzigen statistisch signifikanten Prädiktoren für <code>ml.drink</code>. Zwar konnte man das bereits im komplexen Modell erkennen, es ist aber im Allgemeinen nicht so, dass dies während einer <em>backwards-elimination</em> so bleibt, da sich die geschätzten Parameter bei Wegnahme eines Prädiktors jedes mal verändern können.</p>
+<p>Wie oben erwähnt, ist es manchmal aus inhaltlichen Überlegungen sinnvoll, einen Prädiktor im Modell zu belassen, obwohl dieser keinen statistisch signifikanten Zusammenhang mit der abhängigen Variable hat. Dies ist z.B. dann der Fall, wenn der gleiche Prädiktor in anderen Studien als wichtig beurteilt wird, oder wenn man für diesen Prädiktor adjustieren will. Im obigen Beispiel wäre es durchaus denkbar, dass man für die Schätzung der Milchaufnahme für zusätzlichen Milchersatz korrigiert.</p>
+</section>
+<section id="residuendiagnostik" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="residuendiagnostik"><span class="header-section-number">7.7</span> Residuendiagnostik</h2>
+<p>Die Residuendiagnostik erfolgt analog zur einfachen linearen Regression. Die wichtigste Voraussetzung ist, dass die Residuen über den Wertebereich des linearen Prädiktors homogen um 0 verteilt sind. Zur Überprüfung der Homoskedastizität eignet sich ein Residuenplot, welcher die gefitteten Werte <span class="math inline">\(\hat{y}\)</span> (die geschätzten Werte des linearen Prädiktors) auf der x-Achse den Residuen auf der y-Achse gegenüberstellt. Hier wird das Modell mit den Prädiktoren <code>weight</code> und <code>mat.height</code> verwendet.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-residuals-mlr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-residuals-mlr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="07_multiple_linear-regression_files/figure-html/fig-plot-residuals-mlr-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-residuals-mlr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.4: Residuenplot der Modells mit den Prädiktoren weight und mat.height
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der Residuenplot (<a href="#fig-plot-residuals-mlr" class="quarto-xref">Abbildung&nbsp;<span>7.4</span></a>) liefert keine Hinweise für Heteroskedastizität. Des Weiteren kann ein QQ-Plot erstellt werden, um zu beurteilen, ob die Residuen ungefähr einer Normalverteilung folgen.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-qq-mlr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-qq-mlr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="07_multiple_linear-regression_files/figure-html/fig-plot-qq-mlr-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-qq-mlr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.5: QQ-Plot der Residuen des Modells mit den Prädiktoren weight und mat.height
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-plot-qq-mlr" class="quarto-xref">Abbildung&nbsp;<span>7.5</span></a> liefert keine Evidenz, dass die Residuen nicht einer Normalverteilung folgen.</p>
+</section>
+<section id="anhang-hilfreiche-r-codes-für-die-multiple-lineare-regression" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="anhang-hilfreiche-r-codes-für-die-multiple-lineare-regression"><span class="header-section-number">7.8</span> Anhang: hilfreiche <code>R</code> Codes für die multiple lineare Regression</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulation eines Datensatzes mit drei Variablen</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(faux)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># Damit die Resultate reproduzierbar sind</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>df.sim <span class="ot">&lt;-</span> <span class="fu">rnorm_multi</span>(<span class="at">n =</span> <span class="dv">100</span>, </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>),</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sd =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>),</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">r =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>), </span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"y"</span>, <span class="st">"x"</span>, <span class="st">"z"</span>),</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">empirical =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Faktorvariable hinzufügen</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>df.sim<span class="sc">$</span>k <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>), <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Einfache lineare Regression rechnen und Resultat in R-Objekt speichern</span></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>lm.simple <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> df.sim)</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Zusammenfassung ausgeben lassen</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.simple)</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Weitere Prädiktorvariablen hinzunehmen</span></span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>lm.multi <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> k, <span class="at">data =</span> df.sim)</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Zusammenfassung ausgeben lassen</span></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.multi)</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Konfidenzintervalle der Regressionskoeffizienten anzeigen lassen</span></span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(lm.multi)</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuenplot</span></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm.multi, <span class="at">which =</span> <span class="dv">1</span>)</span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Verteilung der Residuen</span></span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm.multi, <span class="at">which =</span> <span class="dv">2</span>)</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Zwei Modelle vergleichen</span></span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm.simple, lm.multi)</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a><span class="co"># P-Werte für alle Variablen</span></span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(lm.multi, <span class="at">test =</span> <span class="st">"F"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="anhang-kleinste-quadrate-schätzer-exkurs-für-mathematisch-interessierte" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="anhang-kleinste-quadrate-schätzer-exkurs-für-mathematisch-interessierte"><span class="header-section-number">7.9</span> Anhang: Kleinste-Quadrate Schätzer (Exkurs für mathematisch Interessierte)</h2>
+<p>Für die mathematisch Interessierten wollen wir hier den Kleinsten-Quadrate Schätzer und dessen Verteilung studieren.</p>
+<section id="das-allgemeine-lineare-model" class="level3" data-number="7.9.1">
+<h3 data-number="7.9.1" class="anchored" data-anchor-id="das-allgemeine-lineare-model"><span class="header-section-number">7.9.1</span> Das Allgemeine Lineare Model</h3>
+<p>Das Allgemeine Lineare Modell ist</p>
+<p><span class="math display">\[
+\boxed{Y_i=\mathbf{x}_i^ T\mathbf{\beta}+\epsilon_i}, \quad i=1,\dots, n
+\]</span></p>
+<p>Dabei steht <span class="math inline">\(\mathbf{x}_i^ T\mathbf{\beta}\)</span> für den linearen Prädiktor (<span class="math inline">\(T\)</span> steht für <em>transponiert</em>; wenn <span class="math inline">\(\mathbf{x}\)</span> ein Kolonnenvektor ist, ist <span class="math inline">\(\mathbf{x}^T\)</span> ein Zeilenvektor). Der lineare Prädiktor ist das Skalarprodukt</p>
+<p><span class="math display">\[
+\mathbf{x}_i^T \boldsymbol{\beta}
+=
+(1, x_{i1}, \ldots, x_{im})
+\begin{pmatrix}
+\beta_0 \\
+\vdots \\
+\beta_m
+\end{pmatrix}
+=
+\beta_0 + \beta_1 x_{i1} + \dots + \beta_m x_{im}
+\]</span></p>
+<p>Dabei nehmen wir unabhängige und identisch verteilte stochastische Fehler an, <span class="math inline">\(\epsilon_i\, \text{i.i.d.}\)</span>, meistens <span class="math inline">\(\epsilon_i \sim \mathcal{N}(0,\sigma^2)\)</span>. Mit <span class="math inline">\(m\)</span> Eingangsgrössen und einem Intercept, also mit <span class="math inline">\(p=m+1\)</span> Parametern und <span class="math inline">\(n\)</span> Beobachtungen können wir das Modell auch in Matrixform schreiben:</p>
+<p><span class="math display">\[
+\boxed{
+\overset{n \times 1}{\mathbf{Y}}
+=
+\overset{n \times p}{\mathbf{X}}
+\boldsymbol{\beta}
++
+\overset{n \times 1}{\boldsymbol{\epsilon}}
+}
+\]</span></p>
+<p><span class="math display">\[
+\small
+\begin{pmatrix}
+Y_1 \\
+Y_2 \\
+\vdots \\
+Y_i \\
+\vdots \\
+Y_n
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 &amp; x_{11} &amp; \ldots &amp; x_{1m} \\
+1 &amp; x_{21} &amp; \ldots &amp; x_{2m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+1 &amp; x_{i1} &amp; \ldots &amp; x_{im} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+1 &amp; x_{n1} &amp; \ldots &amp; x_{nm}
+\end{pmatrix}
+\begin{pmatrix}
+\beta_0 \\
+\vdots \\
+\beta_m
+\end{pmatrix}
++
+\begin{pmatrix}
+\epsilon_1 \\
+\epsilon_2 \\
+\vdots \\
+\epsilon_i \\
+\vdots \\
+\epsilon_n
+\end{pmatrix}
+\]</span></p>
+<!-- - Wir schrieben bisher: $Y_i=\beta_0+\beta_1x_{i1}+\cdots+\beta_mx_{im}+\epsilon_i, -->
+<!--   \quad i=1,\ldots,n.$ -->
+<p>Man nennt die Matrix <span class="math inline">\(X\)</span> <strong>Design-Matrix</strong>. Wir haben also <span class="math inline">\(n\)</span> Gleichungen mit <span class="math inline">\(p\)</span> Unbekannten.</p>
+</section>
+<section id="kleinste-quadrate-schätzer" class="level3" data-number="7.9.2">
+<h3 data-number="7.9.2" class="anchored" data-anchor-id="kleinste-quadrate-schätzer"><span class="header-section-number">7.9.2</span> Kleinste-Quadrate Schätzer</h3>
+<p>Die Parameter des Modells (der <span class="math inline">\(p\)</span>-dimensionale Parametervektor <span class="math inline">\(\mathbf{\beta}\)</span>) sind unbekannt und müssen aus den Daten geschätzt werden. Wir verallgemeinern hier die schon bekannte Methode der kleinsten Quadrate auf den mehrdimensionalen Fall. Das Prinzip ist analog zum grundlegenden Schätzproblem (Schätzen eines Erwartungswert im Einstichprobenfall, also in einem Modell ohne Eingangsgrössen) und auch analog zur einfachen Regression im letzten Kapitel.</p>
+<p>Der Kleinste-Quadrate-Schätzer für <span class="math inline">\(\mathbf{\hat{\beta}}\)</span> ist</p>
+<p><span class="math display">\[
+\hat{\boldsymbol{\beta}}
+=
+\arg\min_{\boldsymbol{\beta}}
+\left\lVert \mathbf{Y} - \mathbf{X}\boldsymbol{\beta} \right\rVert^2
+\]</span></p>
+<p><span class="math inline">\(||\cdot||\)</span> notiert die Euklidische Norm in <span class="math inline">\(\mathcal{R}^n\)</span>. Das ist die Länge des Vektors <span class="math inline">\(\mathbf{Y}-X\mathbf{\beta}\)</span>. <span class="math inline">\(||\mathbf{Y}-X\mathbf{\beta}||^2\)</span> ist dann eine quadrierte Länge. <span class="math inline">\(||\mathbf{Y}-X\mathbf{\beta}||^2\)</span> ist nichts Neues, es ist eine andere Schreibweise für die Quadratsumme <span class="math inline">\(\sum_{i=1}^n(Y_i-\mathbf{x}^T_i\mathbf{\beta})^2\)</span>, und hat nun eine geometrische Deutung einer quadrierten Länge.</p>
+<p>Die Grösse, die diese Quantität minimiert, kann wie bei der einfachen Regression über Ableiten von <span class="math inline">\(||\mathbf{Y}-X\mathbf{\beta}||^2\)</span> und Nullsetzen bestimmt werden:</p>
+<p><span class="math display">\[
+-2 \mathbf{X}^T \left( \mathbf{Y} - \mathbf{X}\hat{\boldsymbol{\beta}} \right)
+=
+\mathbf{0}
+\]</span></p>
+<p>Das führt uns zu den <strong>Normalgleichungen</strong></p>
+<p><span class="math display">\[
+\overset{p \times p}{X^T X}
+\;
+\overset{p \times 1}{\hat{\boldsymbol{\beta}}}
+=
+\overset{p \times 1}{X^T \mathbf{Y}}
+\]</span></p>
+<p>Das sind <span class="math inline">\(p\)</span> lineare Gleichungen für <span class="math inline">\(p\)</span> Unbekannte (Komponenten von <span class="math inline">\(\mathbf{\hat{\beta}}\)</span>). Wenn die Kolonnen der Design-Matrix <span class="math inline">\(X\)</span> linear unabhängig sind, dann ist die <span class="math inline">\(p\times p\)</span>-Matrix <span class="math inline">\(X^TX\)</span> umkehrbar. Der Kleinste-Quadrate-Schätzer ist dann</p>
+<p><span class="math display">\[
+\boxed{
+\hat{\boldsymbol{\beta}}
+=
+\left( X^T X \right)^{-1} X^T \mathbf{Y}
+}
+\]</span></p>
+<p>Aus den Residuen <span class="math inline">\(r_i=Y_i-\mathbf{x}_i^T\mathbf{\hat{\beta}}\)</span> bekommt man schliesslich eine Schätzung für <span class="math inline">\(\sigma^2\)</span>,</p>
+<p><span class="math display">\[
+\boxed{
+\hat{\sigma}^2
+=
+\frac{1}{n - p}
+\sum_{i=1}^{n} r_i^2
+}
+\]</span></p>
+<p>Beim grundlegenden Schätzproblem ohne Eingangsgrössen war die geschätzte Varianz <span class="math inline">\(\hat\sigma^2=\frac{1}{n-1}\sum_{i=1}^n r_i^2=\frac{1}{n-1}\sum_{i=1}^n (Y_i-\bar{Y})^2\)</span>. Der Freiheitsgrad war dort <span class="math inline">\(n-1\)</span>. Im allgemeinen Fall ist der Freiheitsgrad Anzahl Beobachtungen minus Anzahl Parameter, also <span class="math inline">\(n-p\)</span>.</p>
+</section>
+<section id="erwartungswerte-varianz-und-verteilung-der-schätzer" class="level3" data-number="7.9.3">
+<h3 data-number="7.9.3" class="anchored" data-anchor-id="erwartungswerte-varianz-und-verteilung-der-schätzer"><span class="header-section-number">7.9.3</span> Erwartungswerte, Varianz und Verteilung der Schätzer</h3>
+<p>Dieser Abschnitt behandelt Erwartungswert und Varianz sowie die Verteilung des Schätzers. Damit sind wir dann in der Lage, Hypothesen zu testen und Schätzungen bezüglich den Parametern zu machen.</p>
+<section id="erwartungswerte-und-varianz-der-schätzer" class="level4" data-number="7.9.3.1">
+<h4 data-number="7.9.3.1" class="anchored" data-anchor-id="erwartungswerte-und-varianz-der-schätzer"><span class="header-section-number">7.9.3.1</span> Erwartungswerte und Varianz der Schätzer</h4>
+<p>Ohne Annahme bezüglich der Verteilung gilt für Kleinste-Quadrate-Schätzer:</p>
+<ul>
+<li>Der Schätzer ist unverzerrt: <span class="math inline">\(\mathbb{E}(\mathbf{\hat\beta})=\mathbf{\beta}\)</span></li>
+<li>Für die <span class="math inline">\(p\times p\)</span> <strong>Kovarianzmatrix</strong> von <span class="math inline">\(\mathbf{\hat\beta}\)</span></li>
+</ul>
+<p><span class="math display">\[
+\scriptsize
+\mathrm{Cov}(\hat{\boldsymbol{\beta}}) =
+\begin{pmatrix}
+\mathrm{Var}(\hat{\beta}_1) &amp; \mathrm{Cov}(\hat{\beta}_1,\hat{\beta}_2) &amp; \cdots &amp; \mathrm{Cov}(\hat{\beta}_1,\hat{\beta}_p) \\
+\mathrm{Cov}(\hat{\beta}_2,\hat{\beta}_1) &amp; \mathrm{Var}(\hat{\beta}_2) &amp; \cdots &amp; \mathrm{Cov}(\hat{\beta}_2,\hat{\beta}_p) \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\mathrm{Cov}(\hat{\beta}_p,\hat{\beta}_1) &amp; \mathrm{Cov}(\hat{\beta}_p,\hat{\beta}_2) &amp; \cdots &amp; \mathrm{Var}(\hat{\beta}_p)
+\end{pmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\boxed{
+\mathrm{Cov}(\hat{\boldsymbol{\beta}})
+=
+\sigma^2 (X^T X)^{-1}
+}
+\]</span></p>
+<p>Beweis<span class="math inline">\(^*\)</span>:</p>
+<p><span class="math display">\[
+\mathrm{Var}\!\left( \hat{\boldsymbol{\beta}} \right)
+=
+\mathrm{Var}\!\left( (X^T X)^{-1} X^T \mathbf{Y} \right)
+=
+(X^T X)^{-1} X^T \Sigma X (X^T X)^{-1}
+=
+(X^T X)^{-1} X^T \sigma^2 X (X^T X)^{-1}
+=
+\sigma^2 (X^T X)^{-1}
+\]</span></p>
+<p>Die Wurzeln der Diagonalelemente dieser Matrix sind dann die <strong>Standardfehler</strong>.</p>
+<ul>
+<li><span class="math inline">\(\mathbb{E}(\hat{\mathbf{Y}}) = \mathbb{E}(\mathbf{Y}) = X\boldsymbol{\beta}\)</span><br>
+</li>
+<li><span class="math inline">\(\mathbb{E}(\mathbf{r}) = \mathbf{0}\)</span></li>
+</ul>
+<!-- - $\Cov(\hat{\mathbf{Y}})=\sigma^2P$ -->
+<!-- - $\Cov(\mathbf{r})=\sigma^2(I-P)$ -->
+<!-- \paragraph{Einstichprobenfall.} Im Einstichprobenfall ohne -->
+<!-- Prädiktoren haben wir die bereits bekannten Momente, -->
+<!--  \begin{itemize} -->
+<!--  \item $\Erw(\hat{\mu})=\Erw(\bar{Y})=\mu$ -->
+<!--  \item Wegen $(X^TX)^{-1}=1/n$, haben wir $\Var(\hat{\mu})=\Var(\bar{Y})=\sigma^2/n$. -->
+<!--    % \item $\Erw(\hat{\mathbf{Y}})=\mathbf{\mu}$ -->
+<!--  \end{itemize} -->
+<p>Wir nehmen nun zusätzlich an, dass die <span class="math inline">\(\epsilon_i  \text{i.i.d.} \sim\mathcal{N}(0,\sigma^2)\)</span>. Dann gilt</p>
+<ul>
+<li>Parameterschätzungen: <strong>multivariat normalverteilt</strong>, <span class="math inline">\(\mathbf{\hat{\beta}}\sim
+  \mathcal{N}_p(\mathbf{\beta},\sigma^2(X^TX)^{-1})\)</span></li>
+<li>Geschätzte Residualvarianz: <span class="math inline">\(\hat{\sigma}^2\sim \frac{\sigma^2}{n-p}\chi^2_{n-p}\)</span></li>
+</ul>
+<p>Die Normalverteilung der Fehler ist oft nicht erfüllt. Für grosse <span class="math inline">\(n\)</span> sind die Aussagen dann trotzdem annähernd wahr (Zentraler Grenzwertsatz). Das ist dann die herkömmliche Begründung in der Praxis für die Konstruktion von Konfidenzintervallen und Tests für die Parameter des Modells.</p>
+<p>Wir kennen nun Erwartungswerte, Varianz und Verteilung der Schätzer. Damit können wir, wie bereits gelernt, Hypothesen testen und Parameter schätzen.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-dalgaard2008" class="csl-entry" role="listitem">
+Dalgaard, Peter. 2008. <em>Introductory Statistics with r</em>. Statistics and Computing. Springer. <a href="https://doi.org/10.1007/978-0-387-79054-1">https://doi.org/10.1007/978-0-387-79054-1</a>.
+</div>
+<div id="ref-field2012a" class="csl-entry" role="listitem">
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. <em>Discovering Statistics Using r</em>. SAGE Publications.
+</div>
+<div id="ref-harrell2015" class="csl-entry" role="listitem">
+Harrell , Frank E. 2015a. <em>Regression Modeling Strategies: With Applications to Linear Models, Logistic and Ordinal Regression, and Survival Analysis</em>. Springer Series in Statistics. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-19425-7">https://doi.org/10.1007/978-3-319-19425-7</a>.
+</div>
+<div id="ref-harrell2015a" class="csl-entry" role="listitem">
+Harrell , Frank E. 2015b. <em>Regression Modeling Strategies: With Applications to Linear Models, Logistic and Ordinal Regression, and Survival Analysis</em>. Springer Series in Statistics. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-19425-7">https://doi.org/10.1007/978-3-319-19425-7</a>.
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./06_simple_linear-regression.html" class="pagination-link" aria-label="Einfache lineare Regression">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./08_inf_cat_data.html" class="pagination-link" aria-label="Inferenz für nominale Daten">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

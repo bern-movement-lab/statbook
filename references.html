@@ -52,7 +52,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01_descriptives.html" rel="prev">
+<link href="./12_LMM.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -62,7 +62,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-54427c74024eba8e34e34421ce4d6b49.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -142,6 +142,72 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">References</span></a>
   </div>
@@ -177,6 +243,65 @@ div.csl-indent {
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-bertrand" class="csl-entry" role="listitem">
+Bertrand, Marianne, and Sendhil Mullainathan. n.d. <em>Replication Data
+for: Are Emily and Greg More Employable Than Lakisha and Jamal? A Field
+Experiment on Labor Market Discrimination</em>. <a href="https://doi.org/10.3886/E116023V1">https://doi.org/10.3886/E116023V1</a>.
+</div>
+<div id="ref-burak2016" class="csl-entry" role="listitem">
+Burak. 2016. <em>Confounding or the Relationship Between Shoe Size and
+Salary · Burak’s Data Blog</em>. <a href="https://gunhanb.github.io/blog/2016/12/06/confounding.html">https://gunhanb.github.io/blog/2016/12/06/confounding.html</a>.
+</div>
+<div id="ref-dalgaard2008" class="csl-entry" role="listitem">
+Dalgaard, Peter. 2008. <em>Introductory Statistics with r</em>.
+Statistics and Computing. Springer. <a href="https://doi.org/10.1007/978-0-387-79054-1">https://doi.org/10.1007/978-0-387-79054-1</a>.
+</div>
+<div id="ref-field2012a" class="csl-entry" role="listitem">
+Field, Andy, Jeremy Miles, and Zoe Field. 2012. <em>Discovering
+Statistics Using r</em>. SAGE Publications.
+</div>
+<div id="ref-harrell2015" class="csl-entry" role="listitem">
+Harrell , Frank E. 2015a. <em>Regression Modeling Strategies: With
+Applications to Linear Models, Logistic and Ordinal Regression, and
+Survival Analysis</em>. Springer Series in Statistics. Springer
+International Publishing. <a href="https://doi.org/10.1007/978-3-319-19425-7">https://doi.org/10.1007/978-3-319-19425-7</a>.
+</div>
+<div id="ref-harrell2015a" class="csl-entry" role="listitem">
+Harrell , Frank E. 2015b. <em>Regression Modeling Strategies: With
+Applications to Linear Models, Logistic and Ordinal Regression, and
+Survival Analysis</em>. Springer Series in Statistics. Springer
+International Publishing. <a href="https://doi.org/10.1007/978-3-319-19425-7">https://doi.org/10.1007/978-3-319-19425-7</a>.
+</div>
+<div id="ref-ménard2005" class="csl-entry" role="listitem">
+Ménard, Claudine, Albert A. Hagège, Onnik Agbulut, et al. 2005.
+<span>“Transplantation of Cardiac-Committed Mouse Embryonic Stem Cells
+to Infarcted Sheep Myocardium: A Preclinical Study.”</span> <em>The
+Lancet</em> 366 (9490): 1005–12. <a href="https://doi.org/10.1016/S0140-6736(05)67380-1">https://doi.org/10.1016/S0140-6736(05)67380-1</a>.
+</div>
+<div id="ref-ostelo2005" class="csl-entry" role="listitem">
+Ostelo, Raymond W. J. G., and Henrica C. W. de Vet. 2005.
+<span>“Clinically important outcomes in low back pain.”</span> <em>Best
+Practice &amp; Research. Clinical Rheumatology</em> 19 (4): 593–607. <a href="https://doi.org/10.1016/j.berh.2005.03.003">https://doi.org/10.1016/j.berh.2005.03.003</a>.
+</div>
+<div id="ref-reeves2008" class="csl-entry" role="listitem">
+Reeves, Shane, and Ira Bernstein. 2008. <span>“Effects of maternal
+tobacco-smoke exposure on fetal growth and neonatal size.”</span>
+<em>Expert Review of Obstetrics &amp; Gynecology</em> 3 (6): 719–30. <a href="https://doi.org/10.1586/17474108.3.6.719">https://doi.org/10.1586/17474108.3.6.719</a>.
+</div>
+<div id="ref-tatem2004" class="csl-entry" role="listitem">
+Tatem, Andrew J., Carlos A. Guerra, Peter M. Atkinson, and Simon I. Hay.
+2004. <span>“Momentous Sprint at the 2156 Olympics?”</span>
+<em>Nature</em> 431 (7008): 525–25. <a href="https://doi.org/10.1038/431525a">https://doi.org/10.1038/431525a</a>.
+</div>
+<div id="ref-vanhove2016" class="csl-entry" role="listitem">
+Vanhove, Jan. 2016. <em>What Data Patterns Can Lie Behind a Correlation
+Coefficient?</em> <a href="https://janhove.github.io/teaching/2016/11/21/what-correlations-look-like">https://janhove.github.io/teaching/2016/11/21/what-correlations-look-like</a>.
+</div>
+<div id="ref-viera2008" class="csl-entry" role="listitem">
+Viera, Anthony J. 2008. <span>“Odds ratios and risk ratios: what’s the
+difference and why does it matter?”</span> <em>Southern Medical
+Journal</em> 101 (7): 730–34. <a href="https://doi.org/10.1097/SMJ.0b013e31817a7ee4">https://doi.org/10.1097/SMJ.0b013e31817a7ee4</a>.
+</div>
 <div id="ref-wickham2014" class="csl-entry" role="listitem">
 Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of
 Statistical Software</em> 59 (10): 123. <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
@@ -588,8 +713,8 @@ Statistical Software</em> 59 (10): 123. <a href="https://doi.org/10.18637/jss.v0
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01_descriptives.html" class="pagination-link" aria-label="Deskriptive Statistik">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span>
+      <a href="./12_LMM.html" class="pagination-link" aria-label="Linear Mixed Model">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

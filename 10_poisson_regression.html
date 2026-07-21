@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>10&nbsp; Poisson Regression – Skript zum Modul Angewandte Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./11_survival.html" rel="next">
+<link href="./09_logistic_regression.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10_poisson_regression.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skript zum Modul Angewandte Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Einführung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#notation" id="toc-notation" class="nav-link active" data-scroll-target="#notation"><span class="header-section-number">10.1</span> Notation</a></li>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">10.2</span> Lernziele</a></li>
+  <li><a href="#anzahlen-und-raten" id="toc-anzahlen-und-raten" class="nav-link" data-scroll-target="#anzahlen-und-raten"><span class="header-section-number">10.3</span> Anzahlen und Raten</a></li>
+  <li><a href="#rückblick" id="toc-rückblick" class="nav-link" data-scroll-target="#rückblick"><span class="header-section-number">10.4</span> Rückblick</a></li>
+  <li><a href="#sec-poisson-regression2" id="toc-sec-poisson-regression2" class="nav-link" data-scroll-target="#sec-poisson-regression2"><span class="header-section-number">10.5</span> Poisson Regression</a></li>
+  <li><a href="#beispiel" id="toc-beispiel" class="nav-link" data-scroll-target="#beispiel"><span class="header-section-number">10.6</span> Beispiel</a>
+  <ul class="collapse">
+  <li><a href="#deskriptive-statistik" id="toc-deskriptive-statistik" class="nav-link" data-scroll-target="#deskriptive-statistik"><span class="header-section-number">10.6.1</span> Deskriptive Statistik</a></li>
+  </ul></li>
+  <li><a href="#nicht-reduziertes-modell" id="toc-nicht-reduziertes-modell" class="nav-link" data-scroll-target="#nicht-reduziertes-modell"><span class="header-section-number">10.7</span> Nicht-reduziertes Modell</a></li>
+  <li><a href="#reduzierte-modelle" id="toc-reduzierte-modelle" class="nav-link" data-scroll-target="#reduzierte-modelle"><span class="header-section-number">10.8</span> Reduzierte Modelle</a></li>
+  <li><a href="#kontraste" id="toc-kontraste" class="nav-link" data-scroll-target="#kontraste"><span class="header-section-number">10.9</span> Kontraste</a></li>
+  <li><a href="#vorhersage" id="toc-vorhersage" class="nav-link" data-scroll-target="#vorhersage"><span class="header-section-number">10.10</span> Vorhersage</a></li>
+  <li><a href="#übergrosse-streuung" id="toc-übergrosse-streuung" class="nav-link" data-scroll-target="#übergrosse-streuung"><span class="header-section-number">10.11</span> Übergrosse Streuung*</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-poisson-regression" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In <a href="08_inf_cat_data.html" class="quarto-xref"><span>Chapter 8</span></a> haben Sie erfahren, wie man auf Grundlage von 2x2 Tabellen Odds und Odds Ratios, bzw. Risiken und Risk Ratios berechnet. In <a href="09_logistic_regression.html" class="quarto-xref"><span>Chapter 9</span></a> wurde erläutert, wie man Odds und Wahrscheinlichkeiten mit einem Regressionsansatz modellieren kann.</p>
+<p>Weil die abhängige Variable <span class="math inline">\(Y_i\)</span> eine binäre Variable mit unterliegender Eintrittswahrscheinlichkeit <span class="math inline">\(\pi_i\)</span> (oder Anzahl Erfolge bei gruppierten Daten) war, verwendeten wir dafür die Binomialverteilung <span class="math inline">\(Y_i\sim \mathcal{B}(1,\pi_i)\)</span>, zusätzlich zum linearen Prädiktor</p>
+<p><span class="math display">\[
+\mathrm{logit}(\pi_i) = \beta_0 + \beta_1x_{i1}+\dots+\beta_m x_{im}.
+\]</span></p>
+<p>Die <strong>Link</strong>-Funktion, die ermöglicht, dass der transformierte Erwartungswert und damit der lineare Prädiktor nicht mehr beschränkt ist, war dort die <span class="math inline">\(\mathrm{logit}\)</span>-Funktion.</p>
+<p>In diesem Kapitel geht es nun darum, wie man <strong>Anzahlen</strong> oder <strong>Raten</strong> mit einem Regressionsansatz modelliert. In der Epidemiologie beschreibt eine Rate die Anzahl Events pro Personenjahr, z.B. die Anzahl neuer Krebsfälle pro 1000 Personenjahre. Anzahlen können nur ganzzahlige Werte annehmen. Für solche Zähldaten (= diskrete Variablen) wird oft eine Poissonverteilung angenommen, dies führt dann zur Poisson Regression. Diese findet also dann Anwendung, wenn die abhängige Variable die Anzahl von Ereignissen in einem festen Zeitraum (oder Raum) darstellt.</p>
+<p>In diesem Kapitel werden wir die Grundlagen der Poisson-Regression erkunden. Die Flexibilität dieser Modelle wird aufgezeigt, in dem mehrere Prädiktoren in ein Modell eingeschlossen werden. Der Fokus liegt auf der Anwendung (selbstständige Anpassung der Modelle in <code>R</code>) und der Interpretation. Mathematische Details werden soweit reduziert, wie möglich.</p>
+<section id="notation" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="notation"><span class="header-section-number">10.1</span> Notation</h2>
+<ul>
+<li><span class="math inline">\(\mu\)</span>: erwartete Anzahl</li>
+<li><span class="math inline">\(T\)</span>: Beobachtungszeit (z.B. Personenjahre)</li>
+<li><span class="math inline">\(\lambda\)</span>: erwartete Rate</li>
+<li><span class="math inline">\(RR\)</span>: Rate Ratio, <span class="math inline">\(IRR\)</span>: Incidence Rate Ratio</li>
+<li><span class="math inline">\(\mathcal{P}(\mu)\)</span>: Poisson-Verteilung mit Parameter <span class="math inline">\(\mu\)</span></li>
+<li><span class="math inline">\(\mathcal{B}(n,\pi)\)</span>: Binomialverteilung mit Parametern <span class="math inline">\(n\)</span> und <span class="math inline">\(\pi\)</span></li>
+<li><span class="math inline">\(\mathcal{N}(\mu,\sigma^2)\)</span>: Normalverteilung mit Parametern <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma^2\)</span></li>
+<li><span class="math inline">\(D\)</span>: Devianz</li>
+</ul>
+</section>
+<section id="lernziele" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="lernziele"><span class="header-section-number">10.2</span> Lernziele</h2>
+<p>Beachten Sie im Folgenden die überaus wichtigen Rechenregeln bezüglich der <span class="math inline">\(\log\)</span> und <span class="math inline">\(\exp\)</span>-Funktion. Sie werden uns auf Schritt und Tritt verfolgen:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\log(a \times b) &amp;= \log(a) + \log(b)\\
+\log(a /b) &amp;= \log(a) - \log(b)\\
+\exp(a + b) &amp;= \exp(a) \times \exp(b)\\
+\quad \exp(a-b) &amp;= \exp(a)/\exp(b)
+\end{aligned}
+\]</span></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Definieren Sie eine erwartete Anzahl Ereignisse für eine statistische Einheit <span class="math inline">\(i\)</span> als</p>
+<p><span class="math display">\[
+\mu_i = \lambda_i T_i,
+\]</span></p>
+<p>wobei <span class="math inline">\(\lambda_i\)</span> die Rate und <span class="math inline">\(T_i\)</span> die totale Beobachtungszeit dieser Einheit darstellt.</p></li>
+<li><p>Wenden Sie eine Poisson Regression an, wenn anhand einer oder mehrerer Prädiktorvariablen die Rate <span class="math inline">\(\lambda_i\)</span> oder die Anzahl (Count) <span class="math inline">\(\mu_i\)</span> eines Ereignisses für eine Beobachtungsdauer <span class="math inline">\(T_i\)</span> geschätzt werden soll.</p></li>
+<li><p>Modell für Anzahlen (counts): Der lineare Prädiktor ist gegeben durch den log-transformierten Erwartungswert <span class="math inline">\(\mu_i\)</span>,</p>
+<p><span class="math display">\[
+\boxed{\log(\mu_i) = \beta_0 + \beta_1x_{i1}+...+\beta_mx_{im},}
+\]</span></p>
+<p>und die Anzahlen <span class="math inline">\(Y_i\)</span> gehorchen einer Poissonverteilung mit Parameter <span class="math inline">\(\mu_i\)</span>,</p>
+<p><span class="math display">\[
+\boxed{Y_i\sim \mathcal {P}(\mu_i).}
+\]</span></p>
+<p>Die Poissonverteilung <span class="math inline">\(\mathcal{P}(\mu)\)</span> hat einen Parameter <span class="math inline">\(\mu\)</span>. Beachten Sie, dass für die Poisson-Verteilung Mittelwert und Varianz gleich dem Parameter <span class="math inline">\(\mu\)</span> sind: <span class="math inline">\(E(Y_i)=\mathrm{Var}(Y_i)=\mu_i\)</span>.</p></li>
+<li><p>Modell mit Offset: Mit einem Offset-Term für die Beobachtungszeit <span class="math inline">\(T_i\)</span> haben wir für den linearen Prädiktor</p>
+<p><span class="math display">\[
+\log(\mu_i) = \underbrace{\log(T_i)}_{\text{offset}}+\beta_0 + \beta_1x_{i1}+...+\beta_mx_{im},
+\]</span></p>
+<p>das ist äquivalent mit</p>
+<p><span class="math display">\[
+\boxed{\log(\lambda_i) = \beta_0 + \beta_1x_{i1}+...+\beta_mx_{im}.}
+\]</span></p></li>
+<li><p>Beachten Sie, dass eine Anzahl und eine Rate im Intervall [0, <span class="math inline">\(\infty\)</span>) liegt, die <span class="math inline">\(\log(\mu)\)</span>, bzw. <span class="math inline">\(\log(\lambda)\)</span> im Intervall (<span class="math inline">\(-\infty\)</span>; <span class="math inline">\(\infty\)</span>).</p></li>
+<li><p>Berechnen Sie <span class="math inline">\(\log(\hat{\lambda}_i)\)</span> (oder <span class="math inline">\(\log(\hat{\mu}_i)\)</span>) durch Einsetzen der geschätzten Regressionskoeffizienten <span class="math inline">\(\hat{\beta}_k (k=0,\dots,m)\)</span> sowie der Werte für die Prädiktoren der Einheit <span class="math inline">\(i\)</span> in die Regressionsgleichung.</p></li>
+<li><p>Interpretieren Sie <span class="math inline">\(\beta_0\)</span> (intercept) als die <strong>log count</strong> oder <strong>log rate</strong>, wenn alle unabhängigen Variablen den Wert 0 annehmen (und kategorielle Eingangsgrössen auf der Referenzkategorie sind). Diese Grösse ist meistens nicht von Interesse.</p></li>
+<li><p>Interpretieren Sie die Effekte oder Steigungen <span class="math inline">\(\beta_k\)</span> (<span class="math inline">\(k=1,\dots,m\)</span>) bezüglich einer Eingangsgrösse <span class="math inline">\(x_k\)</span> als <strong>log Count Ratio</strong> oder <strong>log Rate Ratio</strong>,</p></li>
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+\log(RR)=&amp;\log(\mu_{x_k=a})-\log(\mu_{x_k=a-1}),\\ \log(RR)=&amp;\log(\lambda_{x_k=a})-\log(\lambda_{x_k=a-1}),
+\end{aligned}
+\]</span> als den Unterschied der Rate (Anzahl) auf <span class="math inline">\(\log\)</span>-Skala für zwei Subpopulationen, die sich auf <span class="math inline">\(x_k\)</span> um eine Einheit unterscheiden, während die anderen unabhängigen Variablen konstant gehalten werden. Die Nullhypothesen sind dann meistens</p>
+<p><span class="math display">\[
+H_0: \beta_k = 0, \quad k=1,...,m.
+\]</span></p>
+<ol start="9" type="1">
+<li><p>Exponieren Sie <span class="math inline">\(\log(RR)\)</span>, um entsprechende Rate Ratios zu interpretieren.</p></li>
+<li><p>Beachten Sie, dass dass eine Rate Ratio im Intervall [0, <span class="math inline">\(\infty\)</span>) liegt, die <span class="math inline">\(\log(RR))\)</span> im Intervall (<span class="math inline">\(-\infty\)</span>; <span class="math inline">\(\infty\)</span>), also nicht beschränkt ist.</p></li>
+<li><p>Führen Sie eine Poisson Regression in <code>R</code> mit <code>glm()</code> durch und interpretiere die geschätzten Regressionskoeffizienten sowie deren inferenzstatistischen Angaben.</p></li>
+<li><p>Beachten Sie, dass man im Falle der Poisson Regression mit der Maximimum-Likelihood Methode Likelihood Parameter geschätzt werden.</p></li>
+<li><p>Sie können zwei verschachtelte (nested) Poisson Regressionsmodelle in <code>R</code> mit einem Likelihood Ratio Test vergleichen, wobei die Nullhypothese der Aussage entspricht: <span class="math inline">\(H_0\)</span>: Das reduzierte Modell ist richtig.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="anzahlen-und-raten" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="anzahlen-und-raten"><span class="header-section-number">10.3</span> Anzahlen und Raten</h2>
+<p>Eine erwartete Rate <span class="math inline">\(\lambda_i\)</span> für eine Einheit <span class="math inline">\(i\)</span> beschreibt die erwartete Anzahl Ereignisse <span class="math inline">\(\mu_i\)</span> pro totale Beobachtungszeit <span class="math inline">\(T_i\)</span>, da</p>
+<p><span class="math display">\[
+\mu_i = \lambda_i \times T_i.
+\]</span></p>
+<p>Ein Beispiel dafür sind die Anzahl Stürze während einem halben Jahr. Dann wären alle <span class="math inline">\(T_i\)</span> identisch. In Studien wird die Beobachtungszeit häufig auf 100, 1000 oder sogar 100’000 Personenjahre normiert, je nachdem, wie oft ein Ereignis auftritt. Weil die Zeit ein fester Bestandteil der Formel ist, können Raten nur berechnet werden, wenn longitudinale Daten vorliegen. Diese stammen in der Regel aus:</p>
+<ul>
+<li><p>Kohortenstudien</p></li>
+<li><p>Interventionsstudien</p></li>
+</ul>
+<p>Weil für die Berechnung von <span class="math inline">\(\lambda\)</span> die Anzahl der Ereignisse <span class="math inline">\(\mu\)</span> durch Personenjahre <span class="math inline">\(T\)</span> geteilt wird, kann man eine Rate auch dann berechnen, wenn die Beobachtungszeit nicht für alle Personen gleich ist. Wie wir technisch damit umgehen, sehen Sie weiter unten.</p>
+<p>Beispiel: 100 Personen, welche zu Beginn der Studie älter als 70 Jahre alt waren, wurden über einen Zeitraum von einem halben Jahr beobachtet und die Anzahl Stürze wurde gemessen. Insgesamt betrug die Beobachtungszeit 42 Personenjahre (einige haben die Studie abgebrochen). Es wurden 18 Stürze gemessen, somit ist <span class="math inline">\(\hat{\lambda} =\frac{\hat{\mu}}{T}= \frac{18}{42} = 0.43\)</span> Stürze pro Personenjahr, bzw. 43 Stürze pro 100 Personenjahre.</p>
+<p>In der Poisson-Regression gehen wir davon aus, dass die <strong>Anzahl Ereignisse</strong> eine diskrete Variable <span class="math inline">\(Y_i\)</span> ist und einer Poissonverteilung mit Parameter <span class="math inline">\(\mu_i\)</span> folgt.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pois" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pois-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="10_poisson_regression_files/figure-html/fig-pois-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pois-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;10.1: Poisson-Verteilung mit <span class="math inline">\(\mu=2,3,4\)</span> und <span class="math inline">\(\mu=10\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir notieren kurz</p>
+<p><span class="math display">\[
+Y_i\sim \mathcal{P}(\mu_i),
+\]</span></p>
+<p>wenn die <span class="math inline">\(Y_i\)</span> Poisson-verteilt sind gemäss</p>
+<p><span class="math display">\[
+p(y)=\frac{\mu^y}{y!}\exp(-\mu),\quad y=0,1,2,\dots .
+\]</span></p>
+<p>Diese Verteilung ist in <code>R</code> implementiert in <code>dpois()</code>.</p>
+<p>Für die Poissonverteilung gilt, dass Erwartungswert und Varianz identisch sind, nämlich gleich dem Parameter <span class="math inline">\(\mu\)</span>.</p>
+<p><span class="math display">\[
+\mathbb{E}(Y)=\mathrm{Var}(Y)=\mu.
+\]</span></p>
+<p>Das heisst, die Varianz <strong>wächst mit dem Erwartungswert</strong>, im Gegensatz zur Normalverteilung, dort ist <span class="math inline">\(\sigma^2\)</span> unabhängig vom Erwartungswert.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>X<span class="ot">&lt;-</span><span class="fu">rpois</span>(<span class="at">n=</span><span class="dv">10000</span>,<span class="at">lambda=</span><span class="dv">4</span>);<span class="fu">c</span>(<span class="at">mean=</span><span class="fu">mean</span>(X),<span class="at">var=</span><span class="fu">var</span>(X))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    mean      var 
+3.977300 3.945379 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X<span class="ot">&lt;-</span><span class="fu">rpois</span>(<span class="at">n=</span><span class="dv">10000</span>,<span class="at">lambda=</span><span class="dv">8</span>);<span class="fu">c</span>(<span class="at">mean=</span><span class="fu">mean</span>(X),<span class="at">var=</span><span class="fu">var</span>(X))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    mean      var 
+8.000600 7.954395 </code></pre>
+</div>
+</div>
+<p>Bei Poisson-Daten führt ein grösserer Mittelwert automatisch zu grösserer Streuung. Beim Anpassen von Modellen werden wir also später das Argument <code>family = poisson</code> festlegen müssen. Bei der logistischen Regression war die Einstellung <code>family = binomial</code>.</p>
+</section>
+<section id="rückblick" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="rückblick"><span class="header-section-number">10.4</span> Rückblick</h2>
+<p>In der linearen Regression mit kontinuierlicher abhängiger Variable war das Modell <span class="math inline">\(Y_i=\beta_0 + \beta_1x_{i1}+\dots+\beta_mx_{im}+\epsilon_i\)</span> mit <span class="math inline">\(\epsilon_i \sim \mathcal{N}(0,\sigma^2)\)</span>, kurz:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lineare Regression
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\mu_i=\beta_0 + \beta_1x_{i1}+\dots+\beta_mx_{im}, \qquad  Y_i\sim \mathcal{N}(\mu_i,\sigma^2)
+\]</span></p>
+</div>
+</div>
+<p>In der linearen Regression musste der Erwartungswert <span class="math inline">\(\mu_i\)</span> nicht transformiert werden.</p>
+<p>In der logistischen Regression brauchten wir die logit (=logOdds)-Funktion für die Transformation des Erwartungwerts <span class="math inline">\(\pi_i\)</span>. Der lineare Prädiktor und die Verteilung waren</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Logistische Regression
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\mathrm{logit}(\pi_i)=\beta_0 + \beta_1x_{i1}+\dots+\beta_mx_{im}, \qquad Y_i\sim \mathcal{B}(\pi_i,1)
+\]</span></p>
+</div>
+</div>
+<p>Bei aggregierten Daten haben wir statt der Bernoulli <span class="math inline">\(\mathcal{B}(\pi_i,1)\)</span> allgemein eine Binomialverteilung <span class="math inline">\(\mathcal{B}(\pi_i,n)\)</span>. Mit der logit-Funktion <span class="math inline">\(\log(Odds)\)</span> konnten wir den Erwartungswert (eine Wahrscheinlichkeit) auf die ganze reelle Zahlenachse <span class="math inline">\([-\infty,+\infty]\)</span> abbilden. Wir nennen den mit der Link-Funktion transformierten Erwartungswert den linearen Prädiktor. Mit der logistischen Funktion kam man zurück zum Erwartungswert,</p>
+<p><span class="math display">\[
+\pi_i=\frac{\exp(\beta_0+\beta_1x_{i1}+\dots+\beta_mx_{im})}{1+\exp(\beta_0+\beta_1x_{i1}+\dots+\beta_mx_{im})}.
+\]</span></p>
+<p>Wenn wir für den linearen Prädiktor <span class="math inline">\(\exp(\beta_0+\beta_1x_{i1}+\dots+\beta_mx_{im})\)</span> kurz <span class="math inline">\(\eta_i\)</span> schreiben, haben wir kürzer</p>
+<p><span class="math display">\[
+\pi_i=\frac{\exp(\eta_i)}{1+\exp(\eta_i)}.
+\]</span></p>
+</section>
+<section id="sec-poisson-regression2" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="sec-poisson-regression2"><span class="header-section-number">10.5</span> Poisson Regression</h2>
+<p>Jetzt zur Poisson-Regression: Nun sind erwartete Anzahlen oder Raten (Anzahlen pro Personenjahr) positive Zahlen. Die <span class="math inline">\(\log\)</span>-Funktion bildet positive Zahlen auf <span class="math inline">\((-\infty,+\infty)\)</span> ab. In der Poisson-Regression wird daher für die Transformation des Erwartungswertes <span class="math inline">\(\mu\)</span> die <span class="math inline">\(\log\)</span>-Funktion gebraucht. Das Modell (linearer Prädiktor und Verteilung) ist dann</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Linearer Prädiktor und Verteilung
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\log(\mu_i)=\beta_0 + \beta_1x_{i1}+\dots+\beta_mx_{im}, \qquad Y_i\sim \mathcal{P}(\mu_i)
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Erwartungswert
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\mu_i=\exp(\beta_0 +\beta_1x_{i1}+\dots+\beta_mx_{im})=\exp(\beta_0)\exp(\beta_1x_{i1})\dots\exp(\beta_mx_{im}).
+\]</span></p>
+</div>
+</div>
+<p>Schätzen der Parameter: Da wir die wahren <span class="math inline">\(\beta\)</span>’s nicht kennen, schätzen wir diese wie immer anhand von Stichprobendaten. Das macht <code>glm()</code> für uns mit der Maximum-Likelihood-Methode, wir haben dann</p>
+<p><span class="math display">\[
+\log(\hat{\mu}_i) = \hat{\beta}_0 + \hat{\beta}_1x_{i1}+\dots+\hat{\beta}_mx_{im}
+\]</span></p>
+<p>und folglich</p>
+<p><span class="math display">\[
+\hat{\mu}_i= \exp(\hat{\beta}_0 + \hat{\beta}_1x_{i1}+\dots+\hat{\beta}_mx_{im})
+\]</span></p>
+<p>Um Raten anzupassen, brauchen wir die Beobachtungszeit pro Einheit <span class="math inline">\(T_i\)</span> als Variable im Datensatz. Diese Zeit kann in z.B. Tagen, Monaten oder Jahren vorliegen. Manchmal liegen auch nur Start- und Enddatum der Beobachtungszeit vor, man muss dann die Beobachtungszeit zuerst berechnen.</p>
+<p>Wir schreiben dann den linearen Prädiktor</p>
+<p><span class="math display">\[
+\log(\mu_i)=\beta_0 + \beta_1x_{i1}+\dots+\beta_mx_{im}+\log(T_i),
+\]</span> oder kurz</p>
+<p><span class="math display">\[
+\log(\lambda_i)=\log(\mu_i/T_i)=\beta_0 + \beta_1x_{i1}+\dots+\beta_mx_{im}.
+\]</span></p>
+<p>Der letzte Term heisst <strong>offset</strong> und ist definiert als eine Eingangsgrösse ohne zu schätzenden Parameter (dieser ist fixiert auf 1).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Offset-Term versus Rate als abhängige Variable
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Achtung: Die <span class="math inline">\(Y_i\)</span> sind immer noch <span class="math inline">\(\mathcal{P}(\mu_i)\)</span>, <strong>nicht</strong> <span class="math inline">\(\mathcal{P}(\lambda_i)\)</span>. Man darf also nicht direkt <span class="math inline">\(Y_i/T_i\)</span> modellieren, das wäre keine Poisson-Regression mehr.</p>
+</div>
+</div>
+</section>
+<section id="beispiel" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="beispiel"><span class="header-section-number">10.6</span> Beispiel</h2>
+<p>Wir betrachten folgende Daten: 34 Beobachtungen zu 5 Schiffstypen in 4 Baujahren und 2 Betriebsperioden:</p>
+<ul>
+<li><code>type</code> Ein Faktor mit den Levels „A“ bis „E“ für die verschiedenen Schiffstypen.</li>
+<li><code>construction</code> Ein Faktor mit den Levels „1960-64“, „1965-69“, „1970-74“, „1975-79“ für die Bauperioden.</li>
+<li><code>operation</code> Ein Faktor mit den Levels „1960-74“, „1975-79“ für die Betriebsperioden.</li>
+<li><code>service</code> Die aggregierten Betriebsmonate.</li>
+<li><code>incidents</code> Die Anzahl der Schadensvorfälle.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"ShipAccidents"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df.sa <span class="ot">&lt;-</span> <span class="fu">subset</span>(ShipAccidents, service <span class="sc">&gt;</span> <span class="dv">0</span>)<span class="do">##ohne die Fälle, die nie in Betrieb waren</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>str()</code> ist immer sinnvoll, bevor wir mit Daten arbeiten, ebenso die Betrachtung von ein paar Zeilen des Datensatzes:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df.sa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   34 obs. of  5 variables:
+ $ type        : Factor w/ 5 levels "A","B","C","D",..: 1 1 1 1 1 1 1 2 2 2 ...
+ $ construction: Factor w/ 4 levels "1960-64","1965-69",..: 1 1 2 2 3 3 4 1 1 2 ...
+ $ operation   : Factor w/ 2 levels "1960-74","1975-79": 1 2 1 2 1 2 2 1 2 1 ...
+ $ service     : num  127 63 1095 1095 1512 ...
+ $ incidents   : num  0 0 3 4 6 18 11 39 29 58 ...</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">headTail</span>(df.sa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    type construction operation service incidents
+1      A      1960-64   1960-74     127         0
+2      A      1960-64   1975-79      63         0
+3      A      1965-69   1960-74    1095         3
+4      A      1965-69   1975-79    1095         4
+... &lt;NA&gt;         &lt;NA&gt;      &lt;NA&gt;     ...       ...
+36     E      1965-69   1975-79     437         7
+37     E      1970-74   1960-74    1157         5
+38     E      1970-74   1975-79    2161        12
+40     E      1975-79   1975-79     542         1</code></pre>
+</div>
+</div>
+<p>Hier wäre <code>incidents</code> die abhängige ganzzahlige Variable, <code>type</code>, <code>construction</code> und <code>operation</code> unabhängige Variablen, alles kategorielle Variablen, <code>service</code> die Zeit in Monaten, während der die Ereignisse gezählt werden. Es scheint offensichtlich, dass <code>service</code> berücksichtigt werden muss.</p>
+<section id="deskriptive-statistik" class="level3" data-number="10.6.1">
+<h3 data-number="10.6.1" class="anchored" data-anchor-id="deskriptive-statistik"><span class="header-section-number">10.6.1</span> Deskriptive Statistik</h3>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df.sa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> type   construction   operation     service        incidents    
+ A:7   1960-64: 8    1960-74:14   Min.   :   45   Min.   : 0.00  
+ B:7   1965-69:10    1975-79:20   1st Qu.:  371   1st Qu.: 1.00  
+ C:7   1970-74:10                 Median : 1095   Median : 4.00  
+ D:7   1975-79: 6                 Mean   : 4811   Mean   :10.47  
+ E:6                              3rd Qu.: 2223   3rd Qu.:11.75  
+                                  Max.   :44882   Max.   :58.00  </code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df.sa, <span class="fu">plot</span>(incidents<span class="sc">/</span>service <span class="sc">~</span> type))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df.sa, <span class="fu">plot</span>(incidents<span class="sc">/</span>service <span class="sc">~</span> construction,<span class="at">las=</span><span class="dv">2</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df.sa, <span class="fu">plot</span>(incidents<span class="sc">/</span>service <span class="sc">~</span> operation))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-plot-desc-inc-service" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-desc-inc-service-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="10_poisson_regression_files/figure-html/fig-plot-desc-inc-service-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-desc-inc-service-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;10.2: Incidens/service by type, construction and operation
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="nicht-reduziertes-modell" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="nicht-reduziertes-modell"><span class="header-section-number">10.7</span> Nicht-reduziertes Modell</h2>
+<p>Da die Anzahlen <code>incidents</code> nur in Bezug zu den Betriebsmonaten <code>service</code> Sinn machen, integrieren wir einen Offset Term. Wir passen zuerst direkt ein multiples Modell an mit <code>type</code>, <code>construction</code> und <code>operation</code> als Eingangsgrössen.</p>
+<p>Das <code>family</code>-Argument ist jetzt <code>poisson</code> mit <span class="math inline">\(\log\)</span>-Link. Der <span class="math inline">\(\log\)</span>-Link ist der Default-Link bei Poisson Daten (so wie es der <span class="math inline">\(\mathrm{logit}\)</span>-Link bei der logistischen Regression war). Das offset-Argument ist <code>log(service)</code> (mit <span class="math inline">\(\log\)</span>!).</p>
+<p>Die Syntax ist dann:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m.pois.large <span class="ot">&lt;-</span> <span class="fu">glm</span>(incidents <span class="sc">~</span> type <span class="sc">+</span>  construction <span class="sc">+</span> operation <span class="sc">+</span><span class="fu">offset</span>(<span class="fu">log</span>(service)),</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link=</span><span class="st">"log"</span>),<span class="at">data =</span> df.sa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Schauen wir uns das angepasste Modell an:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.large)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = incidents ~ type + construction + operation + offset(log(service)), 
+    family = poisson(link = "log"), data = df.sa)
+
+Coefficients:
+                    Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)         -6.40288    0.21752 -29.435  &lt; 2e-16 ***
+typeB               -0.54471    0.17761  -3.067  0.00216 ** 
+typeC               -0.68876    0.32903  -2.093  0.03632 *  
+typeD               -0.07431    0.29056  -0.256  0.79815    
+typeE                0.32053    0.23575   1.360  0.17396    
+construction1965-69  0.69585    0.14966   4.650 3.33e-06 ***
+construction1970-74  0.81746    0.16984   4.813 1.49e-06 ***
+construction1975-79  0.44497    0.23324   1.908  0.05642 .  
+operation1975-79     0.38386    0.11826   3.246  0.00117 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 146.328  on 33  degrees of freedom
+Residual deviance:  38.963  on 25  degrees of freedom
+AIC: 154.83
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>Eine kategorielle Eingangsgrösse mit <span class="math inline">\(k\)</span> Stufen fliesst mit <span class="math inline">\(k-1\)</span> Parametern in ein Modell ein, wobei in der <code>R</code>-Effekt-Parameterisierung der Parameterwert der Referenzkategorie immer Null gesetzt wird. Also hat unser Modell <span class="math inline">\(p=1+(5-1)+(4-1)+(2-1)= 9\)</span> Parameter.</p>
+<p>Die Residualdevianz ist gleich</p>
+<p><span class="math display">\[
+D_R=-2(l(\mathbf{\hat\beta})-l_{max})=38.9626202
+\]</span> mit <span class="math inline">\(l_{max}\)</span> als der log-likelihood des maximalen Modells (ein Modell mit einem Parameter für jede Beobachtung <span class="math inline">\(i\)</span>, also der bestmögliche Fit) und <span class="math inline">\(l(\mathbf{\hat\beta})\)</span> als der log-likelihood vom MLE.</p>
+<p>Die Null Deviance ist <span class="math inline">\(D_0=-2(l_0-l_{max})=146.3283365\)</span> mit <span class="math inline">\(l_0\)</span> als der log-likelihood für das Null model (Ein Modell nur mit dem Intercept).</p>
+<p>Der Unterschied in der Anzahl Parametern zwischen dem maximalen Modell und diesem Modell ist <span class="math inline">\(n-9=34-9=25\)</span>.</p>
+</section>
+<section id="reduzierte-modelle" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="reduzierte-modelle"><span class="header-section-number">10.8</span> Reduzierte Modelle</h2>
+<p>Mit <code>drop1</code> können wir für verschiedene Eingangsgrössen testen, ob sie aus dem Modell entfernt werden können.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(m.pois.large,<span class="at">test=</span><span class="st">"Chisq"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions
+
+Model:
+incidents ~ type + construction + operation + offset(log(service))
+             Df Deviance    AIC    LRT  Pr(&gt;Chi)    
+&lt;none&gt;            38.963 154.83                     
+type          4   62.536 170.40 23.573 9.725e-05 ***
+construction  3   70.364 180.23 31.401 6.998e-07 ***
+operation     1   49.591 163.46 10.628  0.001114 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Diese Funktion macht z.B. bezüglich <code>operation</code> folgenden Modellvergleich:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m.pois.noop<span class="ot">&lt;-</span><span class="fu">update</span>(m.pois.large,.<span class="sc">~</span>.<span class="sc">-</span>operation)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m.pois.noop,m.pois.large)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: incidents ~ type + construction + offset(log(service))
+Model 2: incidents ~ type + construction + operation + offset(log(service))
+  Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)   
+1        26     49.591                        
+2        25     38.963  1   10.628 0.001114 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Wiederholen wir diesen Modellvergleich von Hand. Der Unterschied in Devianz zwischen dem reduzierten (<span class="math inline">\(H_0\)</span>-Modell, “small”) und dem geschätzten vollen Modell (“large”)</p>
+<p><span class="math display">\[
+\begin{aligned}
+D_{small}-D_{large}&amp;=-2(l_{small}-l_{saturated})-(-2(l_{large}-l_{saturated}))\\
+&amp;=-2(l_{small}-l_{large})
+\end{aligned}
+\]</span></p>
+<p>ist, wie wir schon gesehen haben <span class="math inline">\(\chi^2\)</span>-verteilt ist mit <span class="math inline">\(p_{large}-p_{small}\)</span> Freiheitsgraden.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(dl<span class="ot">&lt;-</span><span class="fu">deviance</span>(m.pois.large)) <span class="co">#deviance large model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 38.96262</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(ds<span class="ot">&lt;-</span><span class="fu">deviance</span>(m.pois.noop))  <span class="co">#deviance reduced model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 49.59105</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(LR<span class="ot">&lt;-</span>ds<span class="sc">-</span>dl)                  <span class="co">#Likelihood Ratio statistik</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10.62843</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pchisq</span>(LR,<span class="dv">1</span>)               <span class="co">#p-value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.001113619</code></pre>
+</div>
+</div>
+<p>Wir können die Nullhypothese, dass das reduzierte Modell wahr ist, verwerfen. Das gleiche gilt für die anderen Modellvergleiche. Wir bleiben daher beim nicht reduzierten Modell und können nun die Parameter interpretieren.</p>
+<p>Die Schätzungen sind (ausser das Intercept) als <strong>log Rate Ratio</strong> zu interpretieren. Diesbezügliche Likelihood-Konfidenzintervalle bekämen wir wieder mit</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m.pois.large)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Eine Darstellung des angepassten Modells mit Likelihood-Konfidenzintervallen und Wald Tests bekommen wir wieder mit <code>parameters()</code> aus dem gleichnamigen Packet:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(m.pois.large,<span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter              | Log-Mean |    SE |           95% CI |       z |      p
+-------------------------------------------------------------------------------
+(Intercept)            |   -6.403 | 0.218 | [-6.840, -5.986] | -29.435 | &lt; .001
+type [B]               |   -0.545 | 0.178 | [-0.883, -0.185] |  -3.067 | 0.002 
+type [C]               |   -0.689 | 0.329 | [-1.378, -0.076] |  -2.093 | 0.036 
+type [D]               |   -0.074 | 0.291 | [-0.670,  0.477] |  -0.256 | 0.798 
+type [E]               |    0.321 | 0.236 | [-0.148,  0.780] |   1.360 | 0.174 
+construction [1965-69] |    0.696 | 0.150 | [ 0.406,  0.994] |   4.650 | &lt; .001
+construction [1970-74] |    0.817 | 0.170 | [ 0.486,  1.153] |   4.813 | &lt; .001
+construction [1975-79] |    0.445 | 0.233 | [-0.021,  0.896] |   1.908 | 0.056 
+operation [1975-79]    |    0.384 | 0.118 | [ 0.153,  0.617] |   3.246 | 0.001 </code></pre>
+</div>
+</div>
+<p>Das Intercept <span class="math inline">\(\hat{\beta}_0\)</span> ist die geschätzte log Rate, wenn alle Eingangsgrössen auf der Referenzkategorie sind. Das können wir mit <code>predict()</code> nachvollziehen, müssen dort aber für <code>service=1</code> setzen, damit <code>log(service)</code>=0.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m.pois.large,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">newdata=</span><span class="fu">data.frame</span>(<span class="at">type=</span><span class="st">"A"</span>,<span class="at">construction=</span><span class="st">"1960-64"</span>,<span class="at">operation=</span><span class="st">"1960-74"</span>,<span class="at">service=</span><span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1 
+-6.402877 </code></pre>
+</div>
+</div>
+<p>Der geschätzte Parameter <code>type[B]</code> ist der Unterschied in <span class="math inline">\(\log\)</span>-Rate relativ zu <code>type[A]</code>, wenn man die anderen Eingangsgrössen konstant hält, usw.</p>
+<p>Mit Exponieren kommen wir zu den Rate Ratios (oder auch Incidence Rate Ratios), Negative <span class="math inline">\(\log\)</span>-Raten werden zu Rate Ratios kleiner 1, positive <span class="math inline">\(\log\)</span>-Rate werden zu Rate Ratios grösser als 1:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(m.pois.large,<span class="at">digits=</span><span class="dv">3</span>,<span class="at">exponentiate=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter              |   IRR |        SE |         95% CI |       z |      p
+------------------------------------------------------------------------------
+(Intercept)            | 0.002 | 3.604e-04 | [0.001, 0.003] | -29.435 | &lt; .001
+type [B]               | 0.580 |     0.103 | [0.414, 0.831] |  -3.067 | 0.002 
+type [C]               | 0.502 |     0.165 | [0.252, 0.927] |  -2.093 | 0.036 
+type [D]               | 0.928 |     0.270 | [0.512, 1.611] |  -0.256 | 0.798 
+type [E]               | 1.378 |     0.325 | [0.862, 2.181] |   1.360 | 0.174 
+construction [1965-69] | 2.005 |     0.300 | [1.501, 2.702] |   4.650 | &lt; .001
+construction [1970-74] | 2.265 |     0.385 | [1.626, 3.167] |   4.813 | &lt; .001
+construction [1975-79] | 1.560 |     0.364 | [0.979, 2.449] |   1.908 | 0.056 
+operation [1975-79]    | 1.468 |     0.174 | [1.165, 1.853] |   3.246 | 0.001 </code></pre>
+</div>
+</div>
+<p><span class="math inline">\(IRR\)</span> steht hier für <strong>Incidence Rate Ratio</strong>. So hat z.B. <code>type[C]</code> die Hälfte der Ereignisrate von <code>type[A]</code> mit einer geschätzten Rate Ratio von 0.5021962 mit einem 95% KI, dass den Nulleffekt 1 nicht überdeckt und somit haben wir auch <span class="math inline">\(P&lt;0.05\)</span>.</p>
+</section>
+<section id="kontraste" class="level2" data-number="10.9">
+<h2 data-number="10.9" class="anchored" data-anchor-id="kontraste"><span class="header-section-number">10.9</span> Kontraste</h2>
+<p>Bei kategoriellen Eingangsgrössen haben wir in der <code>R</code>-Effektparameterisierung immer die Effekte relativ zur Referenzkategorie. Oft interessieren aber auch andere Effekte, die nicht direkt in der Default-Parameterisierung ersichtlich sind.</p>
+<p>Kontraste sind <strong>Linearkombinationen von Parametern</strong> mit der Bedingung, dass die Summe der Koeffizienten Null ist. Mit Konstanten <span class="math inline">\(a_1,a_2,\dots,a_t\)</span> und Parametern <span class="math inline">\(\theta_1,\theta_2,\dots,\theta_t\)</span> ist ein Kontrast</p>
+<p><span class="math display">\[
+  L=\sum_{i=1}^ta_i\theta_i, \qquad \mathrm{mit} \sum_{i=1}^ta_i=0.
+\]</span></p>
+<p><strong>Beispiel</strong>: So wäre für obiges Modell der Kontrast mit <span class="math inline">\(a_1=0,a_2=0,a_3=0,a_4=-1,a_5=1,a_6=0,a_7=0,a_8=0,a_9=0\)</span> der Abstand in <span class="math inline">\(\log\)</span>-Rate oder Rate Ratio zwischen <code>type[E]</code> und <code>type[D]</code>, also der Effekt <span class="math inline">\(\beta_5-\beta_4\)</span>. Der entsprechende Schätzwert ist 0.3948379.</p>
+<p>Kontraste werden konstruiert, um spezifische Forschungsfragen zu beantworten. Das ist implementiert in <code>emmeans()</code> aus dem gleichnamigen Packet (Estimated marginal means). Wir bekommen dann z.B. alle paarweisen Kontraste bezüglich <code>type</code> mit Punktschätzung, Standardfehler, Intervallschätzung, <span class="math inline">\(z\)</span>-Statistik und <span class="math inline">\(p\)</span>-Werten mit</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m.pois.large,revpairwise<span class="sc">~</span>type,<span class="at">infer=</span><span class="cn">TRUE</span>,<span class="at">offset=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+ type emmean     SE  df asymp.LCL asymp.UCL z.ratio p.value
+ A     -5.72 0.1620 Inf     -6.04     -5.40 -35.221 &lt;0.0001
+ B     -6.27 0.0758 Inf     -6.41     -6.12 -82.662 &lt;0.0001
+ C     -6.41 0.2940 Inf     -6.99     -5.83 -21.825 &lt;0.0001
+ D     -5.80 0.2490 Inf     -6.28     -5.31 -23.306 &lt;0.0001
+ E     -5.40 0.1880 Inf     -5.77     -5.03 -28.803 &lt;0.0001
+
+Results are averaged over the levels of: construction, operation 
+Results are given on the log (not the response) scale. 
+Confidence level used: 0.95 
+
+$contrasts
+ contrast estimate    SE  df asymp.LCL asymp.UCL z.ratio p.value
+ B - A     -0.5447 0.178 Inf   -1.0292   -0.0602  -3.067  0.0184
+ C - A     -0.6888 0.329 Inf   -1.5863    0.2088  -2.093  0.2229
+ C - B     -0.1441 0.299 Inf   -0.9587    0.6706  -0.482  0.9890
+ D - A     -0.0743 0.291 Inf   -0.8669    0.7183  -0.256  0.9991
+ D - B      0.4704 0.264 Inf   -0.2505    1.1913   1.780  0.3853
+ D - C      0.6145 0.384 Inf   -0.4323    1.6612   1.601  0.4965
+ E - A      0.3205 0.236 Inf   -0.3225    0.9636   1.360  0.6536
+ E - B      0.8652 0.199 Inf    0.3237    1.4068   4.358  0.0001
+ E - C      1.0093 0.339 Inf    0.0832    1.9354   2.973  0.0246
+ E - D      0.3948 0.307 Inf   -0.4420    1.2317   1.287  0.6993
+
+Results are averaged over the levels of: construction, operation 
+Results are given on the log (not the response) scale. 
+Confidence level used: 0.95 
+Conf-level adjustment: tukey method for comparing a family of 5 estimates 
+P value adjustment: tukey method for comparing a family of 5 estimates </code></pre>
+</div>
+</div>
+<p>Damit wir für die <code>emmeans</code>’s Raten haben statt Anzahlen, müssen wir <code>offset=0</code> schreiben. Wenn wir Rate Ratios wollen, setzen wir das Argument <code>type="response"</code></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m.pois.large,revpairwise<span class="sc">~</span>type,<span class="at">type=</span><span class="st">"response"</span>,<span class="at">infer=</span><span class="cn">TRUE</span>,<span class="at">offset=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+ type    rate       SE  df asymp.LCL asymp.UCL null z.ratio p.value
+ A    0.00328 0.000532 Inf  0.002382   0.00450    1 -35.221 &lt;0.0001
+ B    0.00190 0.000144 Inf  0.001637   0.00220    1 -82.662 &lt;0.0001
+ C    0.00164 0.000483 Inf  0.000925   0.00292    1 -21.825 &lt;0.0001
+ D    0.00304 0.000756 Inf  0.001868   0.00495    1 -23.306 &lt;0.0001
+ E    0.00451 0.000846 Inf  0.003125   0.00652    1 -28.803 &lt;0.0001
+
+Results are averaged over the levels of: construction, operation 
+Confidence level used: 0.95 
+Intervals are back-transformed from the log scale 
+Tests are performed on the log scale 
+
+$contrasts
+ contrast ratio    SE  df asymp.LCL asymp.UCL null z.ratio p.value
+ B / A    0.580 0.103 Inf     0.357     0.942    1  -3.067  0.0184
+ C / A    0.502 0.165 Inf     0.205     1.232    1  -2.093  0.2229
+ C / B    0.866 0.259 Inf     0.383     1.955    1  -0.482  0.9890
+ D / A    0.928 0.270 Inf     0.420     2.051    1  -0.256  0.9991
+ D / B    1.601 0.423 Inf     0.778     3.291    1   1.780  0.3853
+ D / C    1.849 0.709 Inf     0.649     5.265    1   1.601  0.4965
+ E / A    1.378 0.325 Inf     0.724     2.621    1   1.360  0.6536
+ E / B    2.376 0.472 Inf     1.382     4.083    1   4.358  0.0001
+ E / C    2.744 0.931 Inf     1.087     6.927    1   2.973  0.0246
+ E / D    1.484 0.455 Inf     0.643     3.427    1   1.287  0.6993
+
+Results are averaged over the levels of: construction, operation 
+Confidence level used: 0.95 
+Conf-level adjustment: tukey method for comparing a family of 5 estimates 
+Intervals are back-transformed from the log scale 
+P value adjustment: tukey method for comparing a family of 5 estimates 
+Tests are performed on the log scale </code></pre>
+</div>
+</div>
+<p>Hier wird auch automatisch für Multiples Testen korrigiert (mit der Tukey-Methode).</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>mycontrasts<span class="ot">&lt;-</span><span class="fu">emmeans</span>(m.pois.large,revpairwise<span class="sc">~</span>type,<span class="at">type=</span><span class="st">"response"</span>,<span class="at">infer=</span><span class="cn">TRUE</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mycontrasts<span class="sc">$</span>contrasts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_poisson_regression_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Hier sehen wir schön, welche Kontraste statistisch signifikant vom Nullwert verschieden sind, <span class="math inline">\(B-A\)</span>, <span class="math inline">\(E-C\)</span> und <span class="math inline">\(E-B\)</span>.</p>
+</section>
+<section id="vorhersage" class="level2" data-number="10.10">
+<h2 data-number="10.10" class="anchored" data-anchor-id="vorhersage"><span class="header-section-number">10.10</span> Vorhersage</h2>
+<p>Wie in den letzten Kapiteln können wir für spezifische Werte der Eingangsgrössen der Einheit <span class="math inline">\(i\)</span> und den geschätzten Parametern mit</p>
+<p><span class="math display">\[
+\log(\hat{\lambda}_i)=\hat{\beta}_0+\hat{\beta}_1x_{i1}+\dots+\hat{\beta}_mx_{im}
+\]</span></p>
+<p>und dann mit</p>
+<p><span class="math display">\[
+\hat{\lambda}_i=\exp(\hat{\beta}_0+\hat{\beta}_1x_{i1}+\dots+\hat{\beta}_mx_{im})
+\]</span></p>
+<p>die Ereignisrate für Einheit <span class="math inline">\(i\)</span> abschätzen. Das macht auch <code>R</code> für uns, mit <code>emmeans::emmip()</code></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmip</span>(m.pois.large,construction<span class="sc">~</span>type<span class="sc">|</span>operation,</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset=</span><span class="dv">0</span>,<span class="at">CIs=</span><span class="cn">TRUE</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">emmip</span>(m.pois.large,construction<span class="sc">~</span>type<span class="sc">|</span>operation,<span class="at">type=</span><span class="st">"response"</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset=</span><span class="dv">0</span>,<span class="at">CIs=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_poisson_regression_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_poisson_regression_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>oder tabellarisch</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmip</span>(m.pois.large,construction<span class="sc">~</span>type<span class="sc">|</span>operation,<span class="at">type=</span><span class="st">"response"</span>,</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset=</span><span class="dv">0</span>,<span class="at">CIs=</span><span class="cn">TRUE</span>,<span class="at">plotit=</span><span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> construction type operation     yvar       SE  df      LCL     UCL tvar   
+ 1960-64      A    1960-74   0.001657 0.000360 Inf 0.001082 0.00254 1960-64
+ 1965-69      A    1960-74   0.003323 0.000649 Inf 0.002266 0.00487 1965-69
+ 1970-74      A    1960-74   0.003752 0.000707 Inf 0.002594 0.00543 1970-74
+ 1975-79      A    1960-74   0.002585 0.000638 Inf 0.001593 0.00419 1975-79
+ 1960-64      A    1975-79   0.002432 0.000545 Inf 0.001568 0.00377 1960-64
+ 1965-69      A    1975-79   0.004877 0.000935 Inf 0.003349 0.00710 1965-69
+ 1970-74      A    1975-79   0.005508 0.000918 Inf 0.003974 0.00763 1970-74
+ 1975-79      A    1975-79   0.003795 0.000818 Inf 0.002488 0.00579 1975-79
+ 1960-64      B    1960-74   0.000961 0.000122 Inf 0.000749 0.00123 1960-64
+ 1965-69      B    1960-74   0.001927 0.000207 Inf 0.001561 0.00238 1965-69
+ 1970-74      B    1960-74   0.002176 0.000313 Inf 0.001641 0.00289 1970-74
+ 1975-79      B    1960-74   0.001500 0.000331 Inf 0.000973 0.00231 1975-79
+ 1960-64      B    1975-79   0.001411 0.000200 Inf 0.001069 0.00186 1960-64
+ 1965-69      B    1975-79   0.002829 0.000300 Inf 0.002297 0.00348 1965-69
+ 1970-74      B    1975-79   0.003195 0.000379 Inf 0.002532 0.00403 1970-74
+ 1975-79      B    1975-79   0.002201 0.000414 Inf 0.001523 0.00318 1975-79
+ 1960-64      C    1960-74   0.000832 0.000265 Inf 0.000446 0.00155 1960-64
+ 1965-69      C    1960-74   0.001669 0.000516 Inf 0.000910 0.00306 1965-69
+ 1970-74      C    1960-74   0.001884 0.000580 Inf 0.001031 0.00344 1970-74
+ 1975-79      C    1960-74   0.001298 0.000468 Inf 0.000641 0.00263 1975-79
+ 1960-64      C    1975-79   0.001221 0.000394 Inf 0.000649 0.00230 1960-64
+ 1965-69      C    1975-79   0.002449 0.000752 Inf 0.001342 0.00447 1965-69
+ 1970-74      C    1975-79   0.002766 0.000815 Inf 0.001553 0.00493 1970-74
+ 1975-79      C    1975-79   0.001906 0.000647 Inf 0.000980 0.00371 1975-79
+ 1960-64      D    1960-74   0.001538 0.000448 Inf 0.000869 0.00272 1960-64
+ 1965-69      D    1960-74   0.003085 0.000862 Inf 0.001783 0.00534 1965-69
+ 1970-74      D    1960-74   0.003483 0.000959 Inf 0.002031 0.00598 1970-74
+ 1975-79      D    1960-74   0.002400 0.000702 Inf 0.001353 0.00426 1975-79
+ 1960-64      D    1975-79   0.002258 0.000668 Inf 0.001265 0.00403 1960-64
+ 1965-69      D    1975-79   0.004528 0.001250 Inf 0.002634 0.00778 1965-69
+ 1970-74      D    1975-79   0.005113 0.001330 Inf 0.003070 0.00852 1970-74
+ 1975-79      D    1975-79   0.003523 0.000937 Inf 0.002093 0.00593 1975-79
+ 1960-64      E    1960-74   0.002283 0.000535 Inf 0.001442 0.00361 1960-64
+ 1965-69      E    1960-74   0.004578 0.000975 Inf 0.003016 0.00695 1965-69
+ 1970-74      E    1960-74   0.005170 0.001030 Inf 0.003493 0.00765 1970-74
+ 1975-79      E    1960-74   0.003562 0.000968 Inf 0.002092 0.00607 1975-79
+ 1960-64      E    1975-79   0.003351 0.000815 Inf 0.002080 0.00540 1960-64
+ 1965-69      E    1975-79   0.006720 0.001430 Inf 0.004425 0.01021 1965-69
+ 1970-74      E    1975-79   0.007589 0.001390 Inf 0.005294 0.01088 1970-74
+ 1975-79      E    1975-79   0.005229 0.001290 Inf 0.003226 0.00848 1975-79
+ xvar
+ A   
+ A   
+ A   
+ A   
+ A   
+ A   
+ A   
+ A   
+ B   
+ B   
+ B   
+ B   
+ B   
+ B   
+ B   
+ B   
+ C   
+ C   
+ C   
+ C   
+ C   
+ C   
+ C   
+ C   
+ D   
+ D   
+ D   
+ D   
+ D   
+ D   
+ D   
+ D   
+ E   
+ E   
+ E   
+ E   
+ E   
+ E   
+ E   
+ E   
+
+Confidence level used: 0.95 
+Intervals are back-transformed from the log scale </code></pre>
+</div>
+</div>
+</section>
+<section id="übergrosse-streuung" class="level2" data-number="10.11">
+<h2 data-number="10.11" class="anchored" data-anchor-id="übergrosse-streuung"><span class="header-section-number">10.11</span> Übergrosse Streuung*</h2>
+<p>Oft ist die Poisson-Annahme <span class="math inline">\(\mathrm{Var}(Y_i)=\phi \mu_i\)</span> mit <span class="math inline">\(\phi=1\)</span> nicht erfüllt.</p>
+<p>Die Residualdevianz (hier 38.9626202) folgt einer <span class="math inline">\(\chi^2\)</span>-Verteilung mit <span class="math inline">\(n-p\)</span> Freiheitsgraden (hier 25). Nun ist der Erwartungswert einer <span class="math inline">\(\chi^2\)</span>-Verteilung gerade gleich dem Freiheitsgrad. Der Erwartungswert dieser Verteilung ist also <span class="math inline">\(\mathbb{E}(\chi^2_{n-p})=n-p=25\)</span>. Wenn also die Residualdevianz deutlich grösser als die Freiheitsgrade ist, haben wir Overdispersion oder übergrosse Streuung. Das war in unserem Modell oben nicht der Fall.</p>
+<p>Man kann übergrosse Dispersion auch explizit testen, z.B. mit <code>AER::dispersionstest()</code>. Die Nullhypothese lautet “keine übergrosse Streuung”.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>AER<span class="sc">::</span><span class="fu">dispersiontest</span>(m.pois.large)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Overdispersion test
+
+data:  m.pois.large
+z = 0.93429, p-value = 0.1751
+alternative hypothesis: true dispersion is greater than 1
+sample estimates:
+dispersion 
+  1.317918 </code></pre>
+</div>
+</div>
+<p>Bei übergrosser Streuung wird manchmal ein <strong>Quasi-Poisson Modell</strong> angepasst. Der Skalenparameter <span class="math inline">\(\phi\)</span> wird dann aus den Daten geschätzt und dann werden die Standardfehler mit <span class="math inline">\(\sqrt{\phi}\)</span> multipliziert. Quasi-Modelle haben dann grössere Standardfehler, aber gleiche Punktschätzungen.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>m.pois.largeQuasi <span class="ot">&lt;-</span> <span class="fu">glm</span>(incidents <span class="sc">~</span> type <span class="sc">+</span>  construction <span class="sc">+</span> operation <span class="sc">+</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">offset</span>(<span class="fu">log</span>(service)), <span class="at">family =</span> quasipoisson,<span class="at">data =</span> df.sa)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.largeQuasi)<span class="sc">$</span>coef</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       Estimate Std. Error     t value     Pr(&gt;|t|)
+(Intercept)         -6.40287720  0.2834210 -22.5913965 3.752240e-18
+typeB               -0.54471145  0.2314212  -2.3537660 2.675092e-02
+typeC               -0.68876446  0.4287127  -1.6065873 1.207035e-01
+typeD               -0.07430914  0.3785819  -0.1962829 8.459756e-01
+typeE                0.32052881  0.3071728   1.0434804 3.067117e-01
+construction1965-69  0.69584550  0.1949944   3.5685415 1.486112e-03
+construction1970-74  0.81745541  0.2212896   3.6940519 1.082115e-03
+construction1975-79  0.44497065  0.3038986   1.4642077 1.555995e-01
+operation1975-79     0.38385913  0.1540873   2.4911803 1.972968e-02</code></pre>
+</div>
+</div>
+<p>Eine weitere Option für Zähldaten mit übergrosser Streuung ist das <strong>Negative-Binomial Modell</strong>, auf das wir hier nicht eingehen.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./09_logistic_regression.html" class="pagination-link" aria-label="Logistische Regression">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./11_survival.html" class="pagination-link" aria-label="Einführung in die Überlebensanalyse">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

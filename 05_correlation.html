@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Korrelation – Skript zum Modul Angewandte Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./06_simple_linear-regression.html" rel="next">
+<link href="./04_compare_means.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05_correlation.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skript zum Modul Angewandte Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Einführung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#einleitung" id="toc-einleitung" class="nav-link active" data-scroll-target="#einleitung"><span class="header-section-number">5.1</span> Einleitung</a></li>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">5.2</span> Lernziele</a></li>
+  <li><a href="#korrelation" id="toc-korrelation" class="nav-link" data-scroll-target="#korrelation"><span class="header-section-number">5.3</span> Korrelation</a>
+  <ul class="collapse">
+  <li><a href="#eigenschaften-von-zusammenhängen" id="toc-eigenschaften-von-zusammenhängen" class="nav-link" data-scroll-target="#eigenschaften-von-zusammenhängen"><span class="header-section-number">5.3.1</span> Eigenschaften von Zusammenhängen</a></li>
+  <li><a href="#pearson-korrelationskoeffizient-rho" id="toc-pearson-korrelationskoeffizient-rho" class="nav-link" data-scroll-target="#pearson-korrelationskoeffizient-rho"><span class="header-section-number">5.3.2</span> Pearson-Korrelationskoeffizient <span class="math inline">\(\rho\)</span></a></li>
+  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition"><span class="header-section-number">5.3.3</span> Definition</a></li>
+  <li><a href="#empirischer-pearson-korrelationskoeffizient-r" id="toc-empirischer-pearson-korrelationskoeffizient-r" class="nav-link" data-scroll-target="#empirischer-pearson-korrelationskoeffizient-r"><span class="header-section-number">5.3.4</span> Empirischer Pearson-Korrelationskoeffizient <span class="math inline">\(r\)</span></a></li>
+  <li><a href="#hypothesentest-für-rho" id="toc-hypothesentest-für-rho" class="nav-link" data-scroll-target="#hypothesentest-für-rho"><span class="header-section-number">5.3.5</span> Hypothesentest für <span class="math inline">\(\rho\)</span></a></li>
+  <li><a href="#interpretation-des-beispiels-für-laufgeschwindigkeit-und-kalorienverbrauch" id="toc-interpretation-des-beispiels-für-laufgeschwindigkeit-und-kalorienverbrauch" class="nav-link" data-scroll-target="#interpretation-des-beispiels-für-laufgeschwindigkeit-und-kalorienverbrauch"><span class="header-section-number">5.3.6</span> Interpretation des Beispiels für Laufgeschwindigkeit und Kalorienverbrauch</a></li>
+  <li><a href="#datenmuster-und-r" id="toc-datenmuster-und-r" class="nav-link" data-scroll-target="#datenmuster-und-r"><span class="header-section-number">5.3.7</span> Datenmuster und <span class="math inline">\(r\)</span></a></li>
+  <li><a href="#annahmen-bei-inferenz" id="toc-annahmen-bei-inferenz" class="nav-link" data-scroll-target="#annahmen-bei-inferenz"><span class="header-section-number">5.3.8</span> Annahmen bei Inferenz*</a></li>
+  <li><a href="#rangkorrelationskoeffizient-nach-spearman" id="toc-rangkorrelationskoeffizient-nach-spearman" class="nav-link" data-scroll-target="#rangkorrelationskoeffizient-nach-spearman"><span class="header-section-number">5.3.9</span> Rangkorrelationskoeffizient nach Spearman</a></li>
+  <li><a href="#scheinkorrelationen" id="toc-scheinkorrelationen" class="nav-link" data-scroll-target="#scheinkorrelationen"><span class="header-section-number">5.3.10</span> Scheinkorrelationen</a></li>
+  </ul></li>
+  <li><a href="#zusammenfassung" id="toc-zusammenfassung" class="nav-link" data-scroll-target="#zusammenfassung"><span class="header-section-number">5.4</span> Zusammenfassung</a></li>
+  <li><a href="#anhang-hilfreiche-r-codes-für-korrelationen" id="toc-anhang-hilfreiche-r-codes-für-korrelationen" class="nav-link" data-scroll-target="#anhang-hilfreiche-r-codes-für-korrelationen"><span class="header-section-number">5.5</span> Anhang: hilfreiche <code>R</code> Codes für Korrelationen</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="einleitung" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="einleitung"><span class="header-section-number">5.1</span> Einleitung</h2>
+<p>In diesem Kapitel beschäftigen wir uns mit Zusammenhängen zwischen Variablen. Beispiele für Zusammenhänge von Variablen aus dem Alltag sind:</p>
+<ul>
+<li>Je länger jemand joggt, desto grösser ist sein Kalorienverbrauch.</li>
+<li>Je weniger Geld ich für die Werbung für meine Firma ausgebe, desto weniger Kunden habe ich.</li>
+<li>Je höher die Aussentemperatur ist, desto mehr Eis verkaufen die Eisstände.</li>
+<li>Je öfter es regnet, desto teurer werden die Regenschirmpreise.</li>
+<li>Je mehr Zeit jemand ins Krafttraining investiert, desto stärker wird er.</li>
+<li>Je schneller ein Zug fährt, desto kürzer wird die Reisezeit.</li>
+<li>Je länger der Winter dauert, desto höher werden die Heizkosten.</li>
+</ul>
+<p>Den Zusammenhang zwischen zwei Variablen bezeichnen wir als <strong>Korrelation</strong>. Wenn man die Beziehung zwischen zwei Variablen kennt, können wir den Wert der einen Variablen verwenden um den Wert der anderen Variablen vorherzusagen.</p>
+</section>
+<section id="lernziele" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="lernziele"><span class="header-section-number">5.2</span> Lernziele</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Beschreibe die Eigenschaften des Zusammenhangs von zwei Variablen mit folgenden Begriffen
+<ol type="a">
+<li>Richtung: Ein <em>positiver Zusammenhang</em> besteht dann, wenn sich bei einer Erhöhung von <span class="math inline">\(X\)</span> auch <span class="math inline">\(Y\)</span> erhöht; wenn sich bei einer Erniedrigung von <span class="math inline">\(X\)</span> der Wert von <span class="math inline">\(Y\)</span> erhöht, sprechen wir von einem <em>negativen Zusammenhang</em>.</li>
+<li>Form: Ein Zusammenhang ist <em>linear</em> oder <em>nicht-linear</em></li>
+<li>Stärke: Ein Zusammenhang ist <em>stark</em>, wenn die Streuung der Daten um die zugrundeliegende Beziehung gering ist und <em>schwach</em>, wenn die Streuung der Daten gross ist.</li>
+</ol></li>
+<li>Definiere eine Korrelation nach Pearson <span class="math inline">\(\rho\)</span> (bzw. <span class="math inline">\(r\)</span> für den empirischen Wert) als <em>lineare</em> Beziehung zwischen zwei quantitativen Variablen.</li>
+<li>Definiere eine Rangkorrelation nach Spearman <span class="math inline">\(\rho_s\)</span> (bzw. <span class="math inline">\(r_s\)</span> für den empirischen Wert) als <em>monotone</em> Beziehung zwischen zwei quantitativen oder qualitativ-ordinalen Variablen.</li>
+<li>Beachte, dass der Korrelationskoeffizient folgende Eigenschaften aufweist:
+<ol type="a">
+<li>der (absolute) Wert des Korrelationskoeffizienten <span class="math inline">\(r\)</span> misst die Stärke der linearen Beziehung zwischen zwei quantitativen Variablen.</li>
+<li>das Vorzeichen (+ oder -) des Korrelationskoeffizienten <span class="math inline">\(r\)</span> oder <span class="math inline">\(r_s\)</span> beschreibt die Richtung des Zusammenhangs.</li>
+<li>der Korrelationskoeffizient <span class="math inline">\(r\)</span> (oder <span class="math inline">\(r_s\)</span>) liegt immer zwischen -1 und 1. -1 bedeutet perfekter negativer (linearer) Zusammenhang, + 1 bedeutet perfekter positiver (linearer) Zusammenhang und 0 bedeutet kein (linearer) Zusammenhang.</li>
+<li>der Korrelationskoeffizient <span class="math inline">\(r\)</span> oder <span class="math inline">\(r_s\)</span> ist dimensionslos.</li>
+<li>der Korrelationskoeffizient <span class="math inline">\(r\)</span> oder <span class="math inline">\(r_s\)</span> von <span class="math inline">\(X\)</span> mit <span class="math inline">\(Y\)</span> ist derselbe wie von <span class="math inline">\(Y\)</span> mit <span class="math inline">\(X\)</span>.</li>
+<li>der Korrelationskoeffizient nach Pearson <span class="math inline">\(r\)</span> ist empfindlich für Ausreisser.</li>
+<li>der Rangkorrelationskoeffizient nach Spearman <span class="math inline">\(r_s\)</span> ist robust gegen Ausreisser.</li>
+</ol></li>
+<li>Korrelation bedeutet nicht, dass ein ursächlicher Zusammenhang besteht! <em>Correlation does not imply causation!</em></li>
+<li>Berechne den Korrelationskoeffizient <span class="math inline">\(r\)</span> oder <span class="math inline">\(r_s\)</span> sowie die dazugehörigen inferenzstatistischen Werte (P-Wert, Konfidenzintervalle) mit <code>R</code> und interpretiere die Ouputs korrekt.</li>
+<li>Erstelle Streudiagramme in <code>R</code>.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="korrelation" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="korrelation"><span class="header-section-number">5.3</span> Korrelation</h2>
+<p>Eine Korrelation beschreibt eine Beziehung zwischen zwei oder mehreren quantitativen Merkmalen (Variablen). Dabei muss diese Beziehung nicht kausal sein, d.h. die Variablen müssen sich nicht gegenseitig beeinflussen und der Zusammenhang kann völlig zufällig sein.</p>
+<p>Beispiel: Gibt es einen Zusammenhang zwischen der Laufgeschwindigkeit und dem Kalorienverbrauch pro Stunde? Wir verwenden die Stichprobendaten von <span class="math inline">\(n\)</span> = 11 durchschnittlich 59 kg schweren Läuferinnen.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-running" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-running-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;5.1: 11 Läuferinnen
+</figcaption>
+<div aria-describedby="tbl-running-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="lightable-classic cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">km/h</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">kCal/h</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8.0</td>
+<td style="text-align: center;">472</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8.4</td>
+<td style="text-align: center;">531</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9.7</td>
+<td style="text-align: center;">590</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10.8</td>
+<td style="text-align: center;">649</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">11.3</td>
+<td style="text-align: center;">679</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12.1</td>
+<td style="text-align: center;">738</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12.9</td>
+<td style="text-align: center;">797</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">13.9</td>
+<td style="text-align: center;">826</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">14.5</td>
+<td style="text-align: center;">885</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">16.1</td>
+<td style="text-align: center;">944</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">17.5</td>
+<td style="text-align: center;">1062</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Der <a href="#tbl-running" class="quarto-xref">Tabelle&nbsp;<span>5.1</span></a> entnehmen wir, dass mit zunehmender Laufgeschwindigkeit auch der Kalorienverbrauch zunimmt. Zusammenhänge zwischen zwei quantitativen Variablen können gut mit Hilfe eines <strong>Streudiagramms</strong> (engl. scatterplot) visualisiert werden.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-running-scatter" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-running-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-plot-running-scatter-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-running-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.1: Kalorienverbrauch nach Laufgeschwindigkeit, n = 11
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Jeder Punkt in <a href="#fig-plot-running-scatter" class="quarto-xref">Abbildung&nbsp;<span>5.1</span></a> repräsentiert eine Kombination von Geschwindigkeit (x-Achse) und Kalorienverbrauch (y-Achse). Wenn wir die Punkte visuell miteinander verbinden, entsteht eine - nicht ganz perfekte - Gerade. In diesem Fall sprechen wir von einem <em>linearen</em> Zusammenhang.</p>
+<section id="eigenschaften-von-zusammenhängen" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="eigenschaften-von-zusammenhängen"><span class="header-section-number">5.3.1</span> Eigenschaften von Zusammenhängen</h3>
+<p>Die folgenden acht Punktdiagramme zeigen verschiedene Zusammenhänge zwischen der <span class="math inline">\(X\)</span>- und der <span class="math inline">\(Y\)</span>-Variablen.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-different-relations" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-different-relations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-plot-different-relations-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-different-relations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.2: Zusammenhänge identifizieren
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Interpretation:</p>
+<ol type="a">
+<li>Starker nicht-linearer Zusammenhang zwischen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span>.</li>
+<li>Perfekter positiver linearer Zusammenhang zwischen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span>.</li>
+<li>Starker positiver linearer Zusammenhang zwischen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span>:
+<ul>
+<li>Wenn <span class="math inline">\(X\)</span> grösser wird, wird auch <span class="math inline">\(Y\)</span> grösser: positiver Zusammenhang.</li>
+<li>Die Punkte liegen etwa parallel zu einer gedachten Geraden: linearer Zusammenhang.</li>
+<li>Die Punkte streuen wenig um eine gedachte Linie: starker Zusammenhang.</li>
+</ul></li>
+<li>Schwacher positiver linearer Zusammenhang, die Punkte streuen stark.</li>
+<li>Moderater Zusammenhang zwischen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span>, der Zusammenhang ist nicht-linear.</li>
+<li>Perfekter negativer linearer Zusammenhang.</li>
+<li>Starker negativer linearer Zusammenhang:
+<ul>
+<li>Wenn <span class="math inline">\(X\)</span> grösser wird, wird <span class="math inline">\(Y\)</span> kleiner: negativer Zusammenhang</li>
+<li>Die Punkte liegen nahe bei einer gedachten Gerade: starker linearer Zusammenhang.</li>
+</ul></li>
+<li>Kein Zusammenhang zwischen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span>.</li>
+</ol>
+</section>
+<section id="pearson-korrelationskoeffizient-rho" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="pearson-korrelationskoeffizient-rho"><span class="header-section-number">5.3.2</span> Pearson-Korrelationskoeffizient <span class="math inline">\(\rho\)</span></h3>
+<p>Der <strong>Korrelationskoeffizient nach Pearson</strong> <span class="math inline">\(\rho\)</span> ist ein Mass dafür, wie stark der lineare Zusammenhang zwischen zwei Variablen ist. Stehen zwei Variablen miteinander in Zusammenhang, kann man Aussagen darüber treffen, wie sich die Werte der einen Variable verhalten, wenn die Werte der anderen Variable ansteigen oder abfallen. Wir verwenden für den wahren Pearson-Korrelationskoeffizienten (den Parameter) den griechischen Buchstaben <span class="math inline">\(\rho\)</span> und für den empirischen Pearson-Korrelationskoeffizienten (den Schätzwert) den römischen Buchstaben <span class="math inline">\(r\)</span>.</p>
+<p><strong>Interpretation von</strong> <span class="math inline">\(\rho\)</span></p>
+<ul>
+<li>Der Korrelationskoeffizient <span class="math inline">\(\rho\)</span> kann Werte zwischen -1 und 1 annehmen. Je näher <span class="math inline">\(\rho\)</span> bei 1 (bzw. bei -1) liegt, desto stärker ist der Zusammenhang der Variablen. Bei <span class="math inline">\(\rho = 1\)</span> liegen alle Punkte der Daten auf einer steigenden Geraden; entsprechend bei -1 auf einer fallenden Geraden.</li>
+<li><span class="math inline">\(\rho &gt; 0\)</span>: Ist der Korrelationskoeffizient grösser als null, liegt eine positive Korrelation vor: Je grösser die Werte der einen Variablen, desto grösser sind die Werte der anderen Variablen.</li>
+<li><span class="math inline">\(\rho &lt; 0\)</span>: Ist der Korrelationskoeffizient kleiner als null, liegt eine negative Korrelation vor: Je grösser die Werte der einen Variablen, desto kleiner sind die Werte der anderen Variablen.</li>
+<li><span class="math inline">\(\rho \approx 0\)</span>: Liegt der Korrelationskoeffizient nahe 0, gibt es keinen linearen Zusammenhang zwischen den Variablen. Es ist keine Aussage darüber möglich, wie sich die Werte der einen Variablen verändern, wenn die Werte der anderen Variablen steigen oder sinken.</li>
+<li>Beachte, dass der Korrelationskoeffizient nach Pearson nur lineare Zusammenhänge abbildet. Es kann sein, dass die Variablen zusammenhängen, nur eben nicht linear, z.B. quadratisch oder exponentiell. Ein Korrelationskoeffizient nahe bei 0 bedeutet daher nicht, dass überhaupt kein Zusammenhang besteht. Es bedeutet nur, dass kein linearer Zusammenhang besteht.</li>
+</ul>
+<p>Als Faustregel für die Beurteilung der Stärke einer Korrelation kann man sich an folgender Tabelle orientieren:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Korrelation</th>
+<th style="text-align: center;">Stärke</th>
+<th style="text-align: center;">Richtung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">-1.0 to -0.8</td>
+<td style="text-align: center;">stark</td>
+<td style="text-align: center;">Negativ</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">-0.8 to -0.5</td>
+<td style="text-align: center;">moderat</td>
+<td style="text-align: center;">Negativ</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">-0.5 to 0</td>
+<td style="text-align: center;">schwach</td>
+<td style="text-align: center;">Negativ</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0 to 0.5</td>
+<td style="text-align: center;">schwach</td>
+<td style="text-align: center;">Positiv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.5 to 0.8</td>
+<td style="text-align: center;">moderat</td>
+<td style="text-align: center;">Positiv</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.8 to 1.0</td>
+<td style="text-align: center;">stark</td>
+<td style="text-align: center;">Positiv</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="definition" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="definition"><span class="header-section-number">5.3.3</span> Definition</h3>
+<p>Die (theoretische) Person-Korrelation ist definiert als</p>
+<p><span class="math display">\[
+\rho_{X,Y}=\frac{Cov(X,Y)}{\sigma_X \sigma_Y}
+\]</span></p>
+<p>mit der <strong>Kovarianz</strong> <span class="math display">\[
+Cov(X,Y)=E((X-E(X))(Y-E(Y)))
+\]</span> als dem Erwartungswert des Produkts der Abweichungen von <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span> von ihren jeweiligen Mittelwerten. Die Kovarianz wird dann geteilt durch das Produkt der beiden Standardabweichungen von <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span>.</p>
+<p>Die Korrelation ist also eine <strong>standardisierte Kovarianz</strong>. Eine Kovarianz von <span class="math inline">\(X\)</span> mit sich selber ist <span class="math inline">\(Cov(X,X)=E((X-E(X))^2)\)</span>. Das ist ein mittlerer quadrierter Abstand und damit die Varianz von <span class="math inline">\(X\)</span>. Während die Varianz die Streuung einer einzelnen Zufallsvariablen beschreibt, misst die Kovarianz, wie zwei Zufallsvariablen gemeinsam vom Erwartungswert abweichen.</p>
+</section>
+<section id="empirischer-pearson-korrelationskoeffizient-r" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="empirischer-pearson-korrelationskoeffizient-r"><span class="header-section-number">5.3.4</span> Empirischer Pearson-Korrelationskoeffizient <span class="math inline">\(r\)</span></h3>
+<p>Der <strong>empirische Korrelationskoeffizient</strong> nach Pearson wird berechnet nach der Formel <span class="math display">\[
+r = \frac{1}{n-1}\sum_{i=1}^n \frac{(x_i-\bar{x})(y_i-\bar{y})}{s_x s_y}
+\]</span></p>
+<p><span class="math inline">\((x_1, y_1), (x_2, y_2),..., (x_n, y_n)\)</span> sind die <span class="math inline">\(n\)</span> Datenpaare für <span class="math inline">\(x\)</span> und <span class="math inline">\(y\)</span> und <span class="math inline">\(s_x\)</span> und <span class="math inline">\(s_y\)</span> sind die empirischen Standardabweichungen von <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span>.</p>
+<p>Wir ersparen uns die Berechnung von Korrelationskoeffizienten von Hand, das übernimmt die Statistiksoftware.</p>
+<p>Die Funktion in <code>R</code> für die Berechnung des Korrelationskoeffizienten ist <code>cor()</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>) <span class="co"># x definieren</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="fl">0.5</span>) <span class="co"># y definieren</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y) <span class="co"># Basis-Funktion für ein Scatterplot</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y) <span class="co"># Korrelationskoeffizient nach Pearson berechnen</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="hypothesentest-für-rho" class="level3" data-number="5.3.5">
+<h3 data-number="5.3.5" class="anchored" data-anchor-id="hypothesentest-für-rho"><span class="header-section-number">5.3.5</span> Hypothesentest für <span class="math inline">\(\rho\)</span></h3>
+<p>Auch für den Korrelationskoeffizienten exisitiert ein Hypothesentest. Wie bei jedem Hypothesentest wird auch hier aus Stichprobendaten auf die Population, aus der die Stichprobe stammt, geschlossen. Für den Korrelationskoeffizienten nach Pearson <span class="math inline">\(\rho\)</span> lauten die Hypothesen:</p>
+<p><span class="math inline">\(H_0: \rho = 0\)</span> Es besteht kein linearer Zusammenhang zwischen zwei Variablen.<br>
+<span class="math inline">\(H_A: \rho \neq 0\)</span> Es besteht ein linearer Zusammenhnag zwischen zwei Variablen.</p>
+<p>Die Funktion in <code>R</code> für diesen Hypothesentest ist</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(x, y) <span class="co"># Hypothesentest für r</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="interpretation-des-beispiels-für-laufgeschwindigkeit-und-kalorienverbrauch" class="level3" data-number="5.3.6">
+<h3 data-number="5.3.6" class="anchored" data-anchor-id="interpretation-des-beispiels-für-laufgeschwindigkeit-und-kalorienverbrauch"><span class="header-section-number">5.3.6</span> Interpretation des Beispiels für Laufgeschwindigkeit und Kalorienverbrauch</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-running-pearson" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-running-pearson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-plot-running-pearson-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-running-pearson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.3: Zusammenhang von Kalorienverbrauch und Laufgeschwindigkeit
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir sehen, dass eine starke positive lineare Korrelation zwischen der Laufgeschwindigkeit und dem Kalorienverbrauch besteht. Der Korrelationskoeffizient nach Pearson <span class="math inline">\(r\)</span> ist 0.997.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's product-moment correlation
+
+data:  running$kmh and running$kg59
+t = 37.892, df = 9, p-value = 3.082e-11
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.9875851 0.9992189
+sample estimates:
+      cor 
+0.9968805 </code></pre>
+</div>
+</div>
+<p>Der Hypothesentest in <code>R</code>ergibt einen P-Wert von <span class="math inline">\(3.082 \times 10^{-11}\)</span>. Dies ist ein extrem kleiner P-Wert, der unter dem üblichen Signifikanzniveau von <span class="math inline">\(\alpha = 0.05\)</span> liegt. Wir schliessen daraus, dass wir die Nullhypothese zugunsten der Alternativhypothese verwerfen können und dass ein statistisch signifikanter Zusammenhang zwischen Laufgeschwindigkeit und Kalorienverbrauch besteht.</p>
+<p><em>Die Stichprobendaten liefern Evidenz dafür, dass ein nahezu perfekter positiver linearer Zusammenhang zwischen Laufgeschwindigkeit und Kalorienverbrauch in der Population (59kg schwere Frauen) besteht,</em> <span class="math inline">\(\hat{\rho}\)</span> = 0.997 [0.988; 0.999], p &lt; 0.001.</p>
+</section>
+<section id="datenmuster-und-r" class="level3" data-number="5.3.7">
+<h3 data-number="5.3.7" class="anchored" data-anchor-id="datenmuster-und-r"><span class="header-section-number">5.3.7</span> Datenmuster und <span class="math inline">\(r\)</span></h3>
+<p>Korrelationskoeffizienten sind unter Forscher:innen beliebt, weil sie den Zusammenhang zwischen zwei Variablen in einer einzigen Zahl zusammenfassen. Allerdings kann ein bestimmter Korrelationskoeffizient eine Vielzahl von Mustern zwischen zwei Variablen repräsentieren und ohne zusätzliche Information - idealerweise in Form eines Streudiagramms - wissen weder die Forscher:innen noch die Leser:innen, um welche Art von Zusammenhang es sich handelt.</p>
+<p>Die folgenden 16 Streudiagramme zeigen, was sich alles hinter einem Korrelationskoeffizienten von <span class="math inline">\(r = 0.8\)</span> (n = 50) verbergen kann <span class="citation" data-cites="vanhove2016">(<a href="references.html#ref-vanhove2016" role="doc-biblioref">Vanhove 2016</a>)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-different-0.8" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-different-0.8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-plot-different-0.8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-different-0.8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.4: 16 Varianten von Zusammenhängen, alle <span class="math inline">\(r\)</span> = 0.8
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Ohne im einzelnen auf die Streudiagramme in <a href="#fig-plot-different-0.8" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a> einzugehen, ist leicht zu erkennen, dass ganz unterschiedliche Muster des Zusammenhangs zwischen zwei Variablen mit dem gleichen Korrelationskoeffizienten <span class="math inline">\(r\)</span> vorhanden sein können.</p>
+<p>Betrachten wir das Beispiel 12 aus der <a href="#fig-plot-different-0.8" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a> etwas genauer:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-cor-outlier-fig" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cor-outlier-fig-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-cor-outlier-fig-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cor-outlier-fig-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.5: Einfluss eines Ausreissers auf <span class="math inline">\(r\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir sehen links zwischen <span class="math inline">\(x = -2.3\)</span> und <span class="math inline">\(x = 1.8\)</span> eine Punktewolke, die einen starken positiven linearen Zusammenhang zwischen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span> zeigt. Bei <span class="math inline">\(x = 10, y = 0.62\)</span> befindet sich ein Ausreisser. Der Korrelationskoeffizient für alle Daten beträgt <span class="math inline">\(r = 0.8\)</span>. Wenn wir den Ausreisser entfernen, erhöht sich der Korrelationskoeffizient auf <span class="math inline">\(r = 0.925\)</span>, was vermutlich eher dem wahren Zusammenhang zwischen den Variablen entspricht. Unsere Schlussfolgerung: <em>Der Korrelationskoeffizient nach Pearson</em> <span class="math inline">\(r\)</span> ist empfindlich für Extremwerte!</p>
+</section>
+<section id="annahmen-bei-inferenz" class="level3" data-number="5.3.8">
+<h3 data-number="5.3.8" class="anchored" data-anchor-id="annahmen-bei-inferenz"><span class="header-section-number">5.3.8</span> Annahmen bei Inferenz*</h3>
+<p>Wenn die empirische Korrelation <span class="math inline">\(\hat{\rho}\)</span> als Schätzer für <span class="math inline">\(\rho\)</span> verwendet wird, müssen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span> <strong>gemeinsam normalverteilt</strong> sein. Diese Verteilung hat zusätzlich zu <span class="math inline">\(\mu_x,\mu_y,\sigma^2_x\)</span> und <span class="math inline">\(\sigma^2_y\)</span> noch einen weiteren Parameter <span class="math inline">\(\rho\)</span> (eine Zahl zwischen -1 und 1), der gerade die lineare Korrelation darstellt.</p>
+<p>Dichten von bivariaten Normalverteilungen sind in folgender Abbildung dargestellt für <span class="math inline">\(\rho=0, \rho=0.5\)</span> und <span class="math inline">\(\rho=0.8\)</span>:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="05_correlation_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rangkorrelationskoeffizient-nach-spearman" class="level3" data-number="5.3.9">
+<h3 data-number="5.3.9" class="anchored" data-anchor-id="rangkorrelationskoeffizient-nach-spearman"><span class="header-section-number">5.3.9</span> Rangkorrelationskoeffizient nach Spearman</h3>
+<p>Der Rangkorrelationskoeffizient nach Spearman ist ähnlich wie der Korrelationskoeffizient nach Pearson eine Methode, um Zusammenhänge zwischen Variablen zu quantifizieren. Häufig wird für den theoretischen Rangkorrelationskoeffizient nach Spearman auch die Notation <span class="math inline">\(\rho_s\)</span> verwendet, für die empirische Korrelation verwenden wir <span class="math inline">\(r_s\)</span>. Beim Rangkorrelationskoeffizient nach Spearman handelt es sich um ein <em>nicht-parametrisches</em> Verfahren, bei dem die Korrelation anhand zuvor vergebener Ränge berechnet wird. Der Vorteil des Rangkorrelationskoeffizienten nach Spearman ist, dass er <em>robust</em> gegen Ausreisser ist und - in gewissem Umfang - auch nicht-lineare Zusammenhänge beschreiben kann. Die Interpretation von <span class="math inline">\(r_s\)</span> ist genau gleich, wie für <span class="math inline">\(r\)</span>.</p>
+<p>Der Rangkorrelationskoeffizient nach Spearman quantifiziert den <em>monotonen</em> Zusammenhang der Variablen und nicht den linearen Zusammenhang. Monotoner Zusammenhang bedeutet, wenn <span class="math inline">\(X\)</span> steigt, steigt <span class="math inline">\(Y\)</span> in der Tendenz auch bzw. wenn <span class="math inline">\(X\)</span> steigt, sinkt <span class="math inline">\(Y\)</span> in der Tendenz.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-spearman" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-spearman-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-plot-spearman-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-spearman-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.6: Zwei perfekte monotone Zusammenhänge
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Funktion in <code>R</code> für die Berechnung von <span class="math inline">\(r_s\)</span> am Beispiel des rechten Scatterplots in <a href="#fig-plot-spearman" class="quarto-xref">Abbildung&nbsp;<span>5.6</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y, <span class="at">method =</span> <span class="st">"spearman"</span>) <span class="co"># Rangkorrelationskoeffizient nach Spearman</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y, <span class="at">method =</span> <span class="st">"pearson"</span>) <span class="co"># Korrelationskoeffizient nach Pearson</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Die Berechnung von <span class="math inline">\(r_s\)</span> für das Beispiel 12 in <a href="#fig-plot-different-0.8" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a> (alle Daten inkl. Ausreisser) ergibt <span class="math inline">\(r_s = 0.938\)</span>. Der Wert von <span class="math inline">\(r_s\)</span> liegt nahe am Wert für <span class="math inline">\(r = 0.925\)</span> für die Daten ohne den Ausreisser.</p>
+</section>
+<section id="scheinkorrelationen" class="level3" data-number="5.3.10">
+<h3 data-number="5.3.10" class="anchored" data-anchor-id="scheinkorrelationen"><span class="header-section-number">5.3.10</span> Scheinkorrelationen</h3>
+<p>Das folgende Beispiel soll zeigen, dass bei der Interpretation von Korrelationen Vorsicht geboten ist.</p>
+<p>Frage: Besteht ein Zusammenhang zwischen der Schuhgrösse und dem Einkommen?</p>
+<p>Wir überprüfen diese Frage anhand der Angaben einer Stichprobe von <span class="math inline">\(n\)</span> = 1000. Die Proband:innen wurden nach ihrer Schuhgrösse (nur ganze Grössen) und ihrem monatlichen Bruttoeinkommen befragt <span class="citation" data-cites="burak2016">(<a href="references.html#ref-burak2016" role="doc-biblioref">Burak 2016</a>)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-shoe-size-salary" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-shoe-size-salary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-plot-shoe-size-salary-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-shoe-size-salary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.7: Einkommen nach Schuhgrösse, n = 1000
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Analyse ergibt einen moderaten positiven linearen Zusammenhang zwischen der Schuhgrösse und dem monatlichen Einkommen; mit zunehmender Schuhgrösse nimmt auch das monatliche Bruttoeinkommen zu (<span class="math inline">\(r\)</span> = 0.609, p &lt; 0.001).</p>
+<p>Aber ist diese Schlussfolgerung auch korrekt oder haben wir etwas übersehen?</p>
+<p>Die Analyse der Daten nach Geschlecht getrennt ergibt folgendes Resultat:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-shoe-size-sex" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-shoe-size-sex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="05_correlation_files/figure-html/fig-plot-shoe-size-sex-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-shoe-size-sex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.8: Einkommen nach Schuhgrösse
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wenn wir die Daten nach Geschlecht getrennt analysieren, verschwindet der Effekt vollständig. Wir haben keine Evidenz mehr dafür, dass ein Zusammenhang zwischen Schuhgrösse und Einkommen besteht (Frauen <span class="math inline">\(r\)</span> = -0.061, p = 0.179; Männer <span class="math inline">\(r\)</span> = -0.009, p = 0.839).</p>
+<p>Wie können wir dieses Ergebnis interpretieren? Männer haben typischerweise eine grössere Schuhgrösse als Frauen. Zudem haben Männer im Durchschnitt - nach wie vor - ein höheres Einkommen als Frauen. Es ist demnach das Geschlecht, das einen Einfluss auf das Einkommen hat, denn wir wissen intuitiv, dass die Schuhgrösse definitiv nichts mit dem Einkommen zu tun haben kann. In diesem Fall sprechen wir von einer <em>Scheinkorrelation</em>, die einen Zusammenhang feststellt, wo - zumindest kausal - keiner vorhanden ist. Das Geschlecht ist im vorliegenden Fall ein <em>Störfaktor</em> (engl. confounder), der sowohl das Einkommen als auch die Schuhgrösse bestimmt.</p>
+<p>Unter Confounding versteht man eine systematische Verzerrung, hervorgerufen durch einen oder mehrere Störfaktoren, die mit beiden Variablen zusammenhängen und bei der Untersuchung nicht berücksichtigt werden.</p>
+<p>Weitere Beispiele für Scheinkorrelationen findet man in diesem <a href="https://youtu.be/gxSUqr3ouYA">Video</a> unter diesem <a href="https://www.tylervigen.com/spurious-correlations">Link</a>.</p>
+</section>
+</section>
+<section id="zusammenfassung" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="zusammenfassung"><span class="header-section-number">5.4</span> Zusammenfassung</h2>
+<ul>
+<li><strong>Pearson’s Korrelationskoeffizient</strong> ist für viele Dinge nützlich, hat aber den Nachteil, dass er nur die Stärke einer <em>linearen</em> Korrelation zwischen zwei Variablen messen kann. Mit anderen Worten misst er, in welchem Mass die Daten auf eine perfekte gerade Linie fallen. Er ist empfindlich gegenüber Ausreissern.</li>
+<li>Für Variablen, deren Zusammenhang nicht linear ist (was man am besten an einem Streudiagramm beurteilt), eignet sich der <strong>Rangkorrelationskoeffizient nach Spearman</strong> besser. Er ist in der Lage, nicht-lineare Zusammenhänge zu messen und er ist robust gegen Ausreisser.</li>
+<li>Aus den 16 Grafiken in Abbildung <a href="#fig-plot-different-0.8" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a> haben wir gelernt, dass ein Zusammenhang zwischen zwei Variablen immer zuerst visuell am Streudiagramm und erst in zweiter Linie anhand des Korrelationskoeffizienten beurteilt werden muss!</li>
+</ul>
+</section>
+<section id="anhang-hilfreiche-r-codes-für-korrelationen" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="anhang-hilfreiche-r-codes-für-korrelationen"><span class="header-section-number">5.5</span> Anhang: hilfreiche <code>R</code> Codes für Korrelationen</h2>
+<p>Pearsons’s Korrelationskoeffizient</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulierte Daten</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.5</span>, <span class="sc">-</span>.<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="fl">4.5</span>, <span class="dv">6</span>, <span class="fl">5.5</span>, <span class="dv">6</span>, <span class="fl">6.5</span>, <span class="fl">7.5</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Streudiagramm erstellen</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Pearson's Korrelationskoeffizient</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Hypothesentest für Pearson's Korrelationskoeffizient</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(x, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Rangkorrelationskoeffizient nach Spearman</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulierte Daten</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.5</span>, <span class="sc">-</span>.<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="fl">4.5</span>, <span class="dv">6</span>, <span class="fl">5.5</span>, <span class="dv">6</span>, <span class="fl">6.5</span>, <span class="fl">7.5</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Streudiagramm erstellen</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Rangkorrelationskoeffizient nach Spearman</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y, <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Hypothesentest für Rangkorrelationskoeffizienten nach Spearman</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(x, y, <span class="at">method =</span> <span class="st">"spearman"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-burak2016" class="csl-entry" role="listitem">
+Burak. 2016. <em>Confounding or the Relationship Between Shoe Size and Salary · Burak’s Data Blog</em>. <a href="https://gunhanb.github.io/blog/2016/12/06/confounding.html">https://gunhanb.github.io/blog/2016/12/06/confounding.html</a>.
+</div>
+<div id="ref-vanhove2016" class="csl-entry" role="listitem">
+Vanhove, Jan. 2016. <em>What Data Patterns Can Lie Behind a Correlation Coefficient?</em> <a href="https://janhove.github.io/teaching/2016/11/21/what-correlations-look-like">https://janhove.github.io/teaching/2016/11/21/what-correlations-look-like</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./04_compare_means.html" class="pagination-link" aria-label="Vergleich von Mittelwerten">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./06_simple_linear-regression.html" class="pagination-link" aria-label="Einfache lineare Regression">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

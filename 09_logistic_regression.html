@@ -1,0 +1,2535 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Logistische Regression – Skript zum Modul Angewandte Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./10_poisson_regression.html" rel="next">
+<link href="./08_inf_cat_data.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09_logistic_regression.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skript zum Modul Angewandte Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Einführung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#notation-und-r" id="toc-notation-und-r" class="nav-link active" data-scroll-target="#notation-und-r"><span class="header-section-number">9.1</span> Notation und <code>R</code></a></li>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">9.2</span> Lernziele</a></li>
+  <li><a href="#sec-der-chi2-test" id="toc-sec-der-chi2-test" class="nav-link" data-scroll-target="#sec-der-chi2-test"><span class="header-section-number">9.3</span> Vorhersage von Diabetes</a></li>
+  <li><a href="#sec-warum-keine-lineare-regression" id="toc-sec-warum-keine-lineare-regression" class="nav-link" data-scroll-target="#sec-warum-keine-lineare-regression"><span class="header-section-number">9.4</span> Warum keine lineare Regression?</a></li>
+  <li><a href="#einfache-logistische-regression" id="toc-einfache-logistische-regression" class="nav-link" data-scroll-target="#einfache-logistische-regression"><span class="header-section-number">9.5</span> Einfache logistische Regression</a>
+  <ul class="collapse">
+  <li><a href="#verteilung" id="toc-verteilung" class="nav-link" data-scroll-target="#verteilung"><span class="header-section-number">9.5.1</span> Verteilung</a></li>
+  <li><a href="#erwartungswert" id="toc-erwartungswert" class="nav-link" data-scroll-target="#erwartungswert"><span class="header-section-number">9.5.2</span> Erwartungswert</a></li>
+  <li><a href="#link-funktion" id="toc-link-funktion" class="nav-link" data-scroll-target="#link-funktion"><span class="header-section-number">9.5.3</span> Link Funktion</a></li>
+  <li><a href="#rückblick-lineare-regression" id="toc-rückblick-lineare-regression" class="nav-link" data-scroll-target="#rückblick-lineare-regression"><span class="header-section-number">9.5.4</span> Rückblick lineare Regression</a></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">9.5.5</span> Interpretation</a></li>
+  <li><a href="#lineare-vs.-logistische-regression" id="toc-lineare-vs.-logistische-regression" class="nav-link" data-scroll-target="#lineare-vs.-logistische-regression"><span class="header-section-number">9.5.6</span> Lineare vs.&nbsp;Logistische Regression</a></li>
+  <li><a href="#wahrscheinlichkeit" id="toc-wahrscheinlichkeit" class="nav-link" data-scroll-target="#wahrscheinlichkeit"><span class="header-section-number">9.5.7</span> Wahrscheinlichkeit</a></li>
+  <li><a href="#dichotomer-prädiktor-schwangerschaft-und-diabetes" id="toc-dichotomer-prädiktor-schwangerschaft-und-diabetes" class="nav-link" data-scroll-target="#dichotomer-prädiktor-schwangerschaft-und-diabetes"><span class="header-section-number">9.5.8</span> Dichotomer Prädiktor: Schwangerschaft und Diabetes</a></li>
+  <li><a href="#intervallschätzung" id="toc-intervallschätzung" class="nav-link" data-scroll-target="#intervallschätzung"><span class="header-section-number">9.5.9</span> Intervallschätzung</a></li>
+  <li><a href="#exkurs-risk-ratios-versus-odds-ratios" id="toc-exkurs-risk-ratios-versus-odds-ratios" class="nav-link" data-scroll-target="#exkurs-risk-ratios-versus-odds-ratios"><span class="header-section-number">9.5.10</span> Exkurs: Risk Ratios versus Odds Ratios</a></li>
+  <li><a href="#kontinuierlicher-prädiktor-blutzucker-und-diabetes" id="toc-kontinuierlicher-prädiktor-blutzucker-und-diabetes" class="nav-link" data-scroll-target="#kontinuierlicher-prädiktor-blutzucker-und-diabetes"><span class="header-section-number">9.5.11</span> Kontinuierlicher Prädiktor: Blutzucker und Diabetes</a></li>
+  <li><a href="#vorhersage" id="toc-vorhersage" class="nav-link" data-scroll-target="#vorhersage"><span class="header-section-number">9.5.12</span> Vorhersage</a></li>
+  </ul></li>
+  <li><a href="#sec-multiple-logistische-regression" id="toc-sec-multiple-logistische-regression" class="nav-link" data-scroll-target="#sec-multiple-logistische-regression"><span class="header-section-number">9.6</span> Multiple logistische Regression</a>
+  <ul class="collapse">
+  <li><a href="#vorhersage-1" id="toc-vorhersage-1" class="nav-link" data-scroll-target="#vorhersage-1"><span class="header-section-number">9.6.1</span> Vorhersage</a></li>
+  </ul></li>
+  <li><a href="#sec-recapLM" id="toc-sec-recapLM" class="nav-link" data-scroll-target="#sec-recapLM"><span class="header-section-number">9.7</span> Exkurs: Schätzmethoden</a>
+  <ul class="collapse">
+  <li><a href="#sec-LeastSquares" id="toc-sec-LeastSquares" class="nav-link" data-scroll-target="#sec-LeastSquares"><span class="header-section-number">9.7.1</span> Methode der kleinsten Quadrate</a></li>
+  <li><a href="#momentenmethode" id="toc-momentenmethode" class="nav-link" data-scroll-target="#momentenmethode"><span class="header-section-number">9.7.2</span> Momentenmethode</a></li>
+  <li><a href="#sec-maxLik" id="toc-sec-maxLik" class="nav-link" data-scroll-target="#sec-maxLik"><span class="header-section-number">9.7.3</span> Maximum Likelihood Methode</a></li>
+  <li><a href="#sec-likelihood" id="toc-sec-likelihood" class="nav-link" data-scroll-target="#sec-likelihood"><span class="header-section-number">9.7.4</span> Likelihood Inferenz</a></li>
+  <li><a href="#zusammenfassung-likelihood" id="toc-zusammenfassung-likelihood" class="nav-link" data-scroll-target="#zusammenfassung-likelihood"><span class="header-section-number">9.7.5</span> Zusammenfassung Likelihood</a></li>
+  </ul></li>
+  <li><a href="#verschachtelte-modelle" id="toc-verschachtelte-modelle" class="nav-link" data-scroll-target="#verschachtelte-modelle"><span class="header-section-number">9.8</span> Verschachtelte Modelle</a></li>
+  <li><a href="#anhang-hilfreiche-r-codes-für-die-logistische-regression" id="toc-anhang-hilfreiche-r-codes-für-die-logistische-regression" class="nav-link" data-scroll-target="#anhang-hilfreiche-r-codes-für-die-logistische-regression"><span class="header-section-number">9.9</span> Anhang: Hilfreiche <code>R</code> Codes für die logistische Regression</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-logistic-regression" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Wenn wir diskrete oder kategorielle Grössen modellieren wollen, ist das allgemeine lineare Modell nicht geeignet, da dieses eine kontinuierliche abhängige Variable voraussetzt. Oft haben wir zum Beispiel eine zweiwertige kategorielle abhängige Variable (mit den Werten Event und kein Event). Gibt es eine Möglichkeit, diesen Wertebereich auf ein Kontinuum abzubilden? Kann man das Allgemeine Lineare Modell (LM) verallgemeinern und damit Modelle für diskrete und kontinuierliche abhängige Variable in einer einzigen statistischen Methodologie zusammenführen?</p>
+<p>Die Antwort darauf hat den Namen <strong>Generalisierte Lineare Modelle (GLM)</strong> (also nicht zu verwechseln mit dem Allgemeinen Linearen Modell (LM)). Dazu gehören zum Beispiel die <strong>Poisson-Regression</strong> (die wir später behandeln werden) sowie die <strong>logistische Regression</strong>, die wir hier studieren. Zu den GLM gehören als Spezialfall aber auch die bereits eingeführte multiple Regression und Varianzanalyse als Vertreter der Linearen Modelle.</p>
+<p>Ein Beispiel für eine logistische Regression ist, wenn man z.B. mit Hilfe der Variablen Geschlecht, Krankheitsstadium, Tumorgrösse und Alter die Wahrscheinlichkeit bestimmen möchte, ob jemand seine Krebserkrankung überlebt, oder nicht.</p>
+<section id="notation-und-r" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="notation-und-r"><span class="header-section-number">9.1</span> Notation und <code>R</code></h2>
+<ul>
+<li><p><span class="math inline">\(O\)</span>: Odds</p></li>
+<li><p><span class="math inline">\(OR\)</span>: Odds Ratio</p></li>
+<li><p><span class="math inline">\(\pi\)</span>: Wahrscheinlichkeit, Risiko</p></li>
+<li><p><span class="math inline">\(\mathrm{logit}(\pi)\)</span>: <span class="math inline">\(\log\frac{\pi}{1-\pi}=\log Odds\)</span></p></li>
+<li><p><span class="math inline">\(\exp(x)\)</span>: <span class="math inline">\(e^x\)</span></p></li>
+<li><p><span class="math inline">\(X \sim \mathcal{B}(n,\pi)\)</span>: <span class="math inline">\(X\)</span> ist binomialverteilt mit Parameter <span class="math inline">\(n\)</span> und <span class="math inline">\(\pi\)</span></p></li>
+<li><p><span class="math inline">\(E(X)\)</span>: Erwartungswert einer Zufallsvariable <span class="math inline">\(X\)</span></p></li>
+<li><p><span class="math inline">\(\eta=\beta_0+\beta_1x_{1}+\beta_2x_{2}+\dots+\beta_m x_{m}\)</span>: linearer Prädiktor</p></li>
+<li><p><code>R</code>: <code>packet::funktion()</code>: Alternative Syntax zu <code>library(packet)</code> gefolgt von <code>funktion()</code></p></li>
+<li><p><code>R</code>: <code>glm()</code>: Funktion zum Anpassen von GLM’s.</p></li>
+</ul>
+</section>
+<section id="lernziele" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="lernziele"><span class="header-section-number">9.2</span> Lernziele</h2>
+<p>Beachten Sie im Folgenden die überaus wichtigen Rechenregeln bezüglich der <span class="math inline">\(\log\)</span> und <span class="math inline">\(\exp\)</span>-Funktion, die wir bereits kennengelernt haben. Sie werden uns auf Schritt und Tritt verfolgen:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\log(ab) &amp;= \log(a) + \log(b) \\
+\log\left(\frac{a}{b}\right) &amp;= \log(a) - \log(b) \\
+\exp(a + b) &amp;= \exp(a)\exp(b) \\
+\exp(a - b) &amp;= \frac{\exp(a)}{\exp(b)}
+\end{aligned}
+\]</span></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Lernziele
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Wenden Sie eine logistische Regression an, wenn anhand einer oder mehrerer Prädiktorvariablen die Odds <span class="math inline">\(O_i\)</span> und die Wahrscheinlichkeit <span class="math inline">\(\pi_i\)</span> für ein Ereignis (d.h. bei binärer abhängigen Variable) für die Einheit <span class="math inline">\(i\)</span> geschätzt werden sollen.</p></li>
+<li><p>Beachten Sie, dass bei einer logistischen Regression die <span class="math inline">\(\mathrm{logit}(\pi_i):=\log Odds_i\)</span> modelliert werden. Der lineare Prädiktor <span class="math inline">\(\eta_i\)</span> ist dann der transformierte Erwartungswert,</p></li>
+</ol>
+<p><span class="math display">\[
+\boxed{\mathrm{logit}(\pi_i) = \eta_i=\beta_0 + \beta_1x_{i1}+\dots+\beta_m x_{im}.}
+\]</span></p>
+<ol start="3" type="1">
+<li><p>Berechnen Sie die geschätzten <span class="math inline">\(\mathrm{logit}(\hat{\pi}_i)\)</span> durch Einsetzen der geschätzten Regressionskoeffizienten <span class="math inline">\(\hat{\beta}_k (k=0,\dots,m)\)</span> sowie der Werte für die Prädiktoren der Einheit <span class="math inline">\(i\)</span> in die Regressionsgleichung.</p></li>
+<li><p>Interpretieren Sie <span class="math inline">\(\beta_0\)</span> (intercept) als <span class="math inline">\(\mathrm{logit}(\pi_i)\)</span> für das Ereignis, wenn alle unabhängigen quantitativen Variablen den Wert 0 annehmen und die Kategorie der unabhängigen kategoriellen Variablen die Referenzkategorie ist.</p></li>
+<li><p>Interpretieren Sie die <span class="math inline">\(\beta_k\)</span> (<span class="math inline">\(k=1,\dots,m\)</span>) als einen Unterschied auf der <span class="math inline">\(\mathrm{logit}\)</span>-Skala für zwei Subpopulationen, die sich auf <span class="math inline">\(x_k\)</span> um eine Einheit unterscheiden, während die anderen unabhängigen Variablen konstant gehalten werden. Die Nullhypothesen sind dann meistens <span class="math inline">\(H_0: \beta_k = 0\)</span>, <span class="math inline">\(k=1,...,m\)</span>.</p></li>
+<li><p>Eine Differenz auf der <span class="math inline">\(\mathrm{logit}\)</span> Skala entspricht einem <span class="math inline">\(\log(OR)\)</span>.</p></li>
+<li><p>Interpretiere die <span class="math inline">\(\exp(\beta_k)\)</span> (<span class="math inline">\(k=1,\dots,m\)</span>) als das <span class="math inline">\(OR_k\)</span> für das Ereignis für zwei Subpopulationen, die sich auf <span class="math inline">\(x_k\)</span> um eine Einheit unterscheiden, während die anderen unabhängigen Variablen konstant gehalten werden. Die Nullhypothesen sind dann meistens <span class="math inline">\(H_0: OR_k = 1\)</span>, <span class="math inline">\(k=1,...,m\)</span>.</p></li>
+<li><p>Berechnen Sie die Wahrscheinlichkeiten <span class="math inline">\(\pi_i\)</span> aus dem linearen Prädiktor mit der logitistischen Funktion,</p></li>
+</ol>
+<p><span class="math display">\[
+    \boxed{\pi_i = \frac{O_i}{1+O_i}=\frac{\exp(\eta_i)}{1+\exp(\eta_i)}.}
+\]</span></p>
+<ol start="9" type="1">
+<li><p>Führen Sie eine logistische Regression in <code>R</code> durch und interpretieren Sie die Regressionskoeffizienten sowie deren inferenzstatistischen Angaben.</p></li>
+<li><p>Erklären Sie den zentralen Begriff der Likelihood: Die Likelihood eines Parameterwertes <span class="math inline">\(L(\theta)\)</span> ist die Wahrscheinlichkeits(dichte) der beobachteten Daten <span class="math inline">\(x\)</span>, gesehen als eine Funktion des Parameters <span class="math inline">\(\theta\)</span>,</p></li>
+</ol>
+<p><span class="math display">\[
+L(\theta)=p(x;\theta).
+\]</span></p>
+<ol start="11" type="1">
+<li><p>Sie wissen, dass man im Falle der logistischen Regression Parameter mit der Maximum-Likelihood-Methode geschätzt und getestet werden.</p></li>
+<li><p>Sie können zwei verschachtelte logistische Regressionsmodelle mit einem Likelihood Ratio Test vergleichen mit <span class="math inline">\(H_0\)</span>: Das reduzierte Modell stimmt.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="sec-der-chi2-test" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="sec-der-chi2-test"><span class="header-section-number">9.3</span> Vorhersage von Diabetes</h2>
+<p>Wir verwenden für dieses Kapitel einen Datensatz von Pima-Indianern. Dieser Datensatz stammt ursprünglich vom National Institute of Diabetes and Digestive and Kidney Diseases. Ziel ist es, auf Grundlage verschiedener Prädiktoren diagnostisch vorherzusagen, ob eine Patientin Diabetes hat oder nicht.</p>
+<ul>
+<li><p>Zu didaktischen Zwecken wurde der Datensatz vereinfacht (Entfernung aller Beobachtungseinheiten mit fehlenden Werten) bzw. werden nicht alle Variablen berücksichtigt.</p></li>
+<li><p>Die Variable <code>pregnant_bin</code> existiert im Originaldatensatz nicht, sie wurde zu didaktischen Zwecken aus der Variable <code>pregnant</code> erstellt (0 = Nein, &gt;0 = Ja).</p></li>
+</ul>
+<p>Code book zum Datensatz (<span class="math inline">\(n\)</span> = 392)</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 77%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Variable</strong></td>
+<td><strong>Beschreibung</strong></td>
+</tr>
+<tr class="even">
+<td><code>pregnant</code></td>
+<td>Anzahl bisheriger Schwangerschaften</td>
+</tr>
+<tr class="odd">
+<td><code>pregnant_bin</code></td>
+<td>Schon eine Schwangerschaft gehabt (0 = Nein, 1 = Ja)</td>
+</tr>
+<tr class="even">
+<td><code>glucose</code></td>
+<td>Plasma-Glukose-Konzentration (mg/dl)</td>
+</tr>
+<tr class="odd">
+<td><code>pressure</code></td>
+<td>Diastolischer Blutdruck (mmHg)</td>
+</tr>
+<tr class="even">
+<td><code>triceps</code></td>
+<td>Faltendicke beim Triceps (mm)</td>
+</tr>
+<tr class="odd">
+<td><code>mass</code></td>
+<td>Body Mass Index (kg/m^2)</td>
+</tr>
+<tr class="even">
+<td><code>pedigree</code></td>
+<td>Diabetes Pedigree Funktion (PDF)</td>
+</tr>
+<tr class="odd">
+<td><code>age</code></td>
+<td>Alter (Jahre)</td>
+</tr>
+<tr class="even">
+<td><code>diabetes</code></td>
+<td>Diabetes (<code>neg</code>, <code>pos</code>)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Die abhängige Variable <code>diabetes</code> ist hier eine zweiwertige nominale Variable, <span class="math inline">\(Y_i=\{0,1\}\)</span>.</li>
+<li>Bemerkung: Bei <strong>gruppierten Daten</strong> ist <span class="math inline">\(Y_i\)</span> manchmal die Anzahl Ereignisse in einer Gruppe <span class="math inline">\(i\)</span> mit <span class="math inline">\(n_i\)</span> Einheiten.</li>
+</ul>
+</section>
+<section id="sec-warum-keine-lineare-regression" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="sec-warum-keine-lineare-regression"><span class="header-section-number">9.4</span> Warum keine lineare Regression?</h2>
+<p>Wenn die abhängige Variable binär ist (also nur die Werte 0 und 1 annehmen kann), ist es zwar möglich, eine lineare Regression durchzuführen – aber nicht empfehlenswert. Hier sind die Gründe:</p>
+<ul>
+<li>Ungültige Vorhersagen: Die lineare Regression kann Werte ausserhalb des Bereichs [0, 1] vorhersagen, was bei Wahrscheinlichkeiten keinen Sinn ergibt.</li>
+<li>Verletzung statistischer Annahmen: Die Fehlerterme sind bei binären Daten nicht normalverteilt und die Varianz ist nicht konstant (Heteroskedastizität).</li>
+<li>Nicht optimale Schätzungen: Die lineare Regression liefert bei binären Daten oft verzerrte und ineffiziente Schätzwerte.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-line-reg-bin" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-line-reg-bin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-plot-line-reg-bin-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-line-reg-bin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.1: Lineares Modell für Diabetes
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-plot-line-reg-bin" class="quarto-xref">Abbildung&nbsp;<span>9.1</span></a> sehen wir, dass Personen mit Diabetes (mit 1 kodiert) grundsätzlich höhere Blutzuckerwerte haben als Personen ohne Diabetes. Die Variable <code>glucose</code> scheint also hilfreich zu sein, um den Diabetesstatus, wenn auch nicht perfekt, vorherzusagen. Die graue Gerade ist das statistische Modell, der lineare Prädiktor. In der Grafik wird verdeutlicht, dass sich eine lineare Regression nicht eignet, um die Wahrscheinlichkeit für Diabetes vorherzusagen. Personen mit tiefer Blutzuckerkonzentration hätten eine negative Wahrscheinlichkeit, Diabetes zu haben. Personen mit einer Konzentration von <span class="math inline">\(&gt;220\)</span> hätten eine Wahrscheinlichkeit <span class="math inline">\(&gt;1\)</span> Diabetes zu haben. Eine Wahrscheinlichkeit muss aber per Definition im Intervall <span class="math inline">\([0; 1]\)</span> liegen.</p>
+<p>Der Wertebereich der zu modellierenden abhängigen Variablen in einer linearen Regression ist in der Regel <strong>nicht beschränkt</strong> (theoretisch von <span class="math inline">\(-\infty\)</span> bis <span class="math inline">\(\infty\)</span>), Wahrscheinlichkeiten aber sind durch 0 und 1 begrenzt. Wenn man statt der Wahrscheinlichkeit die Odds <span class="math inline">\(O_i\)</span> modelliert, dann erhält man Werte im Intervall <span class="math inline">\([0; \infty)\)</span>. Wenn man zusätzlich noch den Logarithmus nimmt, also die <span class="math inline">\(\log Odds_i:=\mathrm{logit}(\pi_i)\)</span> modelliert, dann erhält man Werte im Intervall <span class="math inline">\((-\infty; \infty)\)</span>, weil <span class="math inline">\(\log(0) = -\infty\)</span> und <span class="math inline">\(\log(\infty) = \infty\)</span>. <span class="math inline">\(\mathrm{logit}(\pi)\)</span> ist dann <strong>nicht beschränkt</strong>!</p>
+<p>Die folgende Grafik zeigt nun die lineare Regression für <span class="math inline">\(\mathrm{logit}(\pi)\)</span> auf Blutzucker:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-line-reg-bin-log" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-line-reg-bin-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-plot-line-reg-bin-log-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-line-reg-bin-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.2: Lineare Regression mit den log(Odds) für Diabetes als abhängige und Blutzucker als unabhängige Variable (n = 392).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Auf den ersten Blick unterscheiden sich <a href="#fig-plot-line-reg-bin" class="quarto-xref">Abbildung&nbsp;<span>9.1</span></a> und <a href="#fig-plot-line-reg-bin-log" class="quarto-xref">Abbildung&nbsp;<span>9.2</span></a> kaum. Der einzige aber entscheidende Unterschied ist, dass die y-Achse dieses Mal die <span class="math inline">\(\mathrm{logit}(\pi)\)</span> für Diabetes repräsentiert. Wir erhalten durch Exponieren und Umrechnen die Wahrscheinlichkeit, dass bei einer gegebenen Blutzuckerkonzentration ein Diabetes vorliegt. Nehmen wir einen Blutzuckerwert von 170 (orange Linie). Für diesen Wert prognostiziert das Modell <span class="math inline">\(\mathrm{logit}(\pi) = 1.116\)</span>. Somit sind die Odds für Diabetes bei einer Blutzuckerkonzentration von 170 <span class="math inline">\(\exp(1.116) = 3.0526\)</span>. Diese Odds können wir in eine Wahrscheinlichkeit umrechnen,</p>
+<p><span class="math display">\[
+\hat{\pi} = \frac{\hat{O}}{1+\hat{O}} = \frac{3.0526}{1+3.0526} = 0.7532.
+\]</span></p>
+<p>Wiederholen Sie diese Rechnung für ein paar andere Blutzuckerwerte und Sie werden merken, dass die Wahrscheinlichkeit immer zwischen 0 und 1 liegt (dazu muss man die <span class="math inline">\(\mathrm{logit}(\pi_i)\)</span> von Auge schätzen, weil wir ja die Regressionskoeffizienten noch nicht kennen).</p>
+<p>Mit dem Computer kann man dies für alle beliebigen Blutzuckerwerte durchrechnen und eine neue Grafik mit den Blutzuckerwerten auf der x-Achse und der Wahrscheinlichkeit <span class="math inline">\(\pi\)</span> für Diabetes auf der y-Achse erstellen:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-log-reg" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-log-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-plot-log-reg-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-log-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.3: Logistischer Zusammenhang zwischen Blutzucker und Wahrscheinlichkeit für Diabetes (n = 392).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-plot-log-reg" class="quarto-xref">Abbildung&nbsp;<span>9.3</span></a> sehen wir den logistischen (nicht linearen) Zusammenhang zwischen Blutzucker und der Wahrscheinlichkeit für Diabetes. <strong>Fazit:</strong> Eine lineare Regression ist nicht optimal, um die Wahrscheinlichkeit für ein Ereignis zu modellieren.</p>
+</section>
+<section id="einfache-logistische-regression" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="einfache-logistische-regression"><span class="header-section-number">9.5</span> Einfache logistische Regression</h2>
+<p>Die <strong>logistische Regression</strong> ist ein Modell zur Analyse binärer abhängiger Variablen, bei denen die Zielgrösse typischerweise nur zwei Ausprägungen hat (z. B. Erfolg/Misserfolg). Anders als bei der linearen Regression wird hier nicht direkt der Erwartungswert der Zielvariable modelliert, sondern dessen <strong>Transformation</strong>.</p>
+<section id="verteilung" class="level3" data-number="9.5.1">
+<h3 data-number="9.5.1" class="anchored" data-anchor-id="verteilung"><span class="header-section-number">9.5.1</span> Verteilung</h3>
+<p>Die Verteilung der <span class="math inline">\(Y_i\)</span> ist binomial mit Parametern <span class="math inline">\(\pi_i\)</span> und <span class="math inline">\(n=1\)</span> (Bernoulli-Verteilung). Wir notieren <span class="math display">\[
+Y_i\sim \mathcal{B}(n=1,\pi_i)
+\]</span></p>
+<p>Die Binomialverteilung hat für den Spezialfall einer einzelnen Beobachtung (Bernoulli) die Wahrscheinlichkeitsmasse <span class="math inline">\(p(y_i) = \pi_i^{y_i} (1 - \pi_i)^{1 - y_i}\)</span>, was äquivalent ist zur Aussage: <span class="math inline">\(Y_i \in \{0,1\}\)</span> mit <span class="math inline">\(\pi_i = \Pr(Y_i = 1)\)</span> und <span class="math inline">\(1-\pi_i = \Pr(Y_i = 0)\)</span>.</p>
+<p>Abbildung <a href="#fig-bernoulli" class="quarto-xref">Abbildung&nbsp;<span>9.4</span></a> zeigt Bernoulli-Verteilungen für verschiedene <span class="math inline">\(\pi\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-bernoulli" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bernoulli-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-bernoulli-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bernoulli-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.4: Bernoulli-Verteilung mit <span class="math inline">\(\pi=0.2,0.5,0.7\)</span> und <span class="math inline">\(\pi=1\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="erwartungswert" class="level3" data-number="9.5.2">
+<h3 data-number="9.5.2" class="anchored" data-anchor-id="erwartungswert"><span class="header-section-number">9.5.2</span> Erwartungswert</h3>
+<p>Sei <span class="math inline">\(X\)</span> eine diskrete Zufallsvariable mit Werten <span class="math inline">\(x_1,
+\dots,x_k\)</span> und Wahrscheinlichkeitsmasse <span class="math inline">\(p(x)\)</span>. Der Erwartungswert von <span class="math inline">\(X\)</span> ist der Mittelwert der möglichen Werte, wobei jede Ausprägung entsprechend ihrer Wahrscheinlichkeit gewichtet wird.</p>
+<p><span class="math display">\[\begin{equation}
+  \label{eq:ExpDisc}
+  E(X) = \sum_{i=1}^k x_i\, p(x_i).
+\end{equation}\]</span></p>
+<p>Für den Spezialfall <span class="math inline">\(X \sim \mathcal{B}(1,\pi)\)</span> (Bernoulli-Verteilung mit Parameter <span class="math inline">\(\pi\)</span>) ergibt sich: <span class="math display">\[
+E(X) = 0 \cdot (1 - \pi) + 1 \cdot \pi = \pi
+\]</span></p>
+</section>
+<section id="link-funktion" class="level3" data-number="9.5.3">
+<h3 data-number="9.5.3" class="anchored" data-anchor-id="link-funktion"><span class="header-section-number">9.5.3</span> Link Funktion</h3>
+<p>Der Erwartungswert einer binomialverteilten Variable <span class="math inline">\(Y\)</span> mit <span class="math inline">\(n=1\)</span> ist also <span class="math inline">\(E(Y)=\pi\)</span>.</p>
+<p>Dieser Erwartungswert (hier eine Wahrscheinlichkeit) soll nun so transformiert werden, dass er <strong>nicht mehr beschränkt</strong> ist, d.h. der lineare Prädiktor sollte dann alle Werte zwischen <span class="math inline">\(-\infty\)</span> und <span class="math inline">\(+\infty\)</span> annehmen können. Dazu müssen wir die <strong>logit</strong>- und die <strong>logistische</strong> Funktion einführen. Diese beiden Funktionen sind zentral für das Verständnis einer logistischen Regression.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Logit und Logistische Funktion
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\text{logit}(x):[0,1]\rightarrow \mathbb{R},\quad x \mapsto
+    \log\frac{x}{1-x}
+\]</span></p>
+<p><span class="math display">\[\text{logistic}(x): \mathbb{R} \rightarrow [0,1],\quad x \mapsto
+    \frac{\exp(x)}{\exp(x)+1}
+\]</span></p>
+<p>Die beiden wichtigen Funktionen sind in der Abbildung <a href="#fig-logitAndLogistic" class="quarto-xref">Abbildung&nbsp;<span>9.5</span></a> dargestellt.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-logitAndLogistic" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-logitAndLogistic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-logitAndLogistic-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logitAndLogistic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.5: Logit-Funktion und logistische Funktion
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Da der Erwartungswert <span class="math inline">\(E(Y)=\pi\)</span> zwischen 0 und 1 liegt, wird dieser über die <strong>logit-Funktion</strong> transformiert:</p>
+<p><span class="math display">\[
+\text{logit}(\pi) = \log\left(\frac{\pi}{1 - \pi}\right) = \eta
+\]</span></p>
+<p>Somit wird der <strong>transformierte Erwartungswert</strong> (der Logit von <span class="math inline">\(\pi\)</span>) als linearer Prädiktor <span class="math inline">\(\eta\)</span> dargestellt. Man nennt diese Transformation <strong>Link</strong>-Funktion. Angewandt auf den Erwartungswert haben wir dann für den linearen Prädiktor</p>
+<p><span class="math display">\[
+\mathrm{logit}\, \pi_i=\log Odds_i=\log\frac{\pi_i}{1-\pi_i}=\eta_i= \beta_0 + \beta_1x_i,
+\]</span></p>
+<p>und schreiben sehr oft kurz für eine einfache logistische Regression:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Einfache logistische Regression
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span id="eq-linPredLog"><span class="math display">\[
+\boxed{\mathrm{logit}(\pi_i)=\beta_0 + \beta_1x_i}
+\tag{9.1}\]</span></span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Deterministischer und stochastischer Teil eines Modells
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>(Lineare) Modelle beinhalten einen deterministischen Teil (der lineare Prädiktor) und einen stochastischen Teil (die Wahrscheinlichkeitsverteilung). In der logistischen Regression nehmen wir die Binomialverteilung (stochastischer Teil) in <a href="#eq-linPredLog" class="quarto-xref">Equation&nbsp;<span>9.1</span></a> oft stillschweigend an und schreiben nur den linearen Prädiktor.</p>
+</div>
+</div>
+</section>
+<section id="rückblick-lineare-regression" class="level3" data-number="9.5.4">
+<h3 data-number="9.5.4" class="anchored" data-anchor-id="rückblick-lineare-regression"><span class="header-section-number">9.5.4</span> Rückblick lineare Regression</h3>
+<p>Zum Vergleich noch einmal die einfache lineare Regression, das Modell war <span class="math display">\[Y_i=\beta_0 + \beta_1x_i+\epsilon_i\]</span> mit <span class="math inline">\(\epsilon_i\sim \mathcal{N}(\mu,\sigma^2)\)</span>. Dort war die Verteilung die Normalverteilung und die Link-Funktion war die Identität (keine Transformation des Erwartungswerts nötig),</p>
+<p><span class="math display">\[
+Y_i\sim \mathcal{N}(\mu_i,\sigma^2),\quad  \quad E(Y_i)=\mu_i=\beta_0 + \beta_1x_i.
+\]</span></p>
+</section>
+<section id="interpretation" class="level3" data-number="9.5.5">
+<h3 data-number="9.5.5" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">9.5.5</span> Interpretation</h3>
+<p>Der Parameter <span class="math inline">\(\beta_1\)</span> in <a href="#eq-linPredLog" class="quarto-xref">Equation&nbsp;<span>9.1</span></a> ist zu interpretieren als der Unterschied in <strong>Logits</strong> für zwei Populationen, die sich auf <span class="math inline">\(x\)</span> um eine Einheit unterscheiden. Das ist analog zur linearen Regression, da die Logit-Skala ebenfalls ein Kontinuum darstellt. Zusätzlich lässt sich <span class="math inline">\(\exp⁡(\beta_1)\)</span> als <strong>Odds Ratio</strong> interpretieren: Es gibt an, um welchen Faktor sich die Odds (also das Verhältnis von Erfolgs- zu Misserfolgswahrscheinlichkeit) verändern, wenn sich <span class="math inline">\(x\)</span> um eine Einheit erhöht. Ein Wert von <span class="math inline">\(\exp(\beta_1)&gt;1\)</span> bedeutet, dass die Erfolgswahrscheinlichkeit mit steigendem <span class="math inline">\(x\)</span> zunimmt, während ein Wert kleiner als 1 auf eine abnehmende Erfolgswahrscheinlichkeit hinweist.</p>
+<p>Fassen wir die Unterschiede zum linearen Modell nochmal zusammen:</p>
+</section>
+<section id="lineare-vs.-logistische-regression" class="level3" data-number="9.5.6">
+<h3 data-number="9.5.6" class="anchored" data-anchor-id="lineare-vs.-logistische-regression"><span class="header-section-number">9.5.6</span> Lineare vs.&nbsp;Logistische Regression</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 27%">
+<col style="width: 51%">
+<col style="width: 1%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Lineare Regression</th>
+<th>Logistische Regression</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Verteilung der Zielvariable</strong></td>
+<td>Normalverteilung: <span class="math inline">\(Y \sim \mathcal{N}(\mu, \sigma^2)\)</span></td>
+<td>Bernoulli-Verteilung: <span class="math inline">\(Y \in \{0,1\},\ \pi = P(Y=1)\)</span></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Erwartungswert</strong></td>
+<td><span class="math inline">\(E(Y) = \mu\)</span></td>
+<td><span class="math inline">\(E(Y) = \pi\)</span></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Linearer Prädiktor</strong></td>
+<td><span class="math inline">\(\mu = \beta_0 + \beta_1 x\)</span></td>
+<td><span class="math inline">\(\eta = \beta_0 + \beta_1 x\)</span></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Transformation (Link-Funktion)</strong></td>
+<td>Identität: <span class="math inline">\(\mu = \eta\)</span></td>
+<td>Logit: <span class="math inline">\(\text{logit}(\pi) = \log\left(\frac{\pi}{1 - \pi}\right) = \eta\)</span></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Interpretation von <span class="math inline">\(\beta_1\)</span></strong></td>
+<td>Änderung des Erwartungswerts <span class="math inline">\(E(Y)\)</span> pro Einheit <span class="math inline">\(x\)</span></td>
+<td>Änderung der Log-Odds von <span class="math inline">\(Y=1\)</span> pro Einheit <span class="math inline">\(x\)</span></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Interpretation von <span class="math inline">\(\exp(\beta_1)\)</span></strong></td>
+<td>–</td>
+<td>Multiplikativer Faktor für die Odds: <span class="math inline">\(\exp(\beta_1)\)</span> ist die Odds Ratio für eine Einheit mehr in <span class="math inline">\(x\)</span></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="wahrscheinlichkeit" class="level3" data-number="9.5.7">
+<h3 data-number="9.5.7" class="anchored" data-anchor-id="wahrscheinlichkeit"><span class="header-section-number">9.5.7</span> Wahrscheinlichkeit</h3>
+<p>Die Wahrscheinlichkeit für das Ereignis erhalten wir dann mit der Umkehrfunktion der <span class="math inline">\(\mathrm{logit}\)</span>-Funktion, der <strong>logistischen</strong> Funktion, die auf den linearen Prädiktor <span class="math inline">\(\eta_i=\beta_0+\beta_1x_i\)</span> angewandt wird,</p>
+<p><span id="eq-expit"><span class="math display">\[
+\boxed{\pi_i=\frac{O_i}{1+O_i}=\frac{\exp(\mathrm{logit}(\pi_i))}{1+\exp(\mathrm{logit}(\pi_i))}=\frac{\exp(\eta_i)}{1+\exp(\eta_i)}}.
+\tag{9.2}\]</span></span></p>
+</section>
+<section id="dichotomer-prädiktor-schwangerschaft-und-diabetes" class="level3" data-number="9.5.8">
+<h3 data-number="9.5.8" class="anchored" data-anchor-id="dichotomer-prädiktor-schwangerschaft-und-diabetes"><span class="header-section-number">9.5.8</span> Dichotomer Prädiktor: Schwangerschaft und Diabetes</h3>
+<p>Wir verwenden weiterhin den Diabetes-Datensatz und untersuchen nun, ob es einen Zusammenhang gibt zwischen Diabetes und ob eine Frau bereits eine Schwangerschaft hatte oder nicht. Für dieses Beispiel lässt sich eine Vierfeldertabelle darstellen:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>        Diabetes
+Pregnant neg pos
+     No   37  19
+     Yes 225 111</code></pre>
+</div>
+</div>
+<p>Anhand der Vierfeldertabelle kann man die Wahrscheinlichkeiten für das Ereignis und Nicht-Ereignis bei Kondition pregnant und not pregnant schätzen:</p>
+<p>Die geschätzten Wahrscheinlichkeiten sind</p>
+<p><span class="math display">\[
+\hat{\pi}_{pregnant} = \frac{111}{111+225} = 0.3303571,
+\]</span> und <span class="math display">\[
+\hat{\pi}_{not.pregnant} = \frac{19}{19+37} = 0.3392857
+\]</span></p>
+<p>Die geschätzten Odds sind <span class="math display">\[
+\hat{O}_{pregnant} = \frac{111}{225} = 0.493,
+\]</span> <span class="math display">\[
+\hat{O}_{not.pregnant} = \frac{19}{37} = 0.514,
+\]</span></p>
+<p>und somit die geschätzte Odds Ratio <span class="math display">\[
+\widehat{OR} = \frac{0.493}{0.514} = 0.96.
+\]</span></p>
+<p>Wir schauen uns nun an, was die logistische Regression mit den gleichen Variablen für einen Output liefert. Für logistische Regressionen brauchen wir in <code>R</code> die Funktion <code>glm()</code>, was für <strong>generalized linear models</strong> steht. Weil diese Modelle eben <strong>verallgemeinert</strong> sind, muss man zusätzlich die <strong>Verteilung</strong> und die <strong>Link-Funktion</strong> angeben, welche gebraucht wird. Weil es in diesem Fall um eine binäre abhängige Variable geht, verwenden wir die Binomialverteilung. Wir tun das mit dem Argument <code>family = binomial(link="logit")</code>. Der logit-link ist bei Binomialveteilung zwar defaultmässig eingestellt, <code>family = binomial()</code> würde auch genügen. Es ist aber immer besser, am Anfang beides explizit darzustellen. Die Syntax für die Erstellung der Modelle ist dann analog zur linearen Regression:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Einfache logistische Regression mit glm()</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>m.glm1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(diabetes <span class="sc">~</span> pregnant_bin, <span class="at">data =</span> diabetes, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link=</span><span class="st">"logit"</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Wir schauen das angepasste Modell an und konzentrieren uns auf die geschätzten Regressionskoeffizienten:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.glm1)<span class="sc">$</span>coef</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   Estimate Std. Error    z value   Pr(&gt;|z|)
+(Intercept)     -0.66647893  0.2822385 -2.3614032 0.01820593
+pregnant_binYes -0.04009127  0.3051426 -0.1313853 0.89547049</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(\beta_0\)</span> (das Intercept) steht für die <span class="math inline">\(\mathrm{logit}\)</span> für Diabetes, wenn die unabhängige Variable den Wert 0 (oder die Referenzkategorie “No”) annimmt. Wie bei der linearen Regression wird die Variable <code>pregnant_bin</code> mit 0 und 1 codiert (dummy coding). Also sind <span class="math inline">\(\hat{\beta}_0\)</span> die <span class="math inline">\(\mathrm{logit}\)</span> für Diabetes, wenn eine Frau noch keine Schwangerschaft hatte. Wenn wir dies exponieren, dann erhalten wir 0.5135135. Wir können mit den Angaben aus der Vierfeldertabelle feststellen, dass dies korrekt ist. Mit der logistischen Funktion (<a href="#eq-expit" class="quarto-xref">Equation&nbsp;<span>9.2</span></a>) können wir die <span class="math inline">\(\pi_i\)</span> für beide Gruppen abschätzen:</p>
+<p>Wenn nun die Variable pregnant_bin den Wert “No” annimmt, haben wir:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{logit}(\hat{\pi})_{\text{not pregnant}} &amp;= \hat{\beta}_0 = -0.6664789 \\
+\hat{O}_{\text{not pregnant}} &amp;= \exp(\hat{\beta}_0) = 0.5135135 \\
+\hat{\pi}_{\text{not pregnant}} &amp;= \frac{\exp(\hat{\beta}_0)}{1 + \exp(\hat{\beta}_0)} = 0.3392857
+\end{aligned}
+\]</span></p>
+<p>Wenn nun die Variable pregnant_bin den Wert “Yes” annimmt, haben wir:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{logit}(\hat{\pi})_{\text{pregnant}} &amp;= \hat{\beta}_0 + \hat{\beta}_1 = -0.7065702 \\
+\hat{O}_{\text{pregnant}} &amp;= \exp(\hat{\beta}_0 + \hat{\beta}_1) = 0.4933333 \\
+\hat{\pi}_{\text{pregnant}} &amp;= \frac{\exp(\hat{\beta}_0 + \hat{\beta}_1)}{1 + \exp(\hat{\beta}_0 + \hat{\beta}_1)} = 0.3303571
+\end{aligned}
+\]</span></p>
+<p>Dies stimmt natürlich auch wieder überein mit den direkten Berechnungen in der Vierfeldertafel.</p>
+<p>Mit der <code>predict()</code> Funktion können wir uns die geschätzten <span class="math inline">\(\mathrm{logit}\)</span> und <span class="math inline">\(\pi\)</span> direkt ausgeben lassen. Defaultmässig ist die Vorhersage auf dem linearen Prädiktor, mit Argument <code>type="response"</code> bekommen wir Wahrscheinlichkeits-Vorhersagen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m.glm1,<span class="at">newdata=</span><span class="fu">data.frame</span>(<span class="at">pregnant_bin=</span><span class="fu">c</span>(<span class="st">"No"</span>,<span class="st">"Yes"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1          2 
+-0.6664789 -0.7065702 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m.glm1,<span class="at">newdata=</span><span class="fu">data.frame</span>(<span class="at">pregnant_bin=</span><span class="fu">c</span>(<span class="st">"No"</span>,<span class="st">"Yes"</span>)),<span class="at">type=</span><span class="st">"response"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1         2 
+0.3392857 0.3303571 </code></pre>
+</div>
+</div>
+<p>Was bedeutet nun <span class="math inline">\(\hat{\beta}_1\)</span>? Im logistischen Modell ist die Steigung als <span class="math display">\[\beta_1=\mathrm{logit}_{preg}-\mathrm{logit}_{nonpreg}=\log\frac{O_{preg}}{O_{nonpreg}}=\log(OR)\]</span> zu interpretieren. Somit ist <span class="math inline">\(\hat{\beta}_1=-0.0400913\)</span> der geschätzte Unterschied auf <span class="math inline">\(\mathrm{logit}\)</span>-Skala und <span class="math inline">\(\exp(\hat{\beta}_1)=\exp(-0.0400913)=0.9607018\)</span> die geschätzte Odds Ratio, was wiederum mit den Berechnungen auf Basis der Vierfeldertabelle übereinstimmt.</p>
+</section>
+<section id="intervallschätzung" class="level3" data-number="9.5.9">
+<h3 data-number="9.5.9" class="anchored" data-anchor-id="intervallschätzung"><span class="header-section-number">9.5.9</span> Intervallschätzung</h3>
+<p>Wie bei der linearen Regression können wir mit dem Befehl <code>confint()</code> die 95% Konfidenzintervalle der Regressionskoeffizienten abrufen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m.glm1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     2.5 %     97.5 %
+(Intercept)     -1.2398480 -0.1261716
+pregnant_binYes -0.6274561  0.5748354</code></pre>
+</div>
+</div>
+<p>Die Schranken sind hier auf <span class="math inline">\(\log(OR)\)</span>-Skala. Für eine inhaltlich sinnvolle Interpretation ist es daher oft empfehlenswert, die Grenzen des Intervalls zu exponieren, um Konfidenzintervalle für <span class="math inline">\(OR\)</span> zu erhalten.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">confint</span>(m.glm1))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    2.5 %    97.5 %
+(Intercept)     0.2894282 0.8814635
+pregnant_binYes 0.5339484 1.7768380</code></pre>
+</div>
+</div>
+<p>Wir sehen, dass das 95% Konfidenzintervall für das <span class="math inline">\(OR\)</span> von 0.5339484 bis 1.776838 geht. Wir können also zu 95% darauf vertrauen, dass das wahre <span class="math inline">\(OR\)</span> von diesem Intervall überdeckt wird. Da dieses Intervall stark mit dem Nullwert (welcher bei <span class="math inline">\(OR=1\)</span> oder <span class="math inline">\(\log(OR)=0\)</span> liegt) überlappt, besteht keine Evidenz gegen <span class="math inline">\(H_0\)</span>. Dies ist auch dem hohen P-Wert im Output zu entnehmen (<span class="math inline">\(p=0.8954705\)</span>). Der diesbezügliche <span class="math inline">\(z\)</span>-Test ist ein <strong>Wald-Test</strong>; diesen sowie die hier berechneten <strong>Likelihood-Intervalle</strong> führen wir in <a href="#sec-likelihood" class="quarto-xref"><span>Section 9.7.4</span></a> ein.</p>
+<p>Eine Schwangerschaft scheint also die Odds für Diabetes nicht zu erhöhen. (Inhaltliche Anmerkung: Dies gilt nur für die Variable <code>pregnant_bin</code>, jedoch nicht für die Variable <code>pregnant</code>.)</p>
+<p>Mit <code>parameters()</code> aus dem gleichnamigen Packet können wir uns direkt die exponierten Koeffizienten mit Intervallschätzung und Tests herausgeben lassen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(m.glm1,<span class="at">exponentiate=</span><span class="cn">TRUE</span>,<span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter          | Odds Ratio |    SE |         95% CI |      z |     p
+-------------------------------------------------------------------------
+(Intercept)        |      0.514 | 0.145 | [0.289, 0.881] | -2.361 | 0.018
+pregnant bin [Yes] |      0.961 | 0.293 | [0.534, 1.777] | -0.131 | 0.895</code></pre>
+</div>
+</div>
+</section>
+<section id="exkurs-risk-ratios-versus-odds-ratios" class="level3" data-number="9.5.10">
+<h3 data-number="9.5.10" class="anchored" data-anchor-id="exkurs-risk-ratios-versus-odds-ratios"><span class="header-section-number">9.5.10</span> Exkurs: Risk Ratios versus Odds Ratios</h3>
+<p>Eine Einschränkung der logistischen Regression ist, dass die Effekte (log) Odds Ratios und nicht (log) Risk Ratios darstellen. Das ist dann problematisch, wenn ausdrücklich Risiko-Verhältnisse gewünscht werden, da sich Chancenverhältnisse von Risiko-Verhältnissen stark unterscheiden können, insbesondere wenn das Ereignis häufig ist. Bei seltenem Ereignis ist <span class="math inline">\(OR\)</span> eine gute Schätzung für das Risk Ratio. Eine Möglichkeit, Risk Ratios als Effekte zu erhalten, ist das <strong>Log-Binomiale</strong> Modell.</p>
+<p>In diesem Modell wird jetzt der <span class="math inline">\(\log\)</span> als Link-Funktion an Stelle von <span class="math inline">\(\mathrm{logit}\)</span> gebraucht mit der Konsequenz, dass <span class="math inline">\(\beta_1\)</span> ein <span class="math inline">\(\log\)</span> Risk Ratio und <span class="math inline">\(\exp(\beta_1)\)</span> ein Risk Ratio darstellt.</p>
+<p>Wie Sie aus <a href="08_inf_cat_data.html" class="quarto-xref"><span>Chapter 8</span></a> wissen, kann man obige 2x2 Tabelle mit Hilfe der <code>riskratio()</code> Funktion aus dem Paket <code>epitools</code> analysieren. Der Output sieht wie folgt aus (es wird nur ein Teil davon gezeigt):</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Diabetes
+Pregnant neg pos
+     No   37  19
+     Yes 225 111</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>epitools<span class="sc">::</span><span class="fu">riskratio</span>(tab,<span class="at">method=</span><span class="st">"wald"</span>)<span class="sc">$</span>measure</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        risk ratio with 95% C.I.
+Pregnant  estimate     lower    upper
+     No  1.0000000        NA       NA
+     Yes 0.9736842 0.6553428 1.446664</code></pre>
+</div>
+</div>
+<p>Das Risk Ratio beträgt 0.974, mit einem 95% CI von [0.655; 1.447].</p>
+<p><code>riskratio()</code> entspricht einem Log-Binomial Modell mit zweiwertigem Prädiktor:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>m.logBin<span class="ot">&lt;-</span><span class="fu">glm</span>(diabetes<span class="sc">~</span>pregnant_bin,<span class="at">family=</span><span class="fu">binomial</span>(<span class="at">link=</span><span class="st">"log"</span>),<span class="at">data=</span>diabetes)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(m.logBin,<span class="at">exponentiate=</span><span class="cn">TRUE</span>,<span class="at">ci_method=</span><span class="st">"wald"</span>,<span class="at">digits=</span><span class="dv">3</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter          | Risk Ratio |    SE |         95% CI |      z |      p
+--------------------------------------------------------------------------
+(Intercept)        |      0.339 | 0.063 | [0.235, 0.489] | -5.796 | &lt; .001
+pregnant bin [Yes] |      0.974 | 0.197 | [0.655, 1.447] | -0.132 | 0.895 </code></pre>
+</div>
+</div>
+<p>Der <span class="math inline">\(\log\)</span>-Link hat aber den Nachteil, dass er Wahrscheinlichkeiten nur auf <span class="math inline">\(\mathcal{R^+}\)</span> statt auf <span class="math inline">\(\mathcal{R}\)</span> abbildet. Bei diesen Modellen gibt es oft Konvergenzprobleme, die sind bei Log-binomialen Modellen oft auf die Schwierigkeit zurückführen, die Wahrscheinlichkeiten im Bereich von [0, 1] zu halten, sowie auf die inhärente Komplexität der Likelihood-Oberfläche, insbesondere bei bestimmten Datenstrukturen.</p>
+<p>Ein weitere Methode, um als Effektgrössen Risk Ratios zu bekommen, ist die <strong>Robuste Poisson Regression</strong>, auf die wir hier an dieses Stelle nicht eingehen.</p>
+</section>
+<section id="kontinuierlicher-prädiktor-blutzucker-und-diabetes" class="level3" data-number="9.5.11">
+<h3 data-number="9.5.11" class="anchored" data-anchor-id="kontinuierlicher-prädiktor-blutzucker-und-diabetes"><span class="header-section-number">9.5.11</span> Kontinuierlicher Prädiktor: Blutzucker und Diabetes</h3>
+<p>Wir greifen das Beispiel “Blutzucker und Diabetes” aus <a href="#sec-warum-keine-lineare-regression" class="quarto-xref"><span>Section 9.4</span></a> wieder auf. Anhand dieses neuen Beispiels wird gezeigt, wie eine einfache logistische Regression mit einer quantitativen Prädiktorvariable interpretiert wird. Das Modell kann nun geschrieben werden als</p>
+<p><span class="math display">\[
+\mathrm{logit}(\pi_i) = \beta_0+\beta_1 glucose_i.
+\]</span></p>
+<p>Da bei einer kontinuierlichen Eingangsgrösse eine Darstellung als Vierfeldertabelle nicht mehr möglich ist, passen wir direkt ein Modell an</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m.glm2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(diabetes <span class="sc">~</span> glucose, <span class="at">data =</span> diabetes, <span class="at">family =</span> <span class="fu">binomial</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>und schauen uns die Punktschätzung, Standardfehler, Konfidenzintervall, <span class="math inline">\(z\)</span>-Werte und <span class="math inline">\(p\)</span>-Werte an. In die Theorie bezüglich Tests und Intervallschätzung in der logistischen Regression werden wir in <a href="#sec-likelihood" class="quarto-xref"><span>Section 9.7.4</span></a> eingehen.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.glm2)<span class="sc">$</span>coef</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Estimate  Std. Error   z value     Pr(&gt;|z|)
+(Intercept) -6.09552139 0.629787038 -9.678703 3.713993e-22
+glucose      0.04242099 0.004760623  8.910805 5.066328e-19</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m.glm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  2.5 %      97.5 %
+(Intercept) -7.38670938 -4.91195171
+glucose      0.03346065  0.05216953</code></pre>
+</div>
+</div>
+<p>von Hand zusammengefasst,</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">summary</span>(m.glm2)<span class="sc">$</span>coef,<span class="fu">confint</span>(m.glm2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Estimate  Std. Error   z value     Pr(&gt;|z|)       2.5 %
+(Intercept) -6.09552139 0.629787038 -9.678703 3.713993e-22 -7.38670938
+glucose      0.04242099 0.004760623  8.910805 5.066328e-19  0.03346065
+                 97.5 %
+(Intercept) -4.91195171
+glucose      0.05216953</code></pre>
+</div>
+</div>
+<p>oder einfacher mit <code>parameters()</code> auf <span class="math inline">\(logit\)</span>-Skala:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(m.glm2,<span class="at">exponentiate=</span><span class="cn">FALSE</span>) <span class="do">##Default</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter   | Log-Odds |       SE |         95% CI |     z |      p
+-------------------------------------------------------------------
+(Intercept) |    -6.10 |     0.63 | [-7.39, -4.91] | -9.68 | &lt; .001
+glucose     |     0.04 | 4.76e-03 | [ 0.03,  0.05] |  8.91 | &lt; .001</code></pre>
+</div>
+</div>
+<p>und auf <span class="math inline">\(OR\)</span>-Skala:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(m.glm2,<span class="at">exponentiate=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter   | Odds Ratio |       SE |       95% CI |     z |      p
+-------------------------------------------------------------------
+(Intercept) |   2.25e-03 | 1.42e-03 | [0.00, 0.01] | -9.68 | &lt; .001
+glucose     |       1.04 | 4.97e-03 | [1.03, 1.05] |  8.91 | &lt; .001</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(\hat{\beta}_0\)</span> ist das geschätzte <span class="math inline">\(\mathrm{logit}\)</span> für Diabetes, bei einem Blutzucker von 0 mg/dl. Es macht inhaltlich keinen Sinn, den Wert zu interpretieren. Daher sind wir auch nicht beeindruckt, dass sich dieser <span class="math inline">\(\mathrm{logit}\)</span> statistisch signifikant von 0, bzw. die Odds statistisch signifikant von 1 unterscheiden. Meistens interessiert dieses Intercept (die Lage des Modells), nicht.</p>
+<p><span class="math inline">\(\hat{\beta}_1\)</span> ist der geschätzte Effekt von Blutzucker auf Diabetes, also das <span class="math inline">\(\log(OR)\)</span>. Pro zusätzliches Milligramm Zucker pro Deziliter Blut steigt (das Vorzeichen ist positiv) das <span class="math inline">\(\mathrm{logit}\)</span> für Diabetes um 0.042421. Anhand des sehr kleinen <span class="math inline">\(p\)</span>–Wertes wissen wir bereits, dass es einen statistisch signifikanten Zusammenhang zwischen <code>glucose</code> und <code>diabetes</code> gibt. Das <span class="math inline">\(OR\)</span> von 1.0433336 unterscheidet sich also statistisch signifikant von 1. Diese Grösse ist der Effekt pro Milligramm Zucker pro Deziliter Blut.</p>
+<p>Bei einem Unterschied von 10mg/dl beträgt das <span class="math inline">\(OR\)</span> also schon 1.528 (Versuchen Sie, dies aufgrund der Linearität nachzuvollziehen mit <span class="math inline">\(\exp(10x)=(\exp(x))^{10})\)</span>.</p>
+</section>
+<section id="vorhersage" class="level3" data-number="9.5.12">
+<h3 data-number="9.5.12" class="anchored" data-anchor-id="vorhersage"><span class="header-section-number">9.5.12</span> Vorhersage</h3>
+<p>Anhand der geschätzten Regressionskoeffizienten können wir nun die Regressionsgleichung benutzen, um die Odds für Diabetes bei einer bestimmten Blutzuckerkonzentration, z.B. 170 mg/dl, zu schätzen:</p>
+<p><span class="math display">\[
+\mathrm{logit}(\hat{\pi})_{gluc=170} = -6.0955214 + 0.042421 \times 170 = 1.1160464,
+\]</span></p>
+<p><span class="math display">\[
+\hat{O}_{gluc=170} = \exp(-6.0955214 + 0.042421 \times 170) = 3.0527608,
+\]</span></p>
+<p>und somit</p>
+<p><span class="math display">\[
+\hat{\pi}_{gluc=170} = \frac{\exp(-6.0955214 + 0.042421 \times 170)}{1+\exp(-6.0955214 + 0.042421 \times 170)} = 0.7532546
+\]</span></p>
+<p>Es handelt sich dabei genau um den Wert des Einführungsbeispiels aus <a href="#sec-warum-keine-lineare-regression" class="quarto-xref"><span>Section 9.4</span></a>:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-log-reg-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-log-reg-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-plot-log-reg-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-log-reg-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.6: Zusammenhang zwischen Blutzucker und Diabetes. Links die log(Odds), rechts die Wahrscheinlichkeit auf der y-Achse (n = 392).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-multiple-logistische-regression" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="sec-multiple-logistische-regression"><span class="header-section-number">9.6</span> Multiple logistische Regression</h2>
+<p>Wie bei der linearen Regression, kann man auch bei einer logistischen Regression zusätzliche Prädiktorvariablen in das Model einfliessen lassen, um entweder</p>
+<ul>
+<li>interessierende Effekte für <strong>potentielle Confounder</strong> zu kontrollieren</li>
+<li>um ein <strong>optimales Model</strong> zu entwickeln.</li>
+<li>Effekte <strong>bedingt auf andere Eingangsgrössen</strong> zu quantifizieren.</li>
+</ul>
+<p>Für <span class="math inline">\(m\)</span> unabhängige Variablen lautet das Modell (der lineare Prädiktor) dann</p>
+<p><span class="math display">\[
+\boxed{\mathrm{logit}(\pi_i) = \beta_0 + \beta_1x_{i1}+\dots+\beta_m x_{im}.}
+\]</span></p>
+<p>Die wahren <span class="math inline">\(\beta\)</span>’s werden wie immer geschätzt anhand von Stichprobendaten (Auf die Schätzmethode werden weiter unten eingehen):</p>
+<p><span class="math display">\[
+\mathrm{logit}(\hat{\pi}_i) = \hat{\beta}_0 + \hat{\beta}_1 x_{i1}+\dots+\hat{\beta}_m x_{im},
+\]</span></p>
+<p><span class="math display">\[
+\hat{O_i} = \exp(\hat{\beta}_0 + \hat{\beta}_1 x_{i1}+\dots+\hat{\beta}_m x_{im}),
+\]</span></p>
+<p>und folglich</p>
+<p><span class="math display">\[
+\hat{\pi}_i = \frac{\exp(\hat{\beta}_0 + \hat{\beta}_1 x_{i1}+\dots+\hat{\beta}_m x_{im})}{1+\exp(\hat{\beta}_0 + \hat{\beta}_1 x_{i1}+\dots+\hat{\beta}_m x_{im})}.
+\]</span></p>
+<p>Wir erstellen zuerst ein multiples Modell mit allen Prädiktoren und schauen uns den Output an:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erstellen des multiplen logistischen Regressionsmodell</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>m.glmF <span class="ot">&lt;-</span> <span class="fu">glm</span>(diabetes <span class="sc">~</span> pregnant_bin <span class="sc">+</span> glucose <span class="sc">+</span> pressure <span class="sc">+</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                triceps <span class="sc">+</span> insulin <span class="sc">+</span> mass <span class="sc">+</span> pedigree <span class="sc">+</span> age,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> diabetes, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(m.glmF)<span class="sc">$</span>coef,<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)      -10.167      1.307  -7.776    0.000
+pregnant_binYes    0.002      0.422   0.005    0.996
+glucose            0.038      0.006   6.603    0.000
+pressure          -0.001      0.012  -0.091    0.927
+triceps            0.012      0.017   0.680    0.496
+insulin           -0.001      0.001  -0.710    0.478
+mass               0.067      0.028   2.409    0.016
+pedigree           1.079      0.423   2.551    0.011
+age                0.052      0.015   3.506    0.000</code></pre>
+</div>
+</div>
+<p>Mit Ausnahme vom Intercept (<span class="math inline">\(\mathrm{logit}\)</span> für Diabetes, wenn alle Eingangsgrössen 0) sehen wir für jede der acht unabhängigen Variablen einen Effekt mit geschätztem <span class="math inline">\(\log(OR)\)</span>, Standardfehler, <span class="math inline">\(z\)</span>-Statistik und <span class="math inline">\(p\)</span>-Wert für den test der jeweiligen <span class="math inline">\(H_0:\beta_k=0, k=1,\dots,8\)</span>.</p>
+<p>Interessieren wir uns beispielsweise für das <span class="math inline">\(OR\)</span> bzgl. <code>glucose</code>, kann der entsprechende Wert exponiert werden, was ein <span class="math inline">\(OR\)</span> von 1.0389345 ergibt. Pro zusätzliches Milligramm Zucker pro Deziliter Blut steigen (das Vorzeichen ist positiv) die Odds für Diabetes um diesen Faktor. Dies unter Berücksichtigung aller anderen Prädiktorvariablen, d.h. das ist der Effect von <code>glucuse</code>, der über den Effekt der anderen Eingangsgrössen im Modell hinausgeht. Beachten Sie, dass das OR für <code>glucose</code> im multiplen Modell verschieden ist als im einfachen Modell (1.039 vs.&nbsp;1.043). Dies, weil im einfachen Modell der Effekt von <code>glucose</code> isoliert, im multiplen Modell jedoch unter Berücksichtigung aller anderen Variablen berechnet wird, für diese <strong>kontrolliert</strong> wird. Das Gleiche gilt für die Interpretation aller anderen Koeffizienten.</p>
+<p>Mit <code>parameters()</code> aus dem Packet <code>parameters</code> kann man sich wieder – alternativ – mit <code>exponentiate=TRUE</code> direkt geschätzte <span class="math inline">\(OR\)</span>, Standardfehler, 95% KI, <span class="math inline">\(z\)</span>- und <span class="math inline">\(p\)</span>-Wert herausgeben lassen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(m.glmF,<span class="at">exponentiate=</span><span class="cn">TRUE</span>,<span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter          | Odds Ratio |        SE |         95% CI |      z |      p
+------------------------------------------------------------------------------
+(Intercept)        |  3.840e-05 | 5.021e-05 | [0.000, 0.000] | -7.776 | &lt; .001
+pregnant bin [Yes] |      1.002 |     0.423 | [0.445, 2.347] |  0.005 | 0.996 
+glucose            |      1.039 |     0.006 | [1.028, 1.051] |  6.603 | &lt; .001
+pressure           |      0.999 |     0.012 | [0.976, 1.023] | -0.091 | 0.927 
+triceps            |      1.012 |     0.017 | [0.978, 1.046] |  0.680 | 0.496 
+insulin            |      0.999 |     0.001 | [0.996, 1.002] | -0.710 | 0.478 
+mass               |      1.069 |     0.030 | [1.013, 1.130] |  2.409 | 0.016 
+pedigree           |      2.941 |     1.243 | [1.307, 6.858] |  2.551 | 0.011 
+age                |      1.053 |     0.016 | [1.024, 1.085] |  3.506 | &lt; .001</code></pre>
+</div>
+</div>
+<section id="vorhersage-1" class="level3" data-number="9.6.1">
+<h3 data-number="9.6.1" class="anchored" data-anchor-id="vorhersage-1"><span class="header-section-number">9.6.1</span> Vorhersage</h3>
+<p>Was ist die Wahrscheinlichkeit gemäss Modell für einen Diabetes für eine Frau mit den folgenden Werten?</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-ex-mlr" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ex-mlr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;9.1: Was ist die Wahrscheinlichkeit, dass diese Frau Diabetes hat?
+</figcaption>
+<div aria-describedby="tbl-ex-mlr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="lightable-classic cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">pregnant_bin</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">glucose</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pressure</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">triceps</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">insulin</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mass</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pedigree</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">age</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">197</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">543</td>
+<td style="text-align: right;">30.5</td>
+<td style="text-align: right;">0.158</td>
+<td style="text-align: right;">53</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Wir setzen als erstes die Koeffizienten sowie die Werte der jeweiligen Prädiktoren in die Regressionsgleichung ein, um den Wert des linearen Prädiktors zu berechnen:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{logit}(\hat{\pi}) =&amp;\;
+-10.1674594
++ 0.0021074
++ 0.0381956\times 197 \\
+&amp;+ -0.0010788\times 70
++ 0.0116816\times 45
++ -9.4250878\times 10^{-4}\times 543 \\
+&amp;+ 0.0666242\times 30.5
++ 1.0786763\times 0.158
++ 0.052011\times 53 \\
+=&amp;\; 2.2566111
+\end{aligned}
+\]</span></p>
+<p>Durch Exponieren erhalten wir die Odds:</p>
+<p><span class="math display">\[
+\hat{O} = \exp(2.2566111) = 9.5506685
+\]</span></p>
+<p>Die Wahrscheinlichkeit ist schliesslich</p>
+<p><span class="math display">\[
+\hat{\pi} = \frac{\exp(2.2566111)}{1+\exp(2.2566111)} = 0.9052193
+\]</span></p>
+<p>Eine Frau mit den Werten aus <a href="#tbl-ex-mlr" class="quarto-xref">Tabelle&nbsp;<span>9.1</span></a> hat eine Wahrscheinlichkeit von 90.5% für einen Diabetes. Die Werte entsprechen denjenigen der 4. Person im Datensatz. Tatsächlich hat diese Person Diabetes.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="lightable-classic caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">pregnant_bin</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">glucose</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pressure</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">triceps</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">insulin</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mass</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pedigree</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">age</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">diabetes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">197</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">543</td>
+<td style="text-align: right;">30.5</td>
+<td style="text-align: right;">0.158</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: left;">pos</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Wenn man ein logistisches Modell in <code>R</code> rechnet, dann ist die Vorhersage bzgl. dem linearen Prädiktor und bzgl. der Wahrscheinlichkeit für das Ereignis für jede Person bereits hinterlegt. Mit <code>$linear.predictors</code> und <code>$fitted.values</code> können diese aufgerufen werden.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>m.glmF<span class="sc">$</span>linear.predictors[<span class="dv">4</span>] <span class="co"># Der lineare Prädiktor für die 4. Person</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       9 
+2.256611 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>m.glmF<span class="sc">$</span>fitted.values[<span class="dv">4</span>] <span class="co"># Die Wahrscheinlichkeit von Diabetes für die  4. Person</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        9 
+0.9052193 </code></pre>
+</div>
+</div>
+<p>Die Wahrscheinlichkeit ist dann die logistische Funktion evaluiert beim Wert des linearen Prädiktors <span class="math inline">\(\eta\)</span>,</p>
+<p><span class="math display">\[
+\hat{\pi}_i=\frac{\exp(\hat{\eta}_i)}{1+\exp(\hat{\eta}_i)},
+\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>eta<span class="ot">&lt;-</span>m.glmF<span class="sc">$</span>linear.predictor[<span class="dv">4</span>]</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(eta)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(eta))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        9 
+0.9052193 </code></pre>
+</div>
+</div>
+<p>Hinweis: die <em>9</em> im header kommt davon, dass die Person die ID <em>9</em> hat.</p>
+<!-- Mit der `effects` package kann man einfach Modellvorhersagen visualisieren: -->
+<!-- ```{r fig.dim = c(9,7)} -->
+<!-- library(effects) -->
+<!-- plot(predictorEffects(m.glmF),axes=list(y=list(type="response")),main="") -->
+<!-- ``` -->
+</section>
+</section>
+<section id="sec-recapLM" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="sec-recapLM"><span class="header-section-number">9.7</span> Exkurs: Schätzmethoden</h2>
+<p>Es gibt drei grundlegende Methoden, um unbekannte Parameter (einer Verteilung) zu schätzen:</p>
+<ul>
+<li>Methode der kleinsten Quadrate</li>
+<li>Momentenmethode</li>
+<li>Maximum Likelihood Methode</li>
+</ul>
+<p>Die erste haben wir im Rahmen der linearen Regression schon angetroffen, die zweite wird hier der Vollständigkeit halber aufgeführt, <strong>die Maximum Likelihood Methode ist die häufigste und wichtigste Methode</strong>.</p>
+<p>Ziel dieses Abschnitts ist es, in das Prinzip der Methoden, insbesondere der dritten, der Maximum Likelihood Methode, einzutauchen. Wir wollen ein Gespür dafür entwickeln, wie man aus Daten Schätzer konstruiert.</p>
+<!-- Es geht darum, dass der/die interessierte Leser:in das Prinzip der Schätzmethoden für Vertrauensintervalle und p-Werte bei der logistischen Regression (und später auch bei der Poisson Regression) nachvollziehen kann. Hier werden die Methoden an einem sehr einfachen Beispiel gezeigt. Es kann darum sein, dass Sei sich denken: "warum so kompliziert, wenn es auch einfach geht". Die "einfache Situation" wird hier gebraucht, damit man die komplexen Methoden besser nachvollziehen kann. Der Mehrwert der komplexen Methoden liegt aber darin, dass sie eben auch dann funktionieren, wenn die Situation nicht mehr einfach ist (z.B. bei multiplen logistischen Regressionsmodellen). -->
+<section id="sec-LeastSquares" class="level3" data-number="9.7.1">
+<h3 data-number="9.7.1" class="anchored" data-anchor-id="sec-LeastSquares"><span class="header-section-number">9.7.1</span> Methode der kleinsten Quadrate</h3>
+<p>Diese Methode wurde bereits in der multiplen Regression angewandt. Da sie grundlegend ist, wollen wir sie hier kurz wiederholen. Wir fangen an mit einem grundlegenden Schätzproblem, das Schätzen eines wahren Durchschnitts <span class="math inline">\(\mu\)</span>. Der Kleinste-Quadrate-Schätzer (Least Squares, LS-Schätzer) von <span class="math inline">\(\mu\)</span> ist der Wert, der die Fehler-Quadratsumme</p>
+<p><span class="math display">\[
+\mathrm{SS}(\mu)
+=
+\sum_{i=1}^{n} (X_i - \mu)^2
+\]</span></p>
+<p>minimiert. Aus der Schule erinnern wir uns: Gelöst werden solche Probleme in der Regel, indem man <span class="math inline">\(ss(\mu)\)</span> nach <span class="math inline">\(\mu\)</span> <strong>ableitet und null setzt</strong>,</p>
+<p><span class="math display">\[
+\frac{\text{d} ss}{\text{d} \mu}=-2(\sum_{i=1}^nX_i-n\mu)=0.
+\]</span></p>
+<p>Daraus folgt für den Schätzer (Variable) und Schätzwert (Zahl):</p>
+<p><span class="math display">\[
+\hat{\mu}_{LS}=\frac{\sum_{i=1}^nX_i}{n}=\bar{X}, \qquad \hat{\mu}_{LS}=\frac{\sum_{i=1}^nx_i}{n}=\bar{x}
+\]</span></p>
+<p>Man notiert beide, <span class="math inline">\(\bar{X}\)</span> und <span class="math inline">\(\bar{x}\)</span>, mit <span class="math inline">\(\hat{\mu}\)</span>. Aus dem Kontext wird meistens klar, ob mit <span class="math inline">\(\hat{\mu}\)</span> ein Schätzer oder ein Schätzwert gemeint ist.</p>
+<p>Beispiel: Seien die Daten einer Stichprobe aus <span class="math inline">\(X\)</span>: <span class="math inline">\(2.08, 3.41, 4.52, 1.7, 4.39, 4.06, 4.17, 6.23, 1.56, 6.53, 2.51, 1.74, 2.57, 4.51, 4.3, 3.38, 2.09, 2.7, 6.45, 4.4\)</span> mit <span class="math inline">\(\bar{x}=3.665\)</span>.</p>
+<p>Der Schätzer von <span class="math inline">\(\mu\)</span> mit minimaler Fehlerquadratsumme ist <span class="math inline">\(\hat{\mu}_{LS}=\bar{X}\)</span> und der Schätzwert damit <span class="math inline">\(3.665\)</span>. Es gibt keine andere Statistik (d.h. keine andere Grösse, die wir aus den Daten berechnen können), für die die Summe der Abweichungsquadrate <span class="math inline">\(ss(\mu)\)</span> kleiner ist.</p>
+<p>Abbildung <a href="#fig-LS" class="quarto-xref">Abbildung&nbsp;<span>9.7</span></a> zeigt die Summe der Abweichungsquadrate bei diesen Daten als Funktion von <span class="math inline">\(\mu\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-LS" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-LS-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-LS-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-LS-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.7: Summe der Abweichungsquadrate als Funktion von <span class="math inline">\(\mu\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Diese Methode wird sehr häufig – wie wir gesehen haben – in der <strong>linearen Regression</strong> gebraucht. Dort hing der Erwartungswert <span class="math inline">\(\mathbb{E}(Y_i)=\mu_i\)</span> von gesuchten Parametern ab, z.B. den Parametern <span class="math inline">\(\alpha\)</span> und <span class="math inline">\(\beta\)</span> in der einfachen lineare Regression (<span class="math inline">\(Y_i=\alpha+\beta x_i+\epsilon_i\)</span>) also <span class="math inline">\(\mathbb{E}(Y_i)=\mu_i=\alpha+\beta x_i\)</span>. Minimiert wird hier die Summe der Fehlerquadrate</p>
+<p><span class="math display">\[
+\sum_{i=1}^n\hat{\epsilon}_i^2=\sum_{i=1}^n
+(Y_i-\mu_i)^2=\sum_{i=1}^n (Y_i-\alpha-\beta x_i)^2,
+\]</span></p>
+<p>um Schätzer <span class="math inline">\(\hat{\alpha}\)</span> und <span class="math inline">\(\hat{\beta}\)</span> für <span class="math inline">\(\alpha\)</span> und <span class="math inline">\(\beta\)</span> zu finden.</p>
+</section>
+<section id="momentenmethode" class="level3" data-number="9.7.2">
+<h3 data-number="9.7.2" class="anchored" data-anchor-id="momentenmethode"><span class="header-section-number">9.7.2</span> Momentenmethode</h3>
+<p>Wir möchten den Therapieerfolg einer neuen Behandlung schätzen und führen zu diesem Zweck die neue Behandlung an 100 Personen durch. Jede Person stellt dabei ein unabhängiges Bernoulli-Experiment dar, welches den Ausgang “Erfolg” oder “Misserfolg” haben kann. Man sagt auch, dass man dann <span class="math inline">\(n\)</span> Bernoulli Variablen <span class="math inline">\(X_1,\dots,X_n\)</span> mit unbekanntem Paramteter <span class="math inline">\(\pi\)</span> hat. Beobachtet wurden nun 37 Erfolge. Wir wollen jetzt einen Schätzer für <span class="math inline">\(\pi\)</span>.</p>
+<p>Das Moment der Ordnung <span class="math inline">\(k\)</span> von <span class="math inline">\(X\)</span> ist definiert als</p>
+<p><span class="math display">\[
+m_k:=\mathbb{E}(X^k).
+\]</span></p>
+<p>Die Momentenmethode besteht darin, die <span class="math inline">\(k\)</span> Momente als Funktionen von <span class="math inline">\(k\)</span> unbekannten Parametern auszudrücken</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbb{E}(X) &amp;= g_1(\theta_1, \theta_2, \dots, \theta_k) \\
+\mathbb{E}(X^2) &amp;= g_2(\theta_1, \theta_2, \dots, \theta_k) \\
+&amp;\vdots \\
+\mathbb{E}(X^k) &amp;= g_k(\theta_1, \theta_2, \dots, \theta_k)
+\end{aligned}
+\]</span></p>
+<p>Diese <span class="math inline">\(k\)</span> Gleichungen werden dann nach den <span class="math inline">\(k\)</span> Parametern aufgelöst. Solche Probleme kennen wir vielleicht noch aus der Schulzeit. Hier haben wir nur einen unbekannten Parameter, <span class="math inline">\(\pi\)</span>, brauchen also nur das erste Moment</p>
+<p><span class="math display">\[
+E(X)=g(\pi)
+\]</span></p>
+<p>Der Erwartungswert einer <span class="math inline">\(\mathcal{B}(\pi,1)\)</span> verteilten Variablen ist bekannterweise schon das erste Moment, also haben wir</p>
+<p><span class="math display">\[g(\pi)=\pi.\]</span></p>
+<p>Wir ersetzen nun das theoretische Moment durch das Stichprobenmoment. Der Schätzer und Schätzwert sind dann</p>
+<p><span class="math display">\[
+\hat{\pi}_{MM}=\frac{1}{n}\sum_{i=1}^n X_i, \qquad \hat{\pi}_{MM}=\frac{1}{n}\sum_{i=1}^n x_i=\frac{37}{100}
+\]</span></p>
+<p>Die geschätzte Wahrscheinlichkeit (Punktschätzung), dass die Therapie erfolgreich ist, ist gemäss der Momentenmethode 0.37. Wir wissen bereits, dass bei Wiederholung der Studie die neue Schätzung aufgrund leicht anderer Beobachtungen nicht zwingend wieder 37% ergeben wird (Stichprobenvariation). Der Schätzer hat ja selber eine Verteilung, über die man dann Konfidenzintervalle konstruieren kann (siehe <a href="08_inf_cat_data.html#sec-proportionen" class="quarto-xref"><span>Section 8.4</span></a>). Eine Methode zur Konstruktion von Konfidenzintervallen werden wir bei der Maximum Likelihood Methode sehen.</p>
+</section>
+<section id="sec-maxLik" class="level3" data-number="9.7.3">
+<h3 data-number="9.7.3" class="anchored" data-anchor-id="sec-maxLik"><span class="header-section-number">9.7.3</span> Maximum Likelihood Methode</h3>
+<p>Eine wichtige Grösse – für viele sogar die fundamentalste Grösse in der Statistik – ist die <strong>Likelihood</strong>. Die Maximum-Likelihood-Methode (ML) ist die wichtigste Methode zur Schätzung unbekannter Modellparameter aus Daten. Sie erfordert jedoch Kenntnisse über die Verteilung der Daten.</p>
+<!-- Betrachten wir $X_i$ als unabhängig und identisch verteilt (i.i.d.) gemäß einer Verteilung, z.B. binomial, $f(x_i) = \mathcal{B}(\pi, n)$ (mit bekanntem $n$), Das Ziel ist es, den Parameter $\pi$ zu schätzen. -->
+<section id="likelihood-funktion" class="level4" data-number="9.7.3.1">
+<h4 data-number="9.7.3.1" class="anchored" data-anchor-id="likelihood-funktion"><span class="header-section-number">9.7.3.1</span> Likelihood-Funktion</h4>
+<p>Die Wahrscheinlichkeitsdichte (oder -masse) <span class="math inline">\(p(x;\theta)\)</span> beschreibt die Verteilung der Variable <span class="math inline">\(X\)</span> für fixierten Parameter <span class="math inline">\(\theta\)</span>. Das Ziel ist nun die Inferenz bezüglich <span class="math inline">\(\theta\)</span> bei vorliegenden Daten <span class="math inline">\(x\)</span>. Im obigen Beispiel war das die Inferenz bezüglich <span class="math inline">\(\pi\)</span> bei vorliegenden <span class="math inline">\(x=37\)</span> aus <span class="math inline">\(n=100\)</span>.</p>
+<p>Eine zentrale Rolle spielt nun die <strong>Likelihood-Funktion</strong></p>
+<p><span class="math display">\[
+\boxed{L(\theta;x)=p(x;\theta)}
+\]</span></p>
+<p>gesehen als <strong>Funktion von <span class="math inline">\(\theta\)</span> bei vorliegendem <span class="math inline">\(x\)</span></strong>. Wir schreiben dafür in der Folge nur noch kurz <span class="math inline">\(L(\theta)\)</span>.</p>
+<p>Die Likelihood-Funktion für einen Binomialparameter <span class="math inline">\(\pi\)</span> bei vorliegenden Daten <span class="math inline">\(x=37\)</span> und <span class="math inline">\(n=100\)</span> kann man berechnen mit <code>dbinom()</code>. Dabei wird für jedes mögliche <span class="math inline">\(\pi \in [0,1]\)</span> die Wahrscheinlichkeit <span class="math inline">\(p(x)\)</span> berechnet und vertikal aufgetragen.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>wk<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,.<span class="dv">001</span>)<span class="do">##Kandidaten für pi</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>L<span class="ot">&lt;-</span><span class="fu">dbinom</span>(<span class="at">x=</span><span class="dv">37</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span>wk)<span class="do">##Likelihood von pi (als Funktion von pi!)</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wk,L,<span class="at">type=</span><span class="st">"l"</span>,<span class="at">xlab=</span><span class="fu">expression</span>(pi),<span class="at">ylab=</span><span class="fu">expression</span>(<span class="fu">L</span>(pi)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_logistic_regression_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Likelihood-Funktion versus Wahrscheinlichkeitsverteilung
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Likelihood-Funktion ist keine Wahrscheinlichkeitsverteilung, die Fläche unter <span class="math inline">\(L(\pi)\neq 1\)</span>. Sie ist eine Funktion von <span class="math inline">\(\pi\)</span> und nicht eine Funktion von <span class="math inline">\(x\)</span>.</p>
+</div>
+</div>
+<p>Die Maximum-Likelihood-Schätzung (MLE) <span class="math inline">\(\hat{\theta}_{ML}\)</span> eines Parameters <span class="math inline">\(\theta\)</span> wird durch Maximierung der Likelhood-Funktion erreicht:</p>
+<p><strong>Likelihood</strong>: Für unabhängige Daten (<span class="math inline">\(X_1,\dots,X_n\)</span>) ist die Likelihood von <span class="math inline">\(\theta\)</span>, d.h. die Wahrscheinlichkeitsdichte (oder -masse) der Daten gegeben <span class="math inline">\(\theta\)</span>, gleich dem Produkt der <span class="math inline">\(n\)</span> Wahrscheinlichkeitsdichten (oder -massen) <span class="math inline">\(p(x_i)\)</span>, wobei <span class="math inline">\(p(x_i)\)</span> die Dichten (oder Massen) sind,</p>
+<p><span class="math display">\[\begin{equation}
+L(\theta)=\prod_{i=1}^n p(x_i).
+\end{equation}\]</span></p>
+<p><strong>Log-Likelihood</strong>: Aus numerischen Gründen wird dann meistens die Log-Likelihood <span class="math inline">\(l(\theta)\)</span> verwendet. Aus einem Produkt von Likelihoods wird dann eine Summe von Log-Likelihoods, was numerisch leichter zu handhaben ist,</p>
+<p><span class="math display">\[\begin{equation}
+l(\theta)=\log L(\theta)=\sum_{i=1}^n \log p(x_i).
+\end{equation}\]</span></p>
+<p><strong>Relative Likelihood und relative Log-Likelihood</strong>: Es ist oft nützlich, die Likelihood- oder Log-Likelihood relativ zu ihrem Wert beim MLE zu betrachten. Die relative Likelihood ist</p>
+<p><span class="math display">\[\begin{equation}
+\tilde{L}(\theta)=\frac{L(\theta)}{L(\hat{\theta}_{ML})}
+\end{equation}\]</span></p>
+<p>Folgende Schwellen werden of gebraucht bezüglich Plausibilität von <span class="math inline">\(\theta\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+1 &amp;\ge \tilde{L}(\theta) &gt; \frac{1}{3} &amp;\quad&amp; \theta &amp;\text{ very plausible} \\
+\frac{1}{3} &amp;\ge \tilde{L}(\theta) &gt; \frac{1}{10} &amp;\quad&amp; \theta &amp;\text{ plausible} \\
+\frac{1}{10} &amp;\ge \tilde{L}(\theta) &gt; \frac{1}{100} &amp;\quad&amp; \theta &amp;\text{ less plausible} \\
+\frac{1}{100} &amp;\ge \tilde{L}(\theta) &gt; \frac{1}{1000} &amp;\quad&amp; \theta &amp;\text{ barely plausible} \\
+\frac{1}{1000} &amp;\ge \tilde{L}(\theta) &gt; 0 &amp;\quad&amp; \theta &amp;\text{ not plausible}
+\end{aligned}
+\]</span></p>
+<p>Die relative Log-Likelhood ist dann</p>
+<p><span class="math display">\[
+\tilde{l}(\theta)
+=
+l(\theta) - l(\hat{\theta}_{\mathrm{ML}})
+=
+\log\!\left(
+\frac{L(\theta)}{L(\hat{\theta}_{\mathrm{ML}})}
+\right)
+\]</span></p>
+<p>Dabei gilt <span class="math inline">\(-\infty &lt;\tilde{l}(\theta)\leq 0\)</span> und <span class="math inline">\(\tilde{l}(\hat{\theta}_{ML})=0\)</span>.</p>
+<p><a href="#fig-binlik" class="quarto-xref">Abbildung&nbsp;<span>9.8</span></a> zeigt die verschiedenen Arten der Likelihood für unser Binomialmodell bei vorliegenden Daten <span class="math inline">\(n = 100\)</span> und <span class="math inline">\(x = 37\)</span>. Der Maximum-Likelihood-Schätzer ist gut ablesbar als <span class="math inline">\(\hat{\pi}_{ML}=0.37\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-binlik" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-binlik-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-binlik-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-binlik-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.8: Likelihood-Funktion für das Binomialmodel mit n = 100 and x = 37
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="score-und-information" class="level4" data-number="9.7.3.2">
+<h4 data-number="9.7.3.2" class="anchored" data-anchor-id="score-und-information"><span class="header-section-number">9.7.3.2</span> Score und Information</h4>
+<p>Die <strong>erste Ableitung</strong> der Log-Likelihood-Funktion wird als <strong>Score</strong>-Funktion bezeichnet,</p>
+<p><span class="math display">\[
+S(\theta)=\frac{dl(\theta)}{d\theta}.
+\]</span></p>
+<p>Die Berechnung des Maximum-Likelihood-Schätzers (MLE) erfolgt typischerweise durch das Lösen der Score-Gleichung <span class="math inline">\(S(\theta) = 0\)</span>.</p>
+<p>Die <strong>negative zweite Ableitung</strong> der Log-Likelihood-Funktion (die negative Krümmung, die misst, wie schnell eine Kurve an einem bestimmten Punkt ihre Richtung ändert), wird als <strong>Fisher-Information</strong> bezeichnet,</p>
+<p><span class="math display">\[
+I(\theta)=-\frac{d^2 l(\theta)}{d\theta^2}=-\frac{dS(\theta)}{d\theta}.
+\]</span></p>
+</section>
+<section id="beispiel-binomial-model" class="level4" data-number="9.7.3.3">
+<h4 data-number="9.7.3.3" class="anchored" data-anchor-id="beispiel-binomial-model"><span class="header-section-number">9.7.3.3</span> Beispiel: Binomial model</h4>
+<p>Unter Binomialverteilung haben wir (für die Interessierten):</p>
+<ul>
+<li><p><span class="math inline">\(L(\pi)={n \choose x}\pi^x(1-\pi)^{n-x}\)</span></p></li>
+<li><p><span class="math inline">\(l(\pi)=x \log(\pi)+(n-x) \log(1-\pi)\)</span></p></li>
+<li><p><span class="math inline">\(S(\pi)=\frac{x}{\pi}-\frac{n-x}{1-\pi}\)</span></p></li>
+<li><p><span class="math inline">\(\hat{\pi}_{ML}=\frac{x}{n}\)</span></p></li>
+<li><p><span class="math inline">\(I(\pi)=\frac{x}{\pi^2}+\frac{n-x}{(1-\pi)^2}\)</span></p></li>
+</ul>
+</section>
+<section id="varianz-des-mle-als-inverse-der-fisher-information" class="level4" data-number="9.7.3.4">
+<h4 data-number="9.7.3.4" class="anchored" data-anchor-id="varianz-des-mle-als-inverse-der-fisher-information"><span class="header-section-number">9.7.3.4</span> Varianz des MLE als Inverse der Fisher-Information</h4>
+<p>Die Fisher Information evaluiert am MLE <span class="math inline">\(\hat{\pi}_{ML}\)</span> ist</p>
+<p><span class="math display">\[
+I(\hat{\pi}_{ML})=\frac{n}{\hat{\pi}_{ML}(1-\hat{\pi}_{ML})}
+\]</span></p>
+<p>Man kann zeigen, dass die Varianz <span class="math inline">\(\mathrm{Var}(\hat{\pi}_{ML})\)</span> approximativ dem Kehrwert der Fisher-Information entspricht. Je grösser die Information, umso kleiner die Varianz und umgekehrt. Das macht auch intuitiv Sinn.</p>
+<p><span class="math display">\[
+\mathrm{Var}(\hat{\pi}_{ML})=\frac{1}{I(\hat{\pi}_{ML})}
+\]</span></p>
+<p>Damit haben wir einen Standardfehler für den MLE</p>
+<p><span class="math display">\[
+SE(\hat{\pi}_{ML})=\sqrt{\frac{1}{I(\hat{\pi}_{ML})}}=\sqrt{\frac{\hat{\pi}_{ML}(1-\hat{\pi}_{ML})}{n}}.
+\]</span></p>
+</section>
+<section id="quadratische-approximation" class="level4" data-number="9.7.3.5">
+<h4 data-number="9.7.3.5" class="anchored" data-anchor-id="quadratische-approximation"><span class="header-section-number">9.7.3.5</span> Quadratische Approximation</h4>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Quadratische Approximation der Log-Likelihood
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die quadratische Approximation an die relative Log-Likelihood ist</p>
+<p><span class="math display">\[
+\tilde{l}(\theta)
+=
+l(\theta) - l(\hat{\theta}_{\mathrm{ML}})
+\approx
+- \frac{1}{2}
+I(\hat{\theta}_{\mathrm{ML}})
+(\theta - \hat{\theta}_{\mathrm{ML}})^2
+\]</span></p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>(Für die Interessierten!) Die Taylor Approximation zweiten Grades entwickelt um MLE ist:</p>
+<p><span class="math display">\[
+\begin{aligned}
+l(\theta)
+&amp;\approx
+l(\hat{\theta}_{\mathrm{ML}})
++ \frac{d l(\hat{\theta}_{\mathrm{ML}})}{d \theta} (\theta - \hat{\theta}_{\mathrm{ML}})
++ \frac{1}{2} \frac{d^2 l(\hat{\theta}_{\mathrm{ML}})}{d \theta^2} (\theta - \hat{\theta}_{\mathrm{ML}})^2 \\[6pt]
+&amp;=
+l(\hat{\theta}_{\mathrm{ML}})
++ S(\hat{\theta}_{\mathrm{ML}}) (\theta - \hat{\theta}_{\mathrm{ML}})
+- \frac{1}{2} I(\hat{\theta}_{\mathrm{ML}}) (\theta - \hat{\theta}_{\mathrm{ML}})^2 \\[6pt]
+&amp;=
+l(\hat{\theta}_{\mathrm{ML}})
++ 0
+- \frac{1}{2} I(\hat{\theta}_{\mathrm{ML}}) (\theta - \hat{\theta}_{\mathrm{ML}})^2 \\[6pt]
+&amp;=
+l(\hat{\theta}_{\mathrm{ML}})
+- \frac{1}{2} I(\hat{\theta}_{\mathrm{ML}}) (\theta - \hat{\theta}_{\mathrm{ML}})^2
+\end{aligned}
+\]</span></p>
+</div>
+<p>Beispiel. Für <span class="math inline">\(I(\hat{\theta}_{ML})=10\)</span> und <span class="math inline">\(\hat{\theta}_{ML}=5\)</span>, haben wir <span class="math inline">\(y=-0.5\times 10(x-5)^2\)</span>. Dies ist eine einfache quadratische Funktion von <span class="math inline">\(\theta\)</span> zentriert um <span class="math inline">\(\hat{\theta}_{ML}=5\)</span> mit negativer Krümmung <span class="math inline">\(I(\hat{\theta}_{ML})=10\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_logistic_regression_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir brauchen nun obiges Resultat, dass die Varianz vom MLE der Kehrwert der Information ist,</p>
+<p><span class="math display">\[
+\mathrm{Var}(\hat{\theta}_{ML})=1/I(\hat{\theta}_{ML}),
+\]</span> und können die relative Log-Likelihood schreiben als</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Quadratische Approximation der Log-Likelihood
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\large
+\tilde{l}(\theta)\approx -\frac{1}{2}\left(\frac{\hat{\theta}_{ML}-\theta}{SE(\hat{\theta}_{ML})}\right)^2
+\]</span></p>
+</div>
+</div>
+<p><strong>Normalverteilung und quadratische Approximation</strong>: Bei Normalverteilung mit bekanntem <span class="math inline">\(\sigma^2\)</span> haben wir</p>
+<ul>
+<li><span class="math inline">\(L(\mu)=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}
+  \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)\)</span></li>
+<li><span class="math inline">\(l(\mu)=-\frac{1}{2\sigma^2}\sum_{i=1}^n(x_i-\mu)^2\)</span></li>
+<li><span class="math inline">\(S(\mu)=\frac{1}{\sigma^2}\sum_{i=1}^n(x_i-\mu)\)</span></li>
+<li><span class="math inline">\(\hat{\mu}_{ML}=\bar{x}\)</span></li>
+<li><span class="math inline">\(I(\mu)=\frac{n}{\sigma^2}\)</span></li>
+</ul>
+<p>Wir haben dann für die relative Log-Likelihood:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\tilde{l}(\mu)
+&amp;=
+l(\mu) - l(\hat{\mu}) \\
+&amp;=
+- \frac{1}{2\sigma^2}
+\left[
+\sum_{i=1}^{n} (x_i - \mu)^2
+-
+\sum_{i=1}^{n} (x_i - \hat{\mu})^2
+\right] \\[6pt]
+&amp;=
+- \frac{1}{2} \frac{n}{\sigma^2} (\hat{\mu} - \mu)^2 \\[6pt]
+&amp;=
+- \frac{1}{2}
+\left(
+\frac{\hat{\mu} - \mu}{\sigma / \sqrt{n}}
+\right)^2
+\end{aligned}
+\]</span></p>
+<p><strong>Die Approximation ist also bei Normalverteilung exakt</strong>!</p>
+<p>Wir sehen, dass die Log-Likelihood bei Normalverteilung eine quadratische Funktion ist und dass die Information (negative Krümmung) und damit die Varianz nicht von <span class="math inline">\(\mu\)</span> abhängt (homogene Varianz).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Normalverteilung und quadratische Approximation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die quadratische Approximation der Log-Likelihood ist bei Normalverteilung <strong>exakt</strong>! Das bedeutet:</p>
+<ul>
+<li>Normalverteilung impliziert quadratische Log-Likelihood</li>
+<li>Eine quadratische Approximation der Log-Likelihood impliziert approximative Normalverteilung</li>
+</ul>
+</div>
+</div>
+<!-- $ -->
+<!-- p(x)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{1}{2}\frac{(x-\mu)^2}{\sigma^2}\right) -->
+<!-- $$ -->
+<!-- i.e., $\hat{\mu}_{ML} = \frac{\sum{i=1}^n X_i}{n} = \bar{x}$. -->
+<!-- ```{r normalLik} -->
+<!-- normalLikDemo<-function(x=rnorm(100),sigma=1,approx=FALSE) -->
+<!-- { -->
+<!--     mle<-mean(x) -->
+<!--     n<-length(x) -->
+<!--     info<-n/sigma^2 -->
+<!--     se<-sqrt(1/info) -->
+<!--     mu<-seq(mle-1,mle+1,.01) -->
+<!--     L<-dnorm(x=mean(x),mean=mu,sd=se) -->
+<!--     Lrel<-L/max(L) -->
+<!--     l<-log(Lrel) -->
+<!--     par(mfrow=c(2,2)) -->
+<!--     plot(mu,L,type="l") -->
+<!--     abline(v=mle,lty=2) -->
+<!--     plot(mu,Lrel,type="l") -->
+<!--     abline(v=mle,lty=2) -->
+<!--     plot(mu,l,type="l") -->
+<!--     abline(v=mle,lty=2) -->
+<!--     ci<-confint(glm(x~1,family="gaussian")) -->
+<!--     plotrix::ablineclip(h=-1.96,x1=mle-1.96*se,x2=mle+1.96*se,lty=1,col="red") -->
+<!--     if (approx==TRUE) -->
+<!--     { -->
+<!--     plot(mu,l,type="l") -->
+<!--     abline(v=mle,lty=2) -->
+<!--     lines(mu,-0.5*((mu-mle)/(se))^2,col="red") -->
+<!--     } -->
+<!-- } -->
+<!-- normalLikDemo(approx=TRUE) -->
+<!-- ``` -->
+<p>Die Vorteile der quadratischen Approximation der relativen Log-Likelihood liegen darin, dass wir <strong>nur den MLE und die beobachtete Fisher-Information</strong> kennen müssen, unabhängig davon, wie die tatsächliche Log-Likelihood aussieht.</p>
+</section>
+</section>
+<section id="sec-likelihood" class="level3" data-number="9.7.4">
+<h3 data-number="9.7.4" class="anchored" data-anchor-id="sec-likelihood"><span class="header-section-number">9.7.4</span> Likelihood Inferenz</h3>
+<p>Wir betrachten nun Statistiken, mit denen wir Hypothesen testen können. Aus der Likelihood-Theorie kann man die asymptotische Verteilung von drei Statistiken ableiten, um Hypothesen der Form</p>
+<p><span class="math display">\[
+H_0: \theta=\theta_0
+\]</span></p>
+<p>zu testen und Konfidenzintervalle für <span class="math inline">\(\theta\)</span> zu konstruieren:</p>
+<p>Wir wollen diese drei Statistiken und deren Verteilung unter der <span class="math inline">\(H_0\)</span> jetzt aufführen (ohne Herleitung)</p>
+<ul>
+<li><strong>Wald-Statistik</strong></li>
+<li><strong>Score-Statistik</strong></li>
+<li><strong>Likelihood-Ratio Statistik</strong></li>
+</ul>
+<section id="wald-tests" class="level4" data-number="9.7.4.1">
+<h4 data-number="9.7.4.1" class="anchored" data-anchor-id="wald-tests"><span class="header-section-number">9.7.4.1</span> Wald Tests</h4>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Wald-Statistik
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\frac{\hat{\theta}_{\mathrm{ML}} - \theta_0}{\mathrm{SE}(\hat{\theta}_{\mathrm{ML}})}
+\;\overset{\mathrm{a}}{\sim}\;
+\mathcal{N}(0, 1)
+\]</span></p>
+</div>
+</div>
+<p>Tests einzelner Koeffizienten, die auf der approximativen Normalverteilung basieren, werden als <strong>Wald</strong>-Tests bezeichnet, wobei eine grobe Annahme über die Form der Likelihood getroffen wird. Tests im Output von logistischen Regressionen sind Beispiele für Wald Tests.</p>
+<p>Durch das Invertieren von Tests können wir Konfidenzintervalle konstruieren:</p>
+<p>Die Menge</p>
+<p><span class="math display">\[
+\left(\theta: z_{\alpha/2}\leq \frac{\hat{\theta}_{ML}-\theta}{SE(\hat{\theta}_{ML})} \leq z_{1-\alpha/2}\right)
+\]</span></p>
+<p>führt nicht zu einer Verwerfung von <span class="math inline">\(H_0: \theta=\theta_0\)</span>. Diese Werte bilden also ein approximates <span class="math inline">\((1-\alpha)\times 100\)</span> <strong>Wald Konfidenzintervall</strong> für <span class="math inline">\(\theta\)</span>. Das ist dann äquivalent zur bereits bekannten Formel</p>
+<p><span class="math display">\[
+\boxed{\hat{\theta}_{ML}\pm z_{1-\alpha/2} SE(\hat{\theta}_{ML})}.
+\]</span></p>
+</section>
+<section id="sec-likelihood-ratio-tests" class="level4" data-number="9.7.4.2">
+<h4 data-number="9.7.4.2" class="anchored" data-anchor-id="sec-likelihood-ratio-tests"><span class="header-section-number">9.7.4.2</span> Likelihood Ratio Tests</h4>
+<p>Eine sehr wichtige Statistik ist die <strong>Likelihood-Ratio-Statistik</strong>, diese führt zum Likelihood-Ratio-Test. Der Likelihood-Ratio-Test ein Hypothesentest, bei dem die Güte der Anpassung zweier konkurrierender statistischer Modelle verglichen wird. Typischerweise wird dabei ein Modell betrachtet, das durch <strong>Maximierung über den gesamten Parameterraum</strong> gefunden wird, und ein weiteres, das nach der <strong>Auferlegung einer Einschränkung</strong> bestimmt wird.</p>
+<p>Dieser Test basiert auf dem Verhältnis ihrer Likelihoods. Wenn das stärker eingeschränkte Modell (d.h. die Nullhypothese) durch die beobachteten Daten gestützt wird, sollten sich die beiden Likelihoods nicht stärker unterscheiden als es durch Stichprobenfehler erklärbar wäre.</p>
+<p>Der Likelihood-Ratio-Test prüft also, ob dieses Verhältnis signifikant von Eins abweicht, oder äquivalent dazu, ob sein natürlicher Logarithmus signifikant von Null abweicht.</p>
+<p>Likelihood-Ratio-Tests verwenden die Likelihood, wie sie ist. Daher sind LR-Tests in der Regel den Wald-Tests überlegen. Sie sind asymptotisch aber äquivalent.</p>
+<p>Unter der Nullhypothese ist die Likelihood-Ratio-Statistik ist <span class="math inline">\(\chi^2\)</span>-verteilt mit <strong>einem Freiheitsgrad</strong> (wenn nur ein Parameter geschätzt wird). Die <span class="math inline">\(\chi^2\)</span>-Verteilung haben wir in <a href="#sec-der-chi2-test" class="quarto-xref"><span>Section 9.3</span></a> bereits kennengelernt:</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Likelihood-Ratio Statistik
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\Large
+-2 \tilde{l}(\theta_0)=-2(l(\theta_0)-l(\hat{\theta}_{ML}))\overset{a}\sim \chi^2(1).
+\]</span></p>
+</div>
+</div>
+<p><strong>Beispiel Binomialverteilung</strong>: Wir testen</p>
+<p><span class="math display">\[H_0: \pi=0.2\]</span></p>
+<p>mit den Daten <span class="math inline">\(x=37\)</span> und <span class="math inline">\(n=100\)</span>. Die Log-Likelihood beim MLE <span class="math inline">\(\hat{\pi}=0.37\)</span> ist -2.4961214. Die Log-Likelihood bei <span class="math inline">\(\pi_0=0.2\)</span> ist -10.2077998. Die Likelihood-Ratio Statistik ist dann</p>
+<p><span class="math display">\[
+LR=-2(l(\pi_0)-l(\hat{\pi}_{ML}))=
+15.4233568
+\]</span></p>
+<p>und die Wahrscheinlichkeit für <span class="math inline">\(LR&gt;15.4233568\)</span> ist kleiner als 5%:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>llMLE<span class="ot">&lt;-</span><span class="fu">dbinom</span>(<span class="at">x=</span><span class="dv">37</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span><span class="fl">0.37</span>,<span class="at">log=</span><span class="cn">TRUE</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>ll0<span class="ot">&lt;-</span><span class="fu">dbinom</span>(<span class="at">x=</span><span class="dv">37</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span><span class="fl">0.20</span>,<span class="at">log=</span><span class="cn">TRUE</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>LR<span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>(ll0<span class="sc">-</span>llMLE)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">-</span><span class="fu">pchisq</span>(LR,<span class="dv">1</span>)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">llMLE=</span>llMLE,<span class="at">ll0=</span>ll0,<span class="at">LR=</span>LR,<span class="at">p=</span>p),<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   llMLE      ll0       LR        p 
+ -2.4961 -10.2078  15.4234   0.0001 </code></pre>
+</div>
+</div>
+<p>Wir haben somit Evidenz gegen <span class="math inline">\(H_0\)</span>.</p>
+<p>Die Menge</p>
+<p><span class="math display">\[
+\left(\pi:\tilde{l}(\pi)\geq -\frac{1}{2}\chi^2_{1-\alpha}(1)\right)
+\]</span></p>
+<p>bildet ein approximates <span class="math inline">\((1-\alpha)\times 100\)</span> percent <strong>Likelihood-Ratio Konfidenzintervall</strong> für <span class="math inline">\(\pi\)</span>. Für ein 95% Konfidenzintervall ist das die Menge <span class="math inline">\(\left(\pi:\tilde{l}(\pi)\geq -1.9207294 \right)\)</span>. In unserem Beispiel wäre dies</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pi<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">by=</span>.<span class="dv">0001</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>l<span class="ot">&lt;-</span><span class="fu">dbinom</span>(<span class="at">x=</span><span class="dv">37</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span>pi,<span class="at">log=</span><span class="cn">TRUE</span>)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>rl<span class="ot">&lt;-</span>l<span class="sc">-</span><span class="fu">max</span>(l)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(pi[<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>rl <span class="sc">&lt;</span> <span class="fu">qchisq</span>(<span class="fl">0.95</span>,<span class="dv">1</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2796 0.4670</code></pre>
+</div>
+</div>
+</section>
+<section id="score-tests" class="level4" data-number="9.7.4.3">
+<h4 data-number="9.7.4.3" class="anchored" data-anchor-id="score-tests"><span class="header-section-number">9.7.4.3</span> Score Tests</h4>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Score-Statistik
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\Large
+\frac{S(\theta_0)}{\sqrt{I(\theta_0)}}\overset{a}\sim \mathcal{N}(0,1)
+\]</span></p>
+</div>
+</div>
+<p>Auf die Score-Tests und diesbezüglich Intervallschätzungen gehen wir hier nicht näher direkt ein. Für den Score-Test muss nur die Likelihood bei <span class="math inline">\(\theta=\theta_0\)</span> berechnet werden. Der Score ist ja die Steigung der Likelhood. Je grösser die Steigung der Likelhood bei <span class="math inline">\(\theta_0\)</span>, umso extremer ist die Statistik. Beim MLE ist der Score Null. Wir haben in <a href="08_inf_cat_data.html#sec-berechnungen-von-proportionen-mit-r" class="quarto-xref"><span>Section 8.4.2</span></a> <code>prop.test()</code> für Tests von Proportionen gesehen, das war ein Beispiel für einen Score-Test.</p>
+</section>
+<section id="zusammenfassung" class="level4" data-number="9.7.4.4">
+<h4 data-number="9.7.4.4" class="anchored" data-anchor-id="zusammenfassung"><span class="header-section-number">9.7.4.4</span> Zusammenfassung</h4>
+<p>Die drei klassischen Tests für die Hypothese <span class="math inline">\(H_0: \theta = \theta_0\)</span> basieren auf unterschiedlichen Prinzipien, sind aber asymptotisch äquivalent:</p>
+<ul>
+<li><strong>Wald-Test</strong>: basiert auf der Schätzung <span class="math inline">\(\hat{\theta}_{ML}\)</span> und deren Standardfehler.</li>
+<li><strong>Score-Test</strong>: verwendet die Ableitung der Log-Likelihood an der Nullhypothese.</li>
+<li><strong>Likelihood-Ratio-Test</strong>: vergleicht die Likelihood unter <span class="math inline">\(H_0\)</span> und unter der Maximum-Likelihood-Schätzung.</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>Teststatistik</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Wald-Test</strong></td>
+<td><span class="math inline">\(W = \dfrac{\hat{\theta}_{ML} - \theta_0}{SE(\hat{\theta}_{ML})} \overset{a}{\sim} \mathcal{N}(0,1)\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Score-Test</strong></td>
+<td><span class="math inline">\(Z_S = \dfrac{S(\theta_0)}{\sqrt{I(\theta_0)}} \overset{a}{\sim} \mathcal{N}(0,1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Likelihood-Ratio-Test</strong></td>
+<td><span class="math inline">\(LR = -2 \log \left( \dfrac{L(\theta_0)}{L(\hat{\theta}_{ML})} \right) \overset{a}{\sim} \chi^2(1)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Notation:</p>
+<ul>
+<li><span class="math inline">\(\hat{\theta}_{ML}\)</span>: Maximum-Likelihood-Schätzer</li>
+<li><span class="math inline">\(SE(\hat{\theta}_{ML})\)</span>: Standardfehler des Schätzers</li>
+<li><span class="math inline">\(S(\theta_0)\)</span>: Score-Funktion (erste Ableitung der Log-Likelihood an <span class="math inline">\(\theta_0\)</span>)</li>
+<li><span class="math inline">\(I(\theta_0)\)</span>: Fisher-Information an <span class="math inline">\(\theta_0\)</span></li>
+<li><span class="math inline">\(L(\theta)\)</span>: Likelihood-Funktion</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Alle drei Tests sind für grosse Stichproben asymptotisch äquivalent. Für kleine Stichproben können die Ergebnisse abweichen.</p>
+</div>
+</div>
+<p><a href="#fig-trin" class="quarto-xref">Abbildung&nbsp;<span>9.9</span></a> illustriert die auf der Likelihood-Theorie basierenden asymptotischen Tests für ein Ein-Parameter-Modell mit zu schätzendem Parameter <span class="math inline">\(\theta\)</span> und dem reduzierten Modell mit fixiertem <span class="math inline">\(\theta=\theta_0\)</span>.</p>
+<ul>
+<li>Für den Wald-Test muss nur das nicht reduzierte Modell geschätzt werden.</li>
+<li>Für den Score-Test muss nur das reduzierte Modell geschätzt werden.</li>
+<li>Für den LR-Test müssen das nicht reduzierte und das reduzierte (<span class="math inline">\(H_0\)</span>)-Model berechnet werden.</li>
+</ul>
+<!-- ![Asymptotische Teststatistiken](illustrations/Trinity.png "af"){#fig-trin} -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-trin" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-trin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-trin-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.9: Log-Likelihood Funktion mit Wald-, Score- und LR-Test
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Eine Shiny-App dazu kann man in <code>R</code> laufen lassen mit</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>shiny<span class="sc">::</span><span class="fu">runGitHub</span>(<span class="st">"Trinity"</span>,<span class="st">"mcdr65"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>oder direkt betrachten über <a href="https://0194d044-fbd2-1d4d-b675-497b1b36f69b.share.connect.posit.cloud/">Asymptotic Tests</a>.</p>
+</section>
+<section id="vergleich-von-wald-und-lr-konfidenzintervallen" class="level4" data-number="9.7.4.5">
+<h4 data-number="9.7.4.5" class="anchored" data-anchor-id="vergleich-von-wald-und-lr-konfidenzintervallen"><span class="header-section-number">9.7.4.5</span> Vergleich von Wald und LR-Konfidenzintervallen</h4>
+<p><a href="#fig-confint" class="quarto-xref">Abbildung&nbsp;<span>9.10</span></a> zeigt die relative Log-Likelihood für <span class="math inline">\(\pi\)</span> für unsere Beobachtung <span class="math inline">\(x=37\)</span> auf <span class="math inline">\(n=100\)</span>. Die gestrichelte Linie ist die quadratische Approximation, die blaue Linie ist das Wald Konfidenzintervall und die schwarze das Likelihood Ratio Konfidenzintervall. Wald-Intervalle sind oft ungeeignet, vor allem an der Grenze vom Parameterraum oder bei kleinen Stichproben.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-confint" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-confint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09_logistic_regression_files/figure-html/fig-confint-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-confint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.10: Wald und Likelihood Konfidenzintervalle
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Funktion <code>confint()</code> konstruiert Likelihood-Konfidenzintervalle, wenn ein GLM-Objekt als Argument übergeben wird.</p>
+<!-- ```{r } -->
+<!-- x <- c(rep(1, 37), rep(0, 63)) -->
+<!-- # Wir rechnen eine logistische Regression ohne Prädiktorvariable (darum dieses ~ 1) -->
+<!-- m <- glm(x ~ 1, family = binomial()) -->
+<!-- # Wir exponieren die Schranken des 95% CIs und rechnen die Odds in eine Proportion um -->
+<!-- exp(confint(m))/(1+exp(confint(m))) -->
+<!-- ##Wir können Auch folgende Funktion brauchen -->
+<!-- DescTools::BinomCI(x=37,n=100,method="wilson") -->
+<!-- prop.test(37,100,correct=FALSE) -->
+<!-- ``` -->
+</section>
+</section>
+<section id="zusammenfassung-likelihood" class="level3" data-number="9.7.5">
+<h3 data-number="9.7.5" class="anchored" data-anchor-id="zusammenfassung-likelihood"><span class="header-section-number">9.7.5</span> Zusammenfassung Likelihood</h3>
+<p>Die wichtigsten Punkte hier noch einmal zusammengefasst:</p>
+<ul>
+<li>Die Likelihood eines Parameterwertes <span class="math inline">\(L(\theta)\)</span> ist die Wahrscheinlichkeits(dichte) der beobachteten Daten <span class="math inline">\(x\)</span>, gesehen als eine Funktion des unbekannten Parameters <span class="math inline">\(\theta\)</span>,</li>
+</ul>
+<p><span class="math display">\[
+L(\theta)=p(x;\theta).
+\]</span></p>
+<ul>
+<li><p>Aus mathematischen und numerischen Gründen ist man oft nicht an <span class="math inline">\(L\)</span> interessiert, sondern an der Log-Likelihood.</p></li>
+<li><p>Der Likelihood Approach ist eine generelle Methode, um Parameter zu schätzen und Hypothesen zu testen. Der beste Schätzwert für den Parameter ist jener, welcher die Likelihood-Funktion maximiert (Maximum Likelihood estimate <span class="math inline">\(MLE\)</span>).</p></li>
+<li><p>Parameter in Regressionsmodellen wie der logistischen oder der Poisson Regression werden auf diese Art geschätzt.</p></li>
+<li><p>Die Likelihood-Theorie führt zur Wald-, LR-, und Score-Statistik. Mit diesen Statistiken können Tests bezüglich den Parametern gemacht und Konfidenzintervalle konstruiert werden.</p></li>
+<li><p>Der Vorteil des Likelihood Approaches ist, dass er auf komplexe Modelle mit vielen Parametern generalisiert werden kann.</p></li>
+<li><p>Wenn der Stichprobenumfang gross genug ist, kann die Likelihood durch eine quadratische Funktion approximiert werden. Mittels dieser quadratischen Approximation können Standardfehler, Konfidenzintervalle und P-Werte einfacher berechnet werden. Bei Normalverteilung ist diese Approximation sogar exakt. Hypothesentests auf Grundlage der quadratischen Approximation nennt man Wald Tests.</p></li>
+<li><p>P-Werte in den Outputs von logistischen oder einer Poisson Regressionen sind Beispiele für Wald Tests.</p></li>
+</ul>
+</section>
+</section>
+<section id="verschachtelte-modelle" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="verschachtelte-modelle"><span class="header-section-number">9.8</span> Verschachtelte Modelle</h2>
+<p>Wie bereits bei der multiplen linearen Regression gehen wir auch hier nicht im Detail darauf ein, wie man die Prädiktorvariablen für eine multiple logistische Regression auswählt. In den Übungen und ggf. in der Prüfung können wir jeweils der Aufgabenstellung entnehmen, welche Variablen in das Modell eingeschlossen werden sollen. Zu Illustrationszwecken wird hier der gleiche, stark vereinfachte Ansatz wie in <a href="07_multiple_linear-regression.html#sec-wahl-der-prädiktoren" class="quarto-xref"><span>Section 7.6</span></a> verfolgt:</p>
+<ol type="1">
+<li><p>Zuerst wird eine komplexes Modell mit allen Prädiktoren erstellt, unter Berücksichtigung, dass <span class="math inline">\(n \ge 10p\)</span>, wobei <span class="math inline">\(p\)</span> = Anzahl geschätzter Regressionsparameter <span class="citation" data-cites="harrell2015">(<a href="references.html#ref-harrell2015" role="doc-biblioref">Harrell , 2015</a>)</span>.</p></li>
+<li><p>Schrittweise wird jeweils der Prädiktor mit dem höchsten P-Wert entfernt.</p></li>
+<li><p>Das reduzierte Modell wird mit dem komplexen Modell verglichen.</p></li>
+<li><p>Falls sich das reduzierte Modell nicht vom komplexen Modell unterscheidet, fährt man bei 2. fort.</p></li>
+</ol>
+<p>Wir schauen uns als erstes das komplexe Modell mit allen acht Prädiktorvariablen an, welches wir weiter oben (<a href="#sec-multiple-logistische-regression" class="quarto-xref"><span>Section 9.6</span></a>) bereits erstellt haben:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.glmF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = diabetes ~ pregnant_bin + glucose + pressure + 
+    triceps + insulin + mass + pedigree + age, family = binomial(), 
+    data = diabetes)
+
+Coefficients:
+                  Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)     -1.017e+01  1.307e+00  -7.776 7.47e-15 ***
+pregnant_binYes  2.107e-03  4.223e-01   0.005 0.996019    
+glucose          3.820e-02  5.785e-03   6.603 4.04e-11 ***
+pressure        -1.079e-03  1.180e-02  -0.091 0.927170    
+triceps          1.168e-02  1.717e-02   0.680 0.496209    
+insulin         -9.425e-04  1.327e-03  -0.710 0.477665    
+mass             6.662e-02  2.766e-02   2.409 0.015993 *  
+pedigree         1.079e+00  4.228e-01   2.551 0.010727 *  
+age              5.201e-02  1.483e-02   3.506 0.000455 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 498.10  on 391  degrees of freedom
+Residual deviance: 346.24  on 383  degrees of freedom
+AIC: 364.24
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>Zum Begriff der <strong>Devianz</strong> im Output kommen wir weiter unten. Obwohl die Stichprobe (<span class="math inline">\(n\)</span> = 392) gross genug wäre um neun Regressionsparameter zu schätzen (<span class="math inline">\(\beta_0\)</span> plus die Effekte <span class="math inline">\(\beta_1,\dots,\beta_8\)</span>), scheinen einige Variablen nicht im Zusammenhang mit Diabetes zu stehen. Es ist darum sinnvoll, das Modell zu vereinfachen. Wir entfernen als erstes die Variable <code>pregnant_bin</code>. Das geht einfach mit der <code>update()</code> Funktion.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>m.glmF2<span class="ot">&lt;-</span><span class="fu">update</span>(m.glmF,.<span class="sc">~</span>.<span class="sc">-</span>pregnant_bin)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Anschliessend wird das reduzierte Modell mit dem ersten Modell verglichen. Dies kann mit einem Likelihood ratio Test gemacht werden:</p>
+<ul>
+<li><span class="math inline">\(H_0\)</span>: Reduziertes Modell with <span class="math inline">\(p_{reduz}\)</span> Parametern ist wahr.</li>
+<li><span class="math inline">\(H_1\)</span>: Nicht-reduziertes Modell mit <span class="math inline">\(p_{gross}\)</span> Parametern ist wahr.</li>
+</ul>
+<p>“Das reduzierte Modell ist wahr” bedeutet ja: <span class="math inline">\(\beta_{pregnant.bin}=0\)</span>. Hier wird zuerst im grossen Modell <em>ein</em> Parameter fixiert, <span class="math inline">\(\beta_{pregnant_bin}=0\)</span>, darum hat die LRT-Statistik einen Freiheitsgrad.</p>
+<p>In Multiparameter-Modellen gilt dann für den <strong>verallgemeinerten Likelihood-Ratio Test</strong>, dass die Anzahl Freiheitsgrade sich immer ergibt als der Differenz der zu schätzenden Parameter im nicht-reduzierten relativ zum reduzierten Modell.</p>
+<p>Die verallgemeinerte Likelihood-Ratio Statistik ist dann</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Verallgemeinerte Likelihood-Ratio Statistik
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\Large
+-2(l_{reduz}-l_{gross}) \overset{a}\sim \chi^2_{p_{gross}-p_{reduz}}
+\]</span></p>
+</div>
+</div>
+<p>Die Grösse <span class="math inline">\(-2(l_{reduz}-l_{gross})\)</span> ist der Unterschied in der <strong>Devianz</strong> zwischen dem reduzierten und dem nicht reduzierten Modell.</p>
+<p>Die Devianz eines Modells ist <span class="math inline">\(-2(l_{reduz}-l_{saturated})\)</span> mit <span class="math inline">\(l_{saturated}\)</span> als der Log-likelihood des maximalen Modells (ein Modell mit einem Parameter für jede Beobachtung <span class="math inline">\(i\)</span>, also der bestmögliche Fit)</p>
+<p><span class="math display">\[
+\begin{aligned}
+D_{\text{small}} - D_{\text{large}}
+&amp;=
+-2 (l_{\text{small}} - l_{\text{saturated}})
+- \bigl[-2 (l_{\text{large}} - l_{\text{saturated}})\bigr] \\
+&amp;=
+-2 (l_{\text{small}} - l_{\text{large}})
+\end{aligned}
+\]</span></p>
+<p>Hier wird die Funktion <code>lrtest()</code> aus dem <code>lmtest</code> Package dazu verwendet (<code>anova()</code> wäre hier äquivalent). Wir schreiben <code>anova(kleines Modell, grosses Modell)</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span> (m.glmF2, m.glmF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: diabetes ~ glucose + pressure + triceps + insulin + mass + pedigree + 
+    age
+Model 2: diabetes ~ pregnant_bin + glucose + pressure + triceps + insulin + 
+    mass + pedigree + age
+  #Df  LogLik Df Chisq Pr(&gt;Chisq)
+1   8 -173.12                    
+2   9 -173.12  1     0      0.996</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># anova(m.glmF2, m.glmF,test="Chisq") # äquivalent</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Wir haben keine Evidenz gegen das Nullmodell (das reduzierte Modell). Aus statistischer Sicht kann man also gut auf die Variable <code>pregnant_bin</code> verzichten. Im nächsten Schritt wird zusätzlich die Variable <code>pressure</code> entfernt. Anschliessend erfolgt wiederum der Vergleich mit dem ersten Modell.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: diabetes ~ glucose + triceps + insulin + mass + pedigree + age
+Model 2: diabetes ~ pregnant_bin + glucose + pressure + triceps + insulin + 
+    mass + pedigree + age
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)
+1   7 -173.12                     
+2   9 -173.12  2 0.0086     0.9957</code></pre>
+</div>
+</div>
+<p>Dem Output entnehmen wird, dass das Modell ohne die Variablen <code>pregnant_bin</code> und <code>pressure</code> (im Output <code>Model 1</code>) nicht verworfen werden kann.</p>
+<p>Wenn man dieses Prozedere nun weiterführt, dann kann man nebst den Variablen <code>pregnant_bin</code> und <code>pressure</code> auch auf die Variablen <code>triceps</code>, <code>insulin</code> und <code>pedigree</code> verzichten (d.h. ohne dass man das jeweils reduzierte Modell verwerfen kann).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: diabetes ~ glucose + insulin + mass + pedigree + age
+Model 2: diabetes ~ pregnant_bin + glucose + pressure + triceps + insulin + 
+    mass + pedigree + age
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)
+1   6 -173.35                     
+2   9 -173.12  3 0.4711     0.9252</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: diabetes ~ glucose + mass + pedigree + age
+Model 2: diabetes ~ pregnant_bin + glucose + pressure + triceps + insulin + 
+    mass + pedigree + age
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)
+1   5 -173.62                     
+2   9 -173.12  4 0.9995     0.9099</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: diabetes ~ glucose + mass + age
+Model 2: diabetes ~ pregnant_bin + glucose + pressure + triceps + insulin + 
+    mass + pedigree + age
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)
+1   4 -177.18                     
+2   9 -173.12  5 8.1301     0.1492</code></pre>
+</div>
+</div>
+<p>Erst durch die Wegnahme von <code>mass</code> ist das neue reduzierte Modell zu verwerfen:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: diabetes ~ glucose + age
+Model 2: diabetes ~ pregnant_bin + glucose + pressure + triceps + insulin + 
+    mass + pedigree + age
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)    
+1   3 -185.34                         
+2   9 -173.12  6 24.454  0.0004307 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Modellvergleich
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Letzteren Modellvergleich können wir reproduzieren mit:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>(dl<span class="ot">&lt;-</span><span class="fu">deviance</span>(m.glmF))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 346.2355</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>(ds<span class="ot">&lt;-</span><span class="fu">deviance</span>(m.glmF7))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 370.6897</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>(LR<span class="ot">&lt;-</span>ds<span class="sc">-</span>dl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24.45421</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pchisq</span>(LR,<span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0004307352</code></pre>
+</div>
+</div>
+</div>
+</div>
+<p>Somit beinhaltet das finale Modell die Prädiktoren <code>glucose</code>, <code>mass</code> und <code>age</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = diabetes ~ glucose + mass + age, family = binomial(), 
+    data = diabetes)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -9.677346   1.041873  -9.288  &lt; 2e-16 ***
+glucose      0.036266   0.004906   7.391 1.45e-13 ***
+mass         0.077860   0.020120   3.870 0.000109 ***
+age          0.054075   0.013236   4.085 4.40e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 498.10  on 391  degrees of freedom
+Residual deviance: 354.37  on 388  degrees of freedom
+AIC: 362.37
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>Wir berechnen anhand dieses Modells noch einmal die Wahrscheinlichkeit, dass die vierte Person im Datensatz Diabetes hat. Die Werte für diese Person sind:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>diabetes[<span class="dv">4</span>,<span class="fu">c</span>(<span class="st">"glucose"</span>,<span class="st">"mass"</span>,<span class="st">"age"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  glucose mass age
+9     197 30.5  53</code></pre>
+</div>
+</div>
+<p>Der lineare Prädiktor ist dann</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{logit}(\hat{\pi})
+&amp;=
+-9.6773458
++ 0.0362656 \times 197
++ 0.07786 \times 30.5
++ 0.0540755 \times 53 \\
+&amp;=
+2.7077043
+\end{aligned}
+\]</span></p>
+<p>Die geschätzten Odds für Diabetes sind dann</p>
+<p><span class="math display">\[
+\hat{O} = \exp(2.70776) = 14.9956,
+\]</span></p>
+<p>und die geschätzte Wahrscheinlichkeit</p>
+<p><span class="math display">\[
+\hat{\pi} = \frac{14.99566}{1+14.99566} = 0.937
+\]</span></p>
+<!-- **Exkurs**: Obwohl das Modell stark reduziert wurde, ist die geschätzte Wahrscheinlichkeit für Diabetes ähnlich wie mit dem komplexen Modell (93.5% vs. 90.5%). Dies lässt sich auch grafisch darstellen: -->
+<!-- ```{r include=FALSE} -->
+<!-- m.glmF6$linear.predictors[4] # Der lineare Prädiktor für die 4. Person -->
+<!-- m.glmF6$fitted.values[4] # Der lineare Prädiktor für die 4. Person -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- #| label: fig-plot-model-full-vs-model-red -->
+<!-- #| fig-cap: "Geschätzte Wahrscheinlichkeit für Diabetes mit dem komplexen Modell (x-Achse) und dem reduzierten Modell (y-Achse). Man sieht, dass das reduzierte Modell kaum mehr Fehler macht als das komplexe Modell." -->
+<!-- p1 <- m.glmF$fitted.values -->
+<!-- p2 <- m.glmF6$fitted.values -->
+<!-- TP1 <- ifelse(diabetes$diabetes == "pos" & p1 >= 0.5, "TP1", "") -->
+<!-- TN1 <- ifelse(diabetes$diabetes == "neg" & p1 < 0.5, "TN1", "") -->
+<!-- FP1 <- ifelse(diabetes$diabetes == "pos" & p1 < 0.5, "FP1", "") -->
+<!-- FN1 <- ifelse(diabetes$diabetes == "neg" & p1 >= 0.5, "FN1", "") -->
+<!-- T1 <- paste(TP1, TN1, sep = "") -->
+<!-- F1 <- paste(FP1, FN1, sep = "") -->
+<!-- M1 <- paste(T1, F1, sep = "") -->
+<!-- TP2 <- ifelse(diabetes$diabetes == "pos" & p2 >= 0.5, "TP2", "") -->
+<!-- TN2 <- ifelse(diabetes$diabetes == "neg" & p2 < 0.5, "TN2", "") -->
+<!-- FP2 <- ifelse(diabetes$diabetes == "pos" & p2 < 0.5, "FP2", "") -->
+<!-- FN2 <- ifelse(diabetes$diabetes == "neg" & p2 >= 0.5, "FN2", "") -->
+<!-- T2 <- paste(TP2, TN2, sep = "") -->
+<!-- F2 <- paste(FP2, FN2, sep = "") -->
+<!-- M2 <- paste(T2, F2, sep = "") -->
+<!-- M <- paste(M1, M2, sep = "-") -->
+<!-- ggplot(data.frame(p1, p2, M), aes(x = p1, y = p2, color = M)) + -->
+<!--   geom_hline(yintercept = 0.5, lty = 2, color = "darkgray") + -->
+<!--   geom_vline(xintercept = 0.5, lty = 2, color = "darkgray") + -->
+<!--   scale_shape_manual(values=1:8) + -->
+<!--   geom_point(aes(pch = M)) + -->
+<!--   labs(x = "Wahrscheinlichkeit für Diabetes mit Modell 1", -->
+<!--        y = "Wahrscheinlichkeit für Diabetes mit Modell 2", -->
+<!--        color = "", -->
+<!--        pch = "") -->
+<!-- ``` -->
+<!-- Die @fig-plot-model-full-vs-model-red lässt sich in vier Quadranten aufteilen. Im nordöstlichen sowie im südwestlichen Quadranten stimmen die Resultate der beiden Modelle überein (was nicht heisst, dass sie mit der Wahrheit übereinstimmen!). Die blauen Dreiecke in @fig-plot-model-full-vs-model-red sind alle Personen, welche sowohl von Modell 1 sowie von Modell 2 als richtig-negativ (TN) beurteilt wurden. Die pinken Sternchen repräsentieren alle Personen, welche von beiden Modellen als richtig-positiv (TP) beurteilt wurden, usw. Es gibt aber auch einige falsch-negative (FN) und falsch-positive (FP) Resultate, beide Modelle sind demnach längst nicht perfekt, um Diabetes vorauszusagen. -->
+<!-- Man sieht, dass die Modelle insgesamt nur in 13 von 392 Fällen zu unterschiedlichen Resultaten kommen (nordwestlicher und südöstlicher Quadrant). Das reduzierte Modell macht sogar einen Fehler weniger (insgesamt 52 falsch-positive und 28 falsch-negative Resultate) als das komplexe Modell (insgesamt 53 falsch-positive und 28 falsch-negative Resultate). Eine Vereinfachung des Modells durch Wegnahme von Prädiktoren scheint in dieser Situation also vertretbar zu sein. -->
+<p><strong>Modellvergleiche mit Wald-Test</strong>. Tests einzelner Koeffizienten, die im <code>summary(m.glmF)</code> ersichtlich sind, sind bekanntlich Wald Tests. Wir können diese auch reproduzieren als explizite Modellvergleiche mit der Wald-Statistik:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>m.glmW<span class="ot">&lt;-</span><span class="fu">update</span>(m.glmF,.<span class="sc">~</span>.<span class="sc">-</span>insulin)<span class="do">## Modell ohne Insulin</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.glmF)<span class="sc">$</span>coef[<span class="dv">6</span>,<span class="dv">4</span>]<span class="do">## p-Wert von Insulin</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4776647</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Wald-Test als Modellvergleich</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>lmtest<span class="sc">::</span><span class="fu">waldtest</span>(m.glmF,<span class="st">"insulin"</span>,<span class="at">test=</span><span class="st">"Chisq"</span>)<span class="sc">$</span>Pr<span class="do">##Wald Test, gleicher p-Wert wie der Z-Test (da Z^2=Chisq(1))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]        NA 0.4776647</code></pre>
+</div>
+</div>
+</section>
+<section id="anhang-hilfreiche-r-codes-für-die-logistische-regression" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="anhang-hilfreiche-r-codes-für-die-logistische-regression"><span class="header-section-number">9.9</span> Anhang: Hilfreiche <code>R</code> Codes für die logistische Regression</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulation of data</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">50</span>, <span class="dv">10</span>)</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), n, <span class="cn">TRUE</span>))</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">5</span> <span class="sc">+</span> <span class="fl">0.08</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> (x2 <span class="sc">==</span> <span class="st">"B"</span>)) </span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, p)</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y, x1, x2)</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a><span class="co"># fit logistic regression</span></span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, data, <span class="at">family =</span> binomial)</span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a><span class="co"># summary output</span></span>
+<span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model) <span class="do">## compare with true values</span></span>
+<span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-16"><a href="#cb74-16" aria-hidden="true" tabindex="-1"></a><span class="co"># nicer output</span></span>
+<span id="cb74-17"><a href="#cb74-17" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">parameters</span>(model,<span class="at">exponentiate=</span><span class="cn">TRUE</span>,<span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb74-18"><a href="#cb74-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-19"><a href="#cb74-19" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions (probability)</span></span>
+<span id="cb74-20"><a href="#cb74-20" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(model, <span class="at">newdata=</span><span class="fu">data.frame</span>(<span class="at">x1 =</span> <span class="dv">50</span>, <span class="at">x2 =</span> <span class="st">"A"</span>), <span class="at">type=</span><span class="st">"response"</span>)</span>
+<span id="cb74-21"><a href="#cb74-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-22"><a href="#cb74-22" aria-hidden="true" tabindex="-1"></a><span class="co"># compare two nested models</span></span>
+<span id="cb74-23"><a href="#cb74-23" aria-hidden="true" tabindex="-1"></a>model.red <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x1, data, <span class="at">family =</span> binomial)</span>
+<span id="cb74-24"><a href="#cb74-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb74-25"><a href="#cb74-25" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span> (model.red, model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-harrell2015" class="csl-entry" role="listitem">
+Harrell , Frank E. 2015. <em>Regression Modeling Strategies: With Applications to Linear Models, Logistic and Ordinal Regression, and Survival Analysis</em>. Springer Series in Statistics. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-19425-7">https://doi.org/10.1007/978-3-319-19425-7</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08_inf_cat_data.html" class="pagination-link" aria-label="Inferenz für nominale Daten">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./10_poisson_regression.html" class="pagination-link" aria-label="Poisson Regression">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

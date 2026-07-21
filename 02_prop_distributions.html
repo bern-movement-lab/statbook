@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Verteilungen von Wahrscheinlichkeiten – Skript zum Modul Angewandte Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03_inference.html" rel="next">
+<link href="./01_descriptives.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_prop_distributions.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skript zum Modul Angewandte Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Einführung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link active" data-scroll-target="#lernziele"><span class="header-section-number">2.1</span> Lernziele</a></li>
+  <li><a href="#zufallsvariablen" id="toc-zufallsvariablen" class="nav-link" data-scroll-target="#zufallsvariablen"><span class="header-section-number">2.2</span> Zufallsvariablen</a></li>
+  <li><a href="#wahrscheinlichkeitsverteilungen" id="toc-wahrscheinlichkeitsverteilungen" class="nav-link" data-scroll-target="#wahrscheinlichkeitsverteilungen"><span class="header-section-number">2.3</span> Wahrscheinlichkeitsverteilungen</a></li>
+  <li><a href="#die-binomialverteilung" id="toc-die-binomialverteilung" class="nav-link" data-scroll-target="#die-binomialverteilung"><span class="header-section-number">2.4</span> Die Binomialverteilung</a>
+  <ul class="collapse">
+  <li><a href="#anwendungsbeispiele-der-binomialverteilung" id="toc-anwendungsbeispiele-der-binomialverteilung" class="nav-link" data-scroll-target="#anwendungsbeispiele-der-binomialverteilung"><span class="header-section-number">2.4.1</span> Anwendungsbeispiele der Binomialverteilung</a></li>
+  </ul></li>
+  <li><a href="#die-normalverteilung" id="toc-die-normalverteilung" class="nav-link" data-scroll-target="#die-normalverteilung"><span class="header-section-number">2.5</span> Die Normalverteilung</a>
+  <ul class="collapse">
+  <li><a href="#wahrscheinlichkeiten-für-kontinuierliche-daten" id="toc-wahrscheinlichkeiten-für-kontinuierliche-daten" class="nav-link" data-scroll-target="#wahrscheinlichkeiten-für-kontinuierliche-daten"><span class="header-section-number">2.5.1</span> Wahrscheinlichkeiten für kontinuierliche Daten</a></li>
+  <li><a href="#anwendung-der-normalverteilung" id="toc-anwendung-der-normalverteilung" class="nav-link" data-scroll-target="#anwendung-der-normalverteilung"><span class="header-section-number">2.5.2</span> Anwendung der Normalverteilung</a></li>
+  <li><a href="#parameter-der-normalverteilung" id="toc-parameter-der-normalverteilung" class="nav-link" data-scroll-target="#parameter-der-normalverteilung"><span class="header-section-number">2.5.3</span> Parameter der Normalverteilung</a></li>
+  <li><a href="#kennzahlen-der-population-vs.-kennzahlen-von-stichproben" id="toc-kennzahlen-der-population-vs.-kennzahlen-von-stichproben" class="nav-link" data-scroll-target="#kennzahlen-der-population-vs.-kennzahlen-von-stichproben"><span class="header-section-number">2.5.4</span> Kennzahlen der Population vs.&nbsp;Kennzahlen von Stichproben</a></li>
+  <li><a href="#eigenschaften-von-normalverteilungen" id="toc-eigenschaften-von-normalverteilungen" class="nav-link" data-scroll-target="#eigenschaften-von-normalverteilungen"><span class="header-section-number">2.5.5</span> Eigenschaften von Normalverteilungen</a></li>
+  <li><a href="#die-68-95-99.7-regel" id="toc-die-68-95-99.7-regel" class="nav-link" data-scroll-target="#die-68-95-99.7-regel"><span class="header-section-number">2.5.6</span> Die 68 – 95 – 99.7 – Regel</a></li>
+  </ul></li>
+  <li><a href="#die-standardnormalverteilung" id="toc-die-standardnormalverteilung" class="nav-link" data-scroll-target="#die-standardnormalverteilung"><span class="header-section-number">2.6</span> Die Standardnormalverteilung</a>
+  <ul class="collapse">
+  <li><a href="#berechnung-von-z-werten-z-transformation" id="toc-berechnung-von-z-werten-z-transformation" class="nav-link" data-scroll-target="#berechnung-von-z-werten-z-transformation"><span class="header-section-number">2.6.1</span> Berechnung von <span class="math inline">\(z\)</span>-Werten (<span class="math inline">\(z\)</span>-Transformation)</a></li>
+  <li><a href="#interpretation-von-z-werten" id="toc-interpretation-von-z-werten" class="nav-link" data-scroll-target="#interpretation-von-z-werten"><span class="header-section-number">2.6.2</span> Interpretation von z-Werten</a></li>
+  </ul></li>
+  <li><a href="#prüfung-auf-normalverteilung" id="toc-prüfung-auf-normalverteilung" class="nav-link" data-scroll-target="#prüfung-auf-normalverteilung"><span class="header-section-number">2.7</span> Prüfung auf Normalverteilung</a>
+  <ul class="collapse">
+  <li><a href="#qq-plot" id="toc-qq-plot" class="nav-link" data-scroll-target="#qq-plot">QQ-Plot</a></li>
+  </ul></li>
+  <li><a href="#die-t-verteilung" id="toc-die-t-verteilung" class="nav-link" data-scroll-target="#die-t-verteilung"><span class="header-section-number">2.8</span> Die <span class="math inline">\(t\)</span>-Verteilung</a></li>
+  <li><a href="#anhang-hilfreiche-r-codes-für-die-binomial--und-normalverteilung" id="toc-anhang-hilfreiche-r-codes-für-die-binomial--und-normalverteilung" class="nav-link" data-scroll-target="#anhang-hilfreiche-r-codes-für-die-binomial--und-normalverteilung"><span class="header-section-number">2.9</span> Anhang: hilfreiche <code>R</code> Codes für die Binomial- und Normalverteilung</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-verteilung-von-wahrscheinlichkeiten" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p>Es gehört zur Wahrscheinlichkeit, dass viele unwahrscheinliche Dinge geschehen werden.</p>
+<p>— Aristoteles</p>
+</blockquote>
+<section id="lernziele" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="lernziele"><span class="header-section-number">2.1</span> Lernziele</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Definiere eine <strong>Zufallsvariable</strong> als Beobachtungsmerkmal, dessen Ausprägung variiert und daher nicht exakt vorhergesagt werden kann.</p></li>
+<li><p>Interpretiere die <strong>Wahrscheinlichkeitsverteilung</strong> einer Variable als Modell, das sich auf eine Grundpopulation bezieht.</p></li>
+<li><p>Beachte, dass die <strong>Wahrscheinlichkeit</strong> <span class="math inline">\(P\)</span> für ein Ereignis stets zwischen 0% und 100% liegt. <span class="math inline">\(P\)</span> kann daher nur Werte zwischen 0 und 1 annehmen.</p></li>
+<li><p>Interpretiere die <strong>Binomialverteilung</strong> als diskrete Verteilung und zwar als Wahrscheinlichkeitsverteilung für die Zufallsvariable “Anzahl Erfolge/Misserfolge” (Eintreten eines bestimmten Ereignisses) bei <span class="math inline">\(n\)</span> unabhängigen Versuchen.</p>
+<ul>
+<li>Verwende die Binomialverteilung, um die Wahrscheinlichkeit für genau <span class="math inline">\(x\)</span>, maximal <span class="math inline">\(x\)</span> oder mehr als <span class="math inline">\(x\)</span> Erfolge bei <span class="math inline">\(n\)</span> unabhängigen Versuchen bei gegebener Erfolgswahrscheinlichkeit <span class="math inline">\(\pi\)</span> zu berechnen.</li>
+</ul></li>
+<li><p>Interpretiere die <strong>Normalverteilung</strong> als eine kontinuierliche/stetige Verteilung.</p></li>
+<li><p>In kontinuierlichen Verteilungen ist die Wahrscheinlichkeit für ein ganz bestimmtes Ereignis stets Null. Es ist aber möglich Wahrscheinlichkeiten für Wertebereiche (Intervalle) zu berechnen.</p></li>
+<li><p>Die Normalverteilung ist symmetrisch um den Mittelwert und kann durch die Parameter Mittelwert <span class="math inline">\(\mu\)</span> und Standardabweichung <span class="math inline">\(\sigma\)</span> vollständig beschrieben werden. Mittelwert und Median sind in diesem Fall identisch.</p></li>
+<li><p>Interpretiere die <strong>Standardnormalverteilung</strong> als eine Normalverteilung mit dem Mittelwert <span class="math inline">\(\mu = 0\)</span> und der Standardabweichung <span class="math inline">\(\sigma = 1\)</span>.</p></li>
+<li><p>Jede Normalverteilung kann durch <span class="math inline">\(z\)</span>-Transformation in die Standardnormalverteilung umgewandelt werden.</p></li>
+<li><p>Interpretiere den <span class="math inline">\(z\)</span>-Wert als Abstand eines Wertes vom Mittelwert in Anzahl Standardabweichungen. Punkte mit negativen <span class="math inline">\(z\)</span>-Werten liegen links vom Mittelwert und Punkte mit positiven <span class="math inline">\(z\)</span>-Werten liegen rechts vom Mittelwert.</p></li>
+</ol>
+<p><span class="math display">\[Z=\frac{X - \mu}{\sigma}\]</span></p>
+<ol type="1">
+<li><p>Verwende den <span class="math inline">\(z\)</span>-Wert,</p>
+<ul>
+<li><p>… um die Quantile für <span class="math inline">\(X=x\)</span> zu bestimmen (z.B. bei der Berechnung von Konfidenzintervallen).</p></li>
+<li><p>… um zu bestimmen, ob ein Wert als ungewöhnlich beurteilt werden muss (Faustregel: <span class="math inline">\(Z\)</span> &gt; |2| ist ungewöhnlich).</p></li>
+<li><p>… um Wahrscheinlichkeiten zu berechnen: <span class="math inline">\(P(X \le x)\)</span>, <span class="math inline">\(P(X \ge x)\)</span> und <span class="math inline">\(P(x \le X \le x)\)</span>.</p></li>
+</ul></li>
+<li><p>Bei rechtsschiefen Verteilungen hat der Median einen negativen <span class="math inline">\(z\)</span>-Wert.</p></li>
+<li><p>Bei linksschiefen Verteilungen hat der Median einen postiven <span class="math inline">\(z\)</span>-Wert.</p></li>
+<li><p>Die <strong>68-95-99.7%-Regel</strong> ist eine Faustregel die besagt, dass unter der Normalverteilungskurve 68% der Fläche innerhalb von <span class="math inline">\(\mu \pm \sigma\)</span>, 95% der Fläche innerhalb von <span class="math inline">\(\mu \pm 2 \sigma\)</span> und 99.7% der Fläche innerhalb von <span class="math inline">\(\mu \pm 3 \sigma\)</span> liegen.</p></li>
+<li><p>Beurteile anhand eines Histogramms, eines Boxplots oder eines <strong>QQ-Plots</strong>, ob die beobachteten Daten aus einer normalverteilten Population stammen oder nicht.</p></li>
+<li><p>Interpretiere die <span class="math inline">\(t\)</span><strong>-Verteilung</strong> als Anpassung der Normalverteilung, wenn die Standardabweichung <span class="math inline">\(\sigma\)</span> einer Population unbekannt ist (was fast immer der Fall ist).</p>
+<ul>
+<li><p>Die Form der <span class="math inline">\(t\)</span>-Verteilung ist nur abhängig vom Stichprobenumfang. Dieser wird in Freiheitsgraden <span class="math inline">\(df\)</span> angegeben, wobei <span class="math inline">\(df = n-1\)</span>.</p></li>
+<li><p>Ist der Stichprobenumfang <span class="math inline">\(n\)</span> &gt; 30, nähert sich die Form der <span class="math inline">\(t\)</span>-Verteilung der Normalverteilung an.</p></li>
+<li><p>Die <span class="math inline">\(t\)</span>-Verteilung wird mit dem Parameter <span class="math inline">\(df\)</span> vollständig beschrieben.</p></li>
+<li><p>Interpretiere <span class="math inline">\(t\)</span>-Werte, die von Statistikprogrammen angegeben werden, gleich wie <span class="math inline">\(z\)</span>-Werte.</p></li>
+</ul></li>
+<li><p>Erstelle QQ-Plots in <code>R</code>, um zu prüfen, ob eine Variable von einer Normalverteilung abwicht.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="zufallsvariablen" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="zufallsvariablen"><span class="header-section-number">2.2</span> Zufallsvariablen</h2>
+<p>Eine <strong>Zufallsvariable</strong> ist eine numerische Grösse, deren Wert vom Ausgang eines Zufallsexperiments abhängt. Sie erlaubt es, zufällige Phänomene mathematisch zu beschreiben und statistisch zu analysieren.</p>
+<p>Die <strong>Verteilung</strong> einer Zufallsvariable beschreibt, mit welcher Wahrscheinlichkeit sie bestimmte Werte annimmt. Sie ist ein zentrales Konzept, um die Eigenschaften und das Verhalten der Zufallsvariable zu verstehen – etwa ob sie eher kleine oder grosse Werte liefert, ob sie symmetrisch verteilt ist, usw.</p>
+</section>
+<section id="wahrscheinlichkeitsverteilungen" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="wahrscheinlichkeitsverteilungen"><span class="header-section-number">2.3</span> Wahrscheinlichkeitsverteilungen</h2>
+<p>Eine Wahrscheinlichkeitsverteilung ist eine mathematische Funktion (ein Modell), welche die Wahrscheinlichkeiten für alle möglichen Werte einer Zufallsvariablen beschreibt.</p>
+<p>Das tönt recht technisch, ist aber anhand von einem Beispiel leicht zu verstehen: Stellen Sie sich vor, Sie möchten wissen, wie gross Ihre Kolleginnen in der Klasse sind. Dazu messen Sie von jeder Person die Körpergrösse und stellen fest, dass gewisse Körpergrössen häufig und andere eher selten sind. Wahrscheinlichkeitsverteilungen helfen, wenn es darum geht zu verstehen, welche Merkmalsausprägungen eher häufig und welche eher selten zu erwarten sind. Sie erlauben auch die Beantwortung von Fragen wie: “Wie gross ist die Wahrscheinlichkeit, dass die nächste Person, die ich messe, grösser als zwei Meter ist?”.</p>
+<p>In der deskriptiven Statistik haben wir bereits Verteilungen von Zufallsvariablen kennen gelernt: Sie lassen sich durch Form (symmetrisch, links- oder rechtsschief, irregulär), Kennzahlen der zentralen Tendenz und Kennzahlen der Streuung beschreiben.</p>
+<blockquote class="blockquote">
+<p>Beachte, dass Histogramme, Boxplots und Streudiagramme die Verteilung von Stichprobendaten beschreiben (empirische Verteilung), während Wahrscheinlichkeitsverteilungen Modelle für die theoretische Verteilung von Daten sind.</p>
+</blockquote>
+<p>In der mathematischen Schreibweise wird die Wahrscheinlichkeit, dass <span class="math inline">\(X\)</span> einen Wert <span class="math inline">\(x\)</span> annimmt, geschrieben als</p>
+<p><span class="math display">\[P(X = x) = [0, 1] = Zahl~zwischen~0~und~1.\]</span></p>
+<p>Die Summe der Wahrscheinlichkeiten für alle möglichen Werte von <span class="math inline">\(X\)</span> ist stets 1. Ausserdem ist die Wahrscheinlichkeit für einen bestimmten Wert zwischen 0 (0%) und 1 (100%). Wenn wir also eine Münze werfen, dann ist die Wahrscheinlichkeit</p>
+<p><span class="math display">\[P(X = Kopf) = 0.5,\]</span></p>
+<p><span class="math display">\[P(X = Zahl) = 0.5.\]</span></p>
+<p>Wobei 0.5 die Wahrscheinlichkeit für den Wert {<span class="math inline">\(Kopf, Zahl\)</span>} ist. Eine andere Möglichkeit für <span class="math inline">\(X\)</span> existiert nicht. Die Summe aller möglichen Werte für <span class="math inline">\(X\)</span> bei einem Münzwurf ist daher</p>
+<p><span class="math display">\[P(X = Kopf \cup X = Zahl) = P(Kopf) + P(Zahl) = 1.\]</span></p>
+<p>Hinweis: <span class="math inline">\(\cup\)</span> steht für ein mathematisches <em>oder</em>, <span class="math inline">\(\cap\)</span> für ein mathematisches <em>und.</em> Weil in diesem Fall Kopf und Zahl disjunkt sind, das heisst nicht zusammen eintreffen können, ist <span class="math inline">\(P(X = Kopf \cap X = Zahl) = 0\)</span>.</p>
+<p>Wahrscheinlichkeitsverteilungen beschreiben also die theoretische Verteilung der Werte (Merkmalsausprägungen) einer bestimmten Zufallsvariable (Beobachtungsmerkmal). Daher ist es naheliegend, dass die Art der Variable einen Einfluss auf den Verteilungstyp hat. In der Statistik unterscheidet man zwischen</p>
+<ul>
+<li>Verteilungen für diskrete Variablen (z.B. Binomialverteilung) und</li>
+<li>Verteilungen für kontinuierliche/stetige Variablen (z.B. Normalverteilung).</li>
+</ul>
+<p>Sie werden in diesem Kurs einigen Verteilungen begegnen. Für die reine Anwendung ist es jedoch nicht nötig, alle diese Verteilungen im Detail zu kennen. Wir beschränken uns darum im Folgenden auf die Binomialverteilung (eine Wahrscheinlichkeitsverteilung für diskrete Variablen) und die Normalverteilung (eine Wahrscheinlichkeitsverteilung für stetige Variablen). Wenn Sie das Konzept dieser beiden Wahrscheinlichkeitsverteilungen verstanden haben und damit rechnen können, dann sind diese Kenntnisse einfach auf weitere Verteilungen (wie z.B. die <span class="math inline">\(t\)</span>-Verteilung oder die Poissonverteilung) übertragbar.</p>
+</section>
+<section id="die-binomialverteilung" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="die-binomialverteilung"><span class="header-section-number">2.4</span> Die Binomialverteilung</h2>
+<p>Wie wahrscheinlich ist es, in zwei Würfen von Würfeln genau eine 6 zu würfeln? Diese vermeintlich einfache Frage kann mit Hilfe der Binomialverteilung beantwortet werden (wenn Sie meinen, die Antwort ist <span class="math inline">\(\frac{2}{6} = \frac{1}{3}\)</span>, dann liegen Sie falsch). Die Binomialverteilung gibt die Wahrscheinlichkeit für <span class="math inline">\(x\)</span> Erfolge bei <span class="math inline">\(n\)</span> unabhängigen Versuchen und einer Erfolgswahrscheinlichkeit <span class="math inline">\(\pi\)</span> an. Im genannten Beispiel ist unsere Zufallsvariable <span class="math inline">\(X\)</span> Binomialverteilt mit <span class="math inline">\(n = 2\)</span> (zwei Würfe) und <span class="math inline">\(\pi = \frac{1}{6}\)</span> (wir gehen von einem fairen Würfel aus).<br>
+Etwas formaler: <span class="math display">\[X \sim Binomial(n, \pi).\]</span><br>
+Aus Zeitgründen (und nicht weil es zu schwierig wäre), verzichten wir auf die Formel und die manuelle Berechnung. Unsere Frage <span class="math inline">\(P(X = 1)\)</span>, also genau einen 6er in zwei Würfen, können wir mit R einfach beantworten:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dbinom gibt uns die Wahrscheinlichkeits(masse) bei X = x</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">prob =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2777778</code></pre>
+</div>
+</div>
+<p>In <a href="#fig-plot-binom-dice" class="quarto-xref">Abbildung&nbsp;<span>2.1</span></a> sehen Sie die <strong>Wahrscheinlichkeitsverteilung</strong> für <span class="math inline">\(X \sim Binomial(2, \frac{1}{6}).\)</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-binom-dice" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-binom-dice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-binom-dice-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-binom-dice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.1: Wahrscheinlichkeitsverteilung X~Bin(2, 1/6)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Das Experiment kann also drei mögliche Ausgänge haben, wobei <span class="math inline">\(P(X = 1) = 0.278 = 27.8\%.\)</span></p>
+<p>Gerade wenn <span class="math inline">\(n\)</span> grösser wird, ist man froh, dank <code>R</code> auf eine manuelle Berechnung verzichten zu können. Wie wahrscheinlich ist es, bei <span class="math inline">\(30\)</span> Würfelwürfen genau eine <span class="math inline">\(6\)</span> zu würfeln?</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">30</span>, <span class="at">prob =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.02527632</code></pre>
+</div>
+</div>
+<p>Es ist natürlich sehr unwahrscheinlich, bei 30 Würfen genau einen 6er zu würfeln. Wir sehen in <a href="#fig-plot-binom-dice30" class="quarto-xref">Abbildung&nbsp;<span>2.2</span></a>, dass es am wahrscheinlichsten ist, bei <span class="math inline">\(30\)</span> Würfen 5-Mal eine <span class="math inline">\(6\)</span> zu würfeln. Das macht ja auch Sinn, da wir in einem Sechstel der Fälle eine <span class="math inline">\(6\)</span> erwarten, also <span class="math inline">\(30/6 = 5.\)</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-binom-dice30" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-binom-dice30-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-binom-dice30-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-binom-dice30-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.2: Wahrscheinlichkeitsverteilung X~Bin(30, 1/6)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir können mit der Binomialverteilung nicht nur <span class="math inline">\(P(X = x)\)</span> berechnen, sondern auch <span class="math inline">\(P(X \le x)\)</span> oder <span class="math inline">\(P(X &gt; x)\)</span>. Dafür muss man einfach die entsprechenden Wahrscheinlichkeiten zusammenrechnen. Mit <span class="math inline">\(n = 30\)</span> und <span class="math inline">\(\pi = \frac{1}{6}\)</span> ist <span class="math inline">\(P(X \le 3) = P(X = 0) + P(X = 1) + P(X = 2) + P(X = 3)\)</span>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aufsummieren der einzelnen Wahrscheinlichkeiten für x von 0 bis 3.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">dbinom</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">3</span>), <span class="at">size =</span> <span class="dv">30</span>, <span class="at">prob =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2396195</code></pre>
+</div>
+</div>
+<p>Weil das Aufsummieren der einzelnen Wahrscheinlichkeiten mühsam ist, gibt es eine R-Funktion, welche das für uns erledigt.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pbinom gibt uns die Wahrscheinlichkeit für X &lt;= x</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="dv">3</span>, <span class="dv">30</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2396195</code></pre>
+</div>
+</div>
+<p>Man nennt die Funktion für <span class="math inline">\(P(X \le x)\)</span> auch kumulative Verteilungsfunktion. Beachten Sie, dass bei solchen Berechnungen immer von links (also vom tiesten Wert her) aufsummiert wird. <span class="math inline">\(P(X &gt; 3)\)</span> lässt sich dann einfach als Gegenwahrscheinlichkeit berechnen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Die Gegenwahrscheinlichkeit für X &lt;= x ist X &gt; x</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pbinom</span>(<span class="dv">3</span>, <span class="dv">30</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7603805</code></pre>
+</div>
+</div>
+<section id="anwendungsbeispiele-der-binomialverteilung" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="anwendungsbeispiele-der-binomialverteilung"><span class="header-section-number">2.4.1</span> Anwendungsbeispiele der Binomialverteilung</h3>
+<p><strong>Beispiel 1:</strong> Nächste Woche findet die Versammlung eines Berufsverbandes statt. Das Komitee besteht aus 18 Personen. Die Wahrscheinlichkeit, dass ein Mitglied des Komitees zur Versammlung kommt, beträgt 70%.</p>
+<p>Wie gross ist die Wahrscheinlichkeit, dass alle Mitglieder anwesend sind? Die Anzahl anwesender Personen ist binomialverteilt mit <span class="math inline">\(n = 18\)</span> und <span class="math inline">\(\pi = 0.7\)</span>, also <span class="math inline">\(X\sim Bin(18, 0.7)\)</span>. Gefragt ist <span class="math inline">\(P(X = 18).\)</span> Dies lässt sich wie folgt berechnen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="dv">18</span>,<span class="dv">18</span>,<span class="fl">0.7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.001628414</code></pre>
+</div>
+</div>
+<p>Wie gross ist die Wahrscheinlichkeit, dass eine Zweidrittelmehrheit anwesend ist?</p>
+<p>Die Anzahl anwesender Personen ist Binomialverteilt mit <span class="math inline">\(n = 18\)</span> und <span class="math inline">\(\pi = 0.7\)</span>, also <span class="math inline">\(X\sim Bin(18, 0.7)\)</span>. Gefragt ist <span class="math inline">\(P(X &gt; 11)\)</span>, also die Gegenwahrscheinlichkeit von <span class="math inline">\(P(X\leq11)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pbinom</span>(<span class="dv">11</span>, <span class="dv">18</span>, <span class="fl">0.7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7216964</code></pre>
+</div>
+</div>
+<p>Die ganze <strong>Wahrscheinlichkeitsverteilung</strong> zu dieser Frage ist in <a href="#fig-plot-binom-members" class="quarto-xref">Abbildung&nbsp;<span>2.3</span></a> ersichtlich. Wie bereits erwähnt, führt das Aufsummieren der Wahrscheinlichkeiten <span class="math inline">\(P(X = 12) + P(X = 13) + …. + P(X = 18)\)</span> zum gleichen Resultat von 72.17%.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-binom-members" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-binom-members-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-binom-members-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-binom-members-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.3: Wahrscheinlichkeitsverteilung X~Bin(18, 0.7)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Beispiel 2:</strong> Eine Labormitarbeiterin hat neue Reagenzgläser bestellt. Laut Hersteller beläuft sich der Anteil defekter Gläser auf 3%. Zur Sicherheit nimmt die Labormitarbeiterin eine Stichprobe: Sie wählt einen zufälligen Karton mit 50 Gläsern aus, darin sind 7 Gläser defekt. Wie wahrscheinlich sind 7 oder sogar noch mehr defekte Gläser, wenn die Angabe des Herstellers stimmt?</p>
+<p>Die Anzahl defekter Gläser ist Binomialverteilt mit <span class="math inline">\(n = 50\)</span> und <span class="math inline">\(\pi = 0.03\)</span>, also <span class="math inline">\(X\sim Bin(50, 0.03)\)</span>. Gefragt ist <span class="math inline">\(P(X &gt; 6)\)</span>, also die Gegenwahrscheinlichkeit von <span class="math inline">\(P(X\leq6)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0007037346</code></pre>
+</div>
+</div>
+<p>Die Berechnung mit der Binomialverteilung legt nahe, dass die Angabe des Herstellers nicht korrekt ist. Es ist sehr unwahrscheinlich, 7 oder mehr defekte Gläser zu finden, wenn der wahre Anteil defekter Gläser wirklich 3% sein sollte. Um die Fragestellung der Labormitarbeiterin abschliessend zu klären, ist ein statistischer Test nötig (siehe nächstes Kapitel).</p>
+</section>
+</section>
+<section id="die-normalverteilung" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="die-normalverteilung"><span class="header-section-number">2.5</span> Die Normalverteilung</h2>
+<p>Wenn eine Variable innerhalb eines Bereichs unendlich viele Werte annehmen kann, wird diese mittels einer kontinuierlichen Verteilung modelliert.</p>
+<p>Mathematisch ausgedrückt ist die Wahrscheinlichkeit, dass eine kontinuierliche Variable einen ganz bestimmten Wert annimmt gleich null:</p>
+<p><span class="math display">\[P(X = x) = 0\]</span></p>
+<p>Z.B. die Wahrscheinlichkeit, dass eine Temperaturmessung exakt 37° C ergibt ist gleich null. Warum? In einem unendlichen Wertespektrum kann die aktuelle Temperatur unendlich viele kleinere oder grössere Werte annehmen, z.B. 36.99999999 oder 36.999999998 oder 37.000000001 etc. (es sind unendlich viele Nachkommastellen möglich).</p>
+<section id="wahrscheinlichkeiten-für-kontinuierliche-daten" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="wahrscheinlichkeiten-für-kontinuierliche-daten"><span class="header-section-number">2.5.1</span> Wahrscheinlichkeiten für kontinuierliche Daten</h3>
+<p>Da es unmöglich ist, die Wahrscheinlichkeit für einen bestimmten Wert in einem kontinuierlichen Datenspektrum anzugeben, werden Wahrscheinlichkeiten für kontinuierliche Daten für Wertebereiche (Werteintervalle) berechnet und nicht für einzelne Werte. Was berechnet werden kann, ist die Wahrscheinlichkeit, dass ein gesuchter Wert in einem bestimmten Intervall liegt, z.B. <span class="math inline">\(P(X\le x)\)</span> oder <span class="math inline">\(P(a \le X \le b)\)</span>.</p>
+<p>In einem Wahrscheinlichkeitsdiagramm ist die Fläche unter der Kurve gleich 1 (<a href="#fig-plot-normal-curve" class="quarto-xref">Abbildung&nbsp;<span>2.4</span></a> ). Dies entspricht der Summe der Wahrscheinlichkeiten für alle möglichen Ausprägungen einer kontinuierlichen Variablen <span class="math inline">\(X\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-normal-curve" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-normal-curve-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-normal-curve-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-normal-curve-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.4: Die Fläche unter der Kurve ist gleich 1
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In der Statistik nimmt die Normalverteilung (auch Gauss-Verteilung, Glockenkurve) eine zentrale Stellung ein. Diese symmetrische Wahrscheinlichkeitsverteilung erlaubt es, eine Vielzahl von kontinuierlichen Variablen wie z.B. Körpergrösse oder Ergebnisse von Intelligenztests (IQ-Scores) zu modellieren.</p>
+<p>Eine Normalverteilung wird durch die Parameter <em>Mittelwert</em> <span class="math inline">\(\mu\)</span> und <em>die Varianz</em> <span class="math inline">\(\sigma^2\)</span> (bzw. dien Standardabweichung <span class="math inline">\(\sigma\)</span>) vollständig beschrieben. Folgt eine Variable <span class="math inline">\(X\)</span> einer Normalverteilung, wird das wie folgt notiert:</p>
+<p><span class="math display">\[
+X \sim N(\mu, \sigma^2).
+\]</span></p>
+<p>Für Berechnungen mit der Normalverteilung braucht man oft die Standardabeichung <span class="math inline">\(\sigma\)</span> statt die Varianz <span class="math inline">\(\sigma^2\)</span>. Es spielt in der Praxis aber keine Rolle, ob die Varianz oder die Standardabweichung vorliegt weil <span class="math inline">\(\sigma = \sqrt{\sigma^2}\)</span>. Während eine Änderung des Mittelwerts die Glockenkurve nach links oder nach rechts verschiebt, führt eine Änderung der Standardabweichung dazu, dass die Kurve breiter oder schmaler wird.</p>
+<p>Die Normalverteilung von Daten ist eine wichtige Voraussetzung für zahlreiche statistische Verfahren. Üblicherweise kennt man die wahre Verteilung einer Variablen in einer Population jedoch nicht und man muss aus den Stichprobendaten ermitteln, ob Evidenz dafür vorliegt, dass die Daten aus einer normalverteilten Population stammen. Wie man dabei vorgeht, wird weiter unten beschrieben.</p>
+<section id="sec-exkurs-wahrscheinlichkeitsfunktion-und-dichtefunktion" class="level4" data-number="2.5.1.1">
+<h4 data-number="2.5.1.1" class="anchored" data-anchor-id="sec-exkurs-wahrscheinlichkeitsfunktion-und-dichtefunktion"><span class="header-section-number">2.5.1.1</span> Exkurs: Wahrscheinlichkeitsfunktion und Dichtefunktion</h4>
+<p>Wie Sie bei der Binomialverteilung gelernt haben, kann man bei diskreten Variablen die Wahrscheinlichkeit für alle <span class="math inline">\(x\)</span> im Wertebereich von <span class="math inline">\(X\)</span> angeben. Diese Verteilung von Wahrscheinlichkeiten nennt man <strong>Wahrscheinlichkeitsverteilung</strong>. Die Wahrscheinlichkeit <span class="math inline">\(P(X = x)\)</span> ist gegeben durch die <strong>Wahrscheinlichkeitsfunktion</strong> <span class="math inline">\(f(x)\)</span>. Man nennt <span class="math inline">\(f(x)\)</span> bei diskreten Variablen auch <strong>Wahrscheinlichkeitsmasse</strong> oder <strong>Gewichtsfunktion</strong>. Wir gehen in diesem Kurs nicht auf weitere Details dieser Wahrscheinlichkeitsfunktionen ein. In <code>R</code> kann man die Wahrscheinlichkeitsfunktion der Binomialverteilung durch <code>dbinom(x, n, p)</code> abrufen (siehe Kapitel zur Binomialverteilung). Nebst der Wahrscheinlichkeitsfunktion ist häufig die kumulative Wahrscheinlichkeitsfunktion <span class="math inline">\(F(x) = P(X \le x)\)</span> von Interesse. Diese erhält man, wie bei der Binomialvertelung beschrieben, durch das Aufsummieren der einzelnen Wahrscheinlichkeiten. In <code>R</code> erhalten wir die kumulative Wahrscheinlichkeitsverteilung für <span class="math inline">\(P(X \le x)\)</span> durch <code>pbinom(x, n, p)</code>.</p>
+<p>In <a href="#fig-plot-binom-20" class="quarto-xref">Abbildung&nbsp;<span>2.5</span></a> sehen Sie links die Wahrscheinlichkeitsverteilung und rechts die kummulaitve Wahrscheinlichkeitsverteilung für <span class="math inline">\(X \sim Binomial(20, 0.2)\)</span>. Erkennen Sie, dass man jeweils von der einen Verteilung auf die andere schliessen kann?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-binom-20" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-binom-20-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-binom-20-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-binom-20-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.5: Wahrscheinlichkeitsverteilung und kumulative Wahrscheinlichkeitsverteilung für X~Bin(20, 0.2)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Für eine kontinuierliche Zufallsvariable <span class="math inline">\(X\)</span> gilt jedoch <span class="math inline">\(P(X = x) = 0\)</span> für alle <span class="math inline">\(x\)</span>. Anders als bei diskreten Variablen können wir also die Wahrscheinlichkeitsverteilung von <span class="math inline">\(X\)</span> nicht mittels der Angaben von “Punkt”-Wahrscheinlichkeiten beschreiben. Die Wahrscheinlichkeitsverteilung einer kontinuierlichen Variablen <span class="math inline">\(X\)</span> kann jedoch beschrieben werden, indem man die Wahrscheinlichkeiten für Intervalle angibt:</p>
+<p><span class="math display">\[
+P(X \in [a, b]) = P(a &lt; X \le b)
+\]</span></p>
+<p>Anmerkung: Bei kontinuierlichen Variablen ist <span class="math inline">\(&lt;\)</span> und <span class="math inline">\(\le\)</span> dasselbe, weil <span class="math inline">\(P(X = x) = 0\)</span>.</p>
+<p>Um <span class="math inline">\(P(a &lt; X \le b)\)</span> zu berechnen, reicht es, die kumulative Verteilungsfunktion <span class="math inline">\(F(x) = P(X \le x)\)</span> zu kennen, weil <span class="math inline">\(P(a&lt;X ≤b)=F(b)−F(a)\)</span>. Zusammenfassend heisst dies, dass die Wahrscheinlichkeitsverteilung einer kontinuierlichen Variablen <span class="math inline">\(X\)</span> durch die kumulative Verteilungsfunktion <span class="math inline">\(F(\cdot)\)</span> beschrieben werden kann. Analog zur Wahrscheinlichkeitsfunktion bei diskreten Variablen gibt es für kontinuierliche Variablen die <strong>Dichtefunktion</strong> <span class="math inline">\(f(x)\)</span>. Diese erhält man durch Ableiten der kumulativen Wahrscheinlichkeitsfunktion: <span class="math display">\[f(x) = F'(x).\]</span></p>
+<p>Umgekehrt kann man aus der Dichte die kumulative Wahrscheinlichkeitsfunktion durch Integrieren zurückgewinnen:</p>
+<p><span class="math display">\[
+F(x) = \int_{-\infty}^x f(t)dt
+\]</span></p>
+<p>In <code>R</code> erhalten wir die Dichte der Normalverteilung mit <code>dnorm(x, mu, sigma)</code> (darum dieses <em>d</em> (wie oben gesehen, steht im diskreten Fall das <em>d</em> für die Wahrscheinlichkeitsmasse statt für die Wahrscheinlichkeitsdichte)) und die kumulative Wahrscheinlichkeitsfunktion mit <code>pnorm(x, mu, sigma)</code>. In <a href="#fig-plot-norm-0" class="quarto-xref">Abbildung&nbsp;<span>2.6</span></a> sehen Sie links die Dichtefunktion und rechts die kumulaitve Wahrscheinlichkeitsverteilung für <span class="math inline">\(X \sim N(0, 1)\)</span>. Erkennen Sie, dass man jeweils von der einen Verteilung auf die andere schliessen kann?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-norm-0" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-norm-0-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-norm-0-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-norm-0-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.6: Dichte und kumulative Wahrscheinlichkeitsverteilung für X~N(0, 1)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="anwendung-der-normalverteilung" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="anwendung-der-normalverteilung"><span class="header-section-number">2.5.2</span> Anwendung der Normalverteilung</h3>
+<p>Beispiel: Der Intelligenzquotient (IQ-Score) ist normalverteilt. Er hat einen Mittelwert <span class="math inline">\(\mu\)</span> = 100 und eine Standardabweichung <span class="math inline">\(\sigma\)</span> = 15. Die <a href="#fig-plot-normal-iq" class="quarto-xref">Abbildung&nbsp;<span>2.7</span></a> zeigt die Wahrscheinlichkeitsverteilung für den IQ-Score. Uns interessiert z.B. die Frage, wie gross ist die Wahrscheinlichkeit, dass bei einem Test der IQ-Score zwischen 120 und 140 (also in ein bestimmtes Werteintervall) fällt, also <span class="math inline">\(P(120 \le X \le 140)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-normal-iq" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-normal-iq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-normal-iq-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-normal-iq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.7: Wahrscheinlichkeit für IQ-Score zwischen 120 und 140
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die <a href="#fig-plot-normal-iq" class="quarto-xref">Abbildung&nbsp;<span>2.7</span></a> zeigt, dass die Verteilung des IQ-Score symmetrisch ist. Die Höhe der Kurve ist die Dichte und gibt in einem bestimmten Abschnitt die “Wahrscheinlichkeit” für einen bestimmten Wertebereich an. Beachte, dass die Wahrscheinlichkeit für einen bestimmten Wert aber immer 0 ist (siehe <a href="#sec-exkurs-wahrscheinlichkeitsfunktion-und-dichtefunktion" class="quarto-xref"><span>Section 2.5.1.1</span></a>). Die Kurve hat ihr Maximum im Wertebereich um 100, also beim Mittelwert. Je weiter wir uns nach links oder rechts vom Mittelwert entfernen, desto geringer wird die Wahrscheinlichkeit für einen bestimmten IQ-Score. Die blaue Fläche zwischen den IQ-Scores 120 und 140 macht 8.7% der Gesamtfläche unter der Kurve aus (wie man diese Fläche berechnet, folgt später). Damit ist die Wahrscheinlichkeit, dass der IQ-Score zwischen 120 und 140 fällt <span class="math inline">\(p\)</span> = 0.087 bzw. 8.7%. Wir sehen also, dass ein IQ-Score zwischen 120 und 140 ein nicht sehr häufiges Ereignis ist.</p>
+<p>Wie bereits erwähnt ist die Normalverteilung eine wichtige Wahrscheinlichkeitsverteilung in der Statistik, weil sie die Modellierung zahlreicher natürlicher Phänomene erlaubt. So sind z.B. Körpergrösse, Blutdruck, Messfehler von Instrumenten und Hämoglobin-Gehalt im Blut annähernd normal verteilt. Als Dichtefunktion beschreibt sie, wie die Werte (Merkmalsausprägungen) einer Variablen (Beobachtungsmerkmal) verteilt sind. Die Kurve hat die Form einer Glocke (Gauss’sche Glockenkurve) und ist symmetrisch bezüglich des Mittelwerts, d.h. die häufigsten Merkmalsausprägungen liegen in der Nähe des Mittelwerts. Mit zunehmendem Abstand vom Mittelwert nach links oder rechts nimmt die Wahrscheinlichkeit für Werte ab und die Verteilungskurve nähert sich dem Wert 0, den sie aber nie erreicht! Das heisst die untere und obere Grenze einer Normalverteilung sind <span class="math inline">\((-\infty ; \infty)\)</span>.</p>
+<p>Beispiel: Körpergrösse ist eine normalverteilte Variable. Die <a href="#fig-plot-frauen-14" class="quarto-xref">Abbildung&nbsp;<span>2.8</span></a> zeigt die Verteilung der Körpergrösse von 14-jährigen Frauen aus einer Stichprobe von <span class="math inline">\(n\)</span> = 800.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-frauen-14" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-frauen-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-frauen-14-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-frauen-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.8: Körpergrösse 14-jähriger Mädchen in m (n = 800)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Das Histogramm in <a href="#fig-plot-frauen-14" class="quarto-xref">Abbildung&nbsp;<span>2.8</span></a> zeigt die Verteilung der Daten in der Stichprobe und wir erkennen, dass die meisten Werte um den Mittelwert <span class="math inline">\(\bar{x}\)</span> = 1.52 m liegen. Werte über 1.65 m oder unter 1.4 m sind vergleichsweise selten anzutreffen. Die rote Kurve ist die theoretische Normalverteilungskurve mit dem Mittelwert <span class="math inline">\(\mu\)</span> = 1.52 m und der Standardabweichung <span class="math inline">\(\sigma\)</span> = 0.07 m. Obwohl die Kurve das Histogramm nicht exakt abbildet, scheint sie ein akzeptables Modell für die emprirische Häufigkeitsverteilung zu liefern und wir dürfen annehmen, dass unsere Stichprobe aus einer annähernd normalverteilten Population stammt.</p>
+</section>
+<section id="parameter-der-normalverteilung" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="parameter-der-normalverteilung"><span class="header-section-number">2.5.3</span> Parameter der Normalverteilung</h3>
+<p>Eine Normalverteilung wird mit den Parametern <em>Mittelwert</em> <span class="math inline">\(\mu\)</span> und <em>Varianz</em> <span class="math inline">\(\sigma^2\)</span> vollständig beschrieben. Die Form einer Normalverteilung variiert jedoch in Abhängigkeit von diesen Parametern.</p>
+<p>Für die mathematisch Interessierten: Eine normalverteilte Variable <span class="math inline">\(X\)</span> mit Parametern <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma^2\)</span> hat die Dichte <span class="math display">\[\begin{equation}
+  f(x)=\frac{1}{\sqrt{2\pi\sigma^2}}
+    \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right), \quad x\in \mathbb{R}.
+\end{equation}\]</span></p>
+<p>Der Mittelwert ist die Kennzahl der zentralen Lage. Er gibt den Wert an, an dem die Glockenkurve ihr Maximum hat. Die meisten Werte gruppieren sich um den Mittelwert herum. Eine Veränderung des Mittelwerts verschiebt die Kurve nach links oder nach rechts auf der x-Achse einer Grafik.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-normal-mean-influence" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-normal-mean-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-normal-mean-influence-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-normal-mean-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.9: Der Mittelwert beeinflusst die Lage der Verteilung auf der x-Achse
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Standardabweichung ist eine Kennzahl der Streuung. Unterschiedliche Standardabweichungen beeinflussen die Breite der Glockenkurve.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-normal-sd-influence" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-normal-sd-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-normal-sd-influence-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-normal-sd-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.10: Die Standardabweichung beeinflusst die Breite der Glockenkurve
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="kennzahlen-der-population-vs.-kennzahlen-von-stichproben" class="level3" data-number="2.5.4">
+<h3 data-number="2.5.4" class="anchored" data-anchor-id="kennzahlen-der-population-vs.-kennzahlen-von-stichproben"><span class="header-section-number">2.5.4</span> Kennzahlen der Population vs.&nbsp;Kennzahlen von Stichproben</h3>
+<p>Wie oben ausgeführt, beschreibt das Normalverteilungsmodell die Verteilung der Daten in der Population. <strong>Um Stichprobenkennzahlen und Populationparameter leicht zu unterschieden, ist es gebräuchlich, Populationskennzahlen mit griechischen Buchstaben und Stichprobenkennzahlen mit römischen Buchstaben anzugeben.</strong> Daher wird ein Populationsmittelwert mit dem griechischen Symbol <span class="math inline">\(\mu\)</span> und eine Populationsstandardabweichung stets mit dem griechischen Symbol <span class="math inline">\(\sigma\)</span> angegeben.</p>
+<p>Üblicherweise sind <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> einer Population jedoch unbekannt, da es in der Regel unmöglich ist, eine gesamte Population zu messen. Wir können jedoch Zufallsstichproben ziehen um diese Parameter zu <em>schätzen</em>. Die Stichprobenkennzahlen, die als Punktschätzer (engl. point estimate) für die Populationsparameter dienen, werden mit den Symbolen <span class="math inline">\(\bar{x}\)</span> für den Stichprobenmittelwert und <span class="math inline">\(s\)</span> für die Stichprobenstandardabweichung angegeben. Es kann sein, dass sie manchmal den Symbolen <span class="math inline">\(\hat{\mu}\)</span> und <span class="math inline">\(\hat{\sigma}\)</span> begegnen. Der Hut bedeutet, dass <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> geschätzt wurden. Es gilt also <span class="math inline">\(\hat{\mu} = \bar{x}\)</span> und <span class="math inline">\(\hat{\sigma} =s\)</span>. Aus technischen Gründen muss in Grafiken gelegentlich auf griechische Buchstaben verzichtet werden.</p>
+</section>
+<section id="eigenschaften-von-normalverteilungen" class="level3" data-number="2.5.5">
+<h3 data-number="2.5.5" class="anchored" data-anchor-id="eigenschaften-von-normalverteilungen"><span class="header-section-number">2.5.5</span> Eigenschaften von Normalverteilungen</h3>
+<p>Trotz ihrer unterschiedlichen Formen haben alle Normalverteilungen folgende gemeinsamen Eigenschaften:</p>
+<ul>
+<li><p>Alle Normalverteilungen sind symmetrisch.</p></li>
+<li><p>Median und Mittelwert sind identisch.</p></li>
+<li><p>Eine Hälfte der Werte liegt unter und eine Hälfte über dem Mittelwert.</p></li>
+<li><p>Die 68-95-99.7 Regel erlaubt es, den Anteil der Werte innerhalb einer bestimmten Distanz vom Mittelwert zu bestimmen.</p></li>
+</ul>
+</section>
+<section id="die-68-95-99.7-regel" class="level3" data-number="2.5.6">
+<h3 data-number="2.5.6" class="anchored" data-anchor-id="die-68-95-99.7-regel"><span class="header-section-number">2.5.6</span> Die 68 – 95 – 99.7 – Regel</h3>
+<p>Die 68-95-99.7 Regel ist eine empirische Regel der angewandten Statistik, die einen anschaulichen Zusammenhang zwischen Mittelwert und Standardabweichung eines normalverteilten Zufallsereignisses ermöglicht. Sie gibt an, wie viel Prozent der Daten innerhalb einer, zwei bzw. drei Standardabweichungen <span class="math inline">\(\sigma\)</span> vom Mittelwert <span class="math inline">\(\mu\)</span> entfernt sind.</p>
+<p>Als Faustregel gilt:</p>
+<ul>
+<li>Mittelwert +/- 1 Standardabweichung: 68% der Werte</li>
+<li>Mittelwert +/- 2 Standardabweichungen: 95% der Werte</li>
+<li>Mittelwert +/- 3 Standardabweichungen: 99.7% der Werte</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-6895997-rule" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-6895997-rule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-6895997-rule-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-6895997-rule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.11: Die 68-95-99.7 - Regel
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Beispiel: Ihr Lieblingspizzakurier wirbt damit, dass er innerhalb von durchschnittlich <span class="math inline">\(\bar{x}\)</span> = 30 Minuten, mit einer Standardabweichung von <span class="math inline">\(s\)</span> = 5 Minuten die bestellte Pizza liefern kann. Unter Anwendung der 68-95-99.7-Regel bedeutet dies, dass die Auslieferung</p>
+<ul>
+<li>in 68% der Bestellungen innerhalb von 25 bis 35 Minuten,<br>
+</li>
+<li>in 95% der Bestellungen innerhalb von 20 bis 40 Minuten und<br>
+</li>
+<li>in 99.7% der Bestellungen innerhalb von 15 bis 45 Minuten erfolgt.</li>
+</ul>
+</section>
+</section>
+<section id="die-standardnormalverteilung" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="die-standardnormalverteilung"><span class="header-section-number">2.6</span> Die Standardnormalverteilung</h2>
+<p>Wenn wir beliebige, normalverteilte Merkmale messen, werden wir immer wieder neue Normalverteilungen mit jeweils ihrem eigenen Mittelwert und ihrer eigenen Standardabweichung erhalten. D.h. die Normalverteilungskurve wird manchmal breiter, manchmal schmaler, manchmal höher, manchmal tiefer sein. Jedes Merkmal weist seine charakteristische Verteilung auf. In der Statistik interessieren wir uns oft für die Wahrscheinlichkeit, dass ein bestimmtes Ereignis eintritt z.B. das Ereignis, dass eine Studentin mindestens 168 cm gross ist: <span class="math inline">\(P(X &gt; 168)\)</span>. Bei Daten aus normalverteilten Populationen erfolgt die Berechnung von Wahrscheinlichkeiten über die Berechnung von Flächeninhalten unter der Normalverteilungskurve. Allerdings ist diese Berechnung von Flächen unter Kurven eine nicht ganz triviale Angelegenheit. Das Integral der Dichtefunktion der Normalverteilung ist nicht explizit darstellbar mit Standardfunktionen wie <span class="math inline">\(exp(x)\)</span>, <span class="math inline">\(log(x)\)</span> etc. Um diese Berechnungen zu erleichtern, wurde die <strong>Standardnormalverteilung</strong> “erfunden”. Diese ist eine Normalverteilung mit dem Mittelwert <span class="math inline">\(\mu\)</span> = 0 und der Standardabweichung <span class="math inline">\(\sigma\)</span> = 1.</p>
+<p>Man notiert die Standardnormalverteilung mit <span class="math inline">\(\phi(x)\)</span> für die Dichte <span class="math inline">\(f(x)\)</span> und <span class="math inline">\(\Phi(x)\)</span> für die kumulierte Verteilung <span class="math inline">\(F(x)\)</span>: Die Standardnormalverteilung hat die Dichte <span class="math display">\[\begin{equation}
+      \phi(x)=\frac{1}{\sqrt{2\pi}}\exp{\left(-\frac{1}{2}x^2\right)}
+\end{equation}\]</span> und die kumulative Verteilungsfunktion der Standardnormalverteilung ist demnach <span class="math display">\[\begin{align}
+  \Phi(x)=\Pr(X&lt;x)=\int_{-\infty}^x\phi(t)dt.
+\end{align}\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="02_prop_distributions_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Jede beliebige Normalverteilung kann durch die <strong>Transformation</strong></p>
+<p><span class="math display">\[Z = \frac{X-\mu}{\sigma}\]</span></p>
+<p>in eine Standardnormalverteilung umgewandelt werden, was Flächenberechnungen erheblich erleichtert, da die Werte der dazugehörigen kumulativen Verteilungsfunktion tabelliert vorliegen. Mann muss diese also nicht jedes mal neu ausrechnen, sondern es reicht, wenn man eine Transformation in eine Standardnormalverteilung vornimmt.</p>
+<p>Umgekehrt kann man mit der Umkehrfunktion</p>
+<p><span class="math display">\[X=Z\sigma+\mu\]</span></p>
+<p>eine normalverteilte Variable mit willkürlichem <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> generieren, also beliebig zentrieren und skalieren, wie das verschiedene Messinstrumente machen, die z.B. ein <span class="math inline">\(X\)</span> mit einen Mittelwert von 100 und eine Standardabweichung von 15 wollen.</p>
+<p>Ein bestimmter Wert von <span class="math inline">\(Z\)</span> in der Standardnormalverteilung wird als <span class="math inline">\(z\)</span>-Wert bezeichnet. Der <span class="math inline">\(z\)</span>-Wert gibt an, <em>um wie viele Standardabweichungen dieser Wert vom Mittelwert entfernt ist</em>. Ist der <span class="math inline">\(z\)</span>-Wert negativ, liegt der Wert links vom Mittelwert, d.h. er ist kleiner als der Mittelwert. Ist der <span class="math inline">\(z\)</span>-Wert positiv, liegt der Wert rechts vom Mittelwert und ist somit grösser. Der Mittelwert selber hat stets den <span class="math inline">\(z\)</span>-Wert 0. Es gilt also <span class="math inline">\(Z \sim N(0,1)\)</span>.</p>
+<section id="berechnung-von-z-werten-z-transformation" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="berechnung-von-z-werten-z-transformation"><span class="header-section-number">2.6.1</span> Berechnung von <span class="math inline">\(z\)</span>-Werten (<span class="math inline">\(z\)</span>-Transformation)</h3>
+<p>Um Stichprobendaten zu standardisieren, müssen die Rohdaten in <span class="math inline">\(z\)</span>-Werte umgerechnet werden. Die Umwandlung einer beliebigen Normalverteilung in die Standardnormalverteilung erfolgt nach der Formel:</p>
+<p><span class="math display">\[z_i=\frac{x_i - \bar{x}}{s}\]</span></p>
+<p>Beispiel: Du hast zwei Äpfel, der eine wiegt 85g, der andere wiegt 110 g. Das durchschnittliche Gewicht von Äpfeln beträgt <span class="math inline">\(\bar{x}\)</span> = 100g mit einer Standardabweichung <span class="math inline">\(s\)</span> = 10 g.</p>
+<ul>
+<li>z-Wert für den 85g-Apfel: <span class="math inline">\(z_{85}=\frac{85-100}{10} = -1.5\)</span><br>
+</li>
+<li>z-Wert für den 110g-Apfel: <span class="math inline">\(z_{110}=\frac{110-100}{10} = 1\)</span></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-apple-raw" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-apple-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-apple-raw-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-apple-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.12: Gewicht von Äpfeln (g), roh und standardisiert. Der Blaue Punkt ist der Mittelwert.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-apple-z" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-apple-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-apple-z-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-apple-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.13: z-Werte der beiden Äpfel
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der <span class="math inline">\(z\)</span>-Wert für den 85g Apfel ist negativ da er leichter ist als ein durchschnittlicher Apfel. Um wie viel leichter? Um -1.5 Standardabweichungen = -1.5 <span class="math inline">\(\times\)</span> 10 = -15g. Der <span class="math inline">\(z\)</span>-Wert für den 110g-Apfel ist positiv, d.h. er ist schwerer als ein durchschnittlicher Apfel. Um wie viel schwerer? Um 1 Standardabweichung = 1 <span class="math inline">\(\times\)</span> 10 = 10g.</p>
+</section>
+<section id="interpretation-von-z-werten" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="interpretation-von-z-werten"><span class="header-section-number">2.6.2</span> Interpretation von z-Werten</h3>
+<p>Uns interessiert jetzt die Frage: Wie wahrscheinlich ist es, dass ein Apfel 85g schwer oder leichter ist? Also <span class="math inline">\(P(X \le 85) = P(Z \le \frac{85-100}{10}) = P(Z \le -1.5)\)</span>. Wie oben bereits erwähnt ist bei kontinuierlichen Variablen <span class="math inline">\(P(Z \le -1.5) = P(Z &lt; -1.5)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-le-z" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-le-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-le-z-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-le-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.14: Wahrscheinlichkeit für Z &lt;= -1.5
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die blaue Fläche unter der Kurve in <a href="#fig-plot-le-z" class="quarto-xref">Abbildung&nbsp;<span>2.14</span></a> entspricht der Wahrscheinlichkeit für <span class="math inline">\(Z \leq -1.5\)</span>. Mit Hilfe der kumulativen Wahrscheinlichkeitsfunktion <span class="math inline">\(\Phi(z)\)</span> kann man diese leicht ablesen als <span class="math inline">\(\Phi(-1.5)\)</span>:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-kum-norm" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-kum-norm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-kum-norm-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-kum-norm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.15: Kumulative Wahrscheinlichkeitsfunktion der Standardnormalverteilung. Eingezeichnet die kumulative Wahrscheinlichkeit bei Z &lt; -1.5”
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Vor dem Computerzeitalter hat man die kumulative Wahrscheinlichkeitsfunktion tabelliert, siehe z.B. <a href="https://de.wikipedia.org/wiki/Standardnormalverteilungstabelle">hier</a>. Mit dem Computer können wir bequemer auf diese kumulative Wahrscheinlichkeitsfunktion zugreifen. In diesem Fall erhalten wir mit der Funktion <code>pnorm(-1.5)</code> die kumulative Wahrscheinlichkeit von <span class="math inline">\(-\infty\)</span> bis <span class="math inline">\(-1.5\)</span> (was der blauen Fläche entspricht).</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="sc">-</span><span class="fl">1.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0668072</code></pre>
+</div>
+</div>
+<p><code>R</code> gibt eine Wahrscheinlichkeit von <span class="math inline">\(p\)</span> = 0.067 für <span class="math inline">\(z \leq -1.5\)</span> an. Das bedeutet, dass wir erwarten können, dass die Wahrscheinlichkeit einen Apfel von 85g oder einen leichteren Apfel zu erhalten bei 6.7% liegt. Umgekehrt heisst es auch, dass die Wahrscheinlichkeit, einen Apfel zu erhalten, der schwerer als 85g ist, ist gleich <span class="math inline">\(p = 1-0.067 = 0.933\)</span> bzw. 93.3%.</p>
+<p>Auch folgende Frage können wir stellen: Wie wahrscheinlich ist es, dass Ein Apfel 110g oder mehr wiegt? Also <span class="math inline">\(P(X \ge 110) = P(Z \ge \frac{110-100}{10}) = P(Z \ge 1)\)</span>. Auch hier gilt: <span class="math inline">\(P(Z \ge 1) = P(Z &gt; 1)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-ge-z" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-ge-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-ge-z-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-ge-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.16: Wahrscheinlichkeit für Z &gt; 1
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die blaue Fläche in <a href="#fig-plot-ge-z" class="quarto-xref">Abbildung&nbsp;<span>2.16</span></a> entspricht der Wahrscheinlichkeit für <span class="math inline">\(Z\geq1\)</span>. Wiederum hilft uns die z-Werte-Tabelle oder die Funktion <code>pnorm()</code> in <code>R</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8413447</code></pre>
+</div>
+</div>
+<p>Aber dieses Ergebnis kann nicht richtig sein! Die Wahrscheinlichkeit muss kleiner als 50% sein, da ja nicht die ganze Fläche rechts vom Mittelwert blau eingefärbt ist. Der “Fehler” kommt daher, dass die Funktion <code>pnorm()</code> stets die Fläche unterhalb des angegebenen <span class="math inline">\(z\)</span>-Werts, also die Fläche links vom <span class="math inline">\(z\)</span>-Wert, berechnet. Daher müssen wir in diesem Fall eine kleine Anpassung vornehmen und wir ziehen den P-Wert einfach von 1 ab:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1586553</code></pre>
+</div>
+</div>
+<p>Unsere Berechnungen haben ergeben, dass die Wahrscheinlichkeit, einen Apfel von 110g oder schwerer zu erhalten bei 15.8% liegt.</p>
+<p>Zum Schluss noch folgende Übung: Wie gross ist die Wahrscheinlichkeit dafür, dass das Gewicht eines Apfels zwischen 85g und 110g liegt? Auch diese Berechnung ist kein Problem: Zuerst berechnen wir, wie gross die Wahrscheinlichkeit ist, dass ein Apfel maximal 110g schwer ist (siehe a) und ziehen von diesem Wert die Wahrscheinlichkeit ab, dass ein Apfel maximal 85g schwer ist (siehe b).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-between-z" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-between-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-between-z-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-between-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.17: Wahrscheinlichkeit für a &lt; Z &lt; b
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Berechnung in <code>R</code> folgt genau diesem Prinzip:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  Wahrscheinlichkeit für z &lt; 1</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(<span class="dv">1</span>)  </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Wahrscheinlichkeit für z &lt; -1.5</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(<span class="sc">-</span><span class="fl">1.5</span>)  </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Wahrscheinlichkeit für -1.5 &lt;= z &lt; 1</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>a <span class="sc">-</span> b             </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7745375</code></pre>
+</div>
+</div>
+<p>Die Wahrscheinlichkeit, dass ein Apfel zwischen 85g und 110g wiegt beträgt 77.5% (<span class="math inline">\(p = 0.775\)</span>).</p>
+</section>
+</section>
+<section id="prüfung-auf-normalverteilung" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="prüfung-auf-normalverteilung"><span class="header-section-number">2.7</span> Prüfung auf Normalverteilung</h2>
+<p>Üblicherweise ist die Verteilung der Daten in der Population unbekannt. Daher müssen wir anhand von Stichprobendaten abschätzen, ob eine Normalverteilung zu Grunde liegt. Dazu existieren mehrere Verfahren:</p>
+<ul>
+<li>Visuelle Verfahren zur Prüfung auf Normalverteilung
+<ul>
+<li>Histogramm</li>
+<li>Boxplot</li>
+<li>QQ-Plot</li>
+</ul></li>
+<li>Mathematische Verfahren
+<ul>
+<li>Vergleich von Mittelwert und Median</li>
+<li>Speziell dafür konzipierte statistische Verfahren</li>
+</ul></li>
+</ul>
+<p>Wir bevorzugen visuelle Verfahren.</p>
+<section id="qq-plot" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="qq-plot">QQ-Plot</h3>
+<p>Der <strong>QQ-Plot</strong> (Quantile-Quantile-Plot) ist ein wichtiges visuelles Hilfsmittel um zwei Wahrscheinlichkeitsverteilungen miteinander zu vergleichen. Wenn diese beiden Verteilungen identisch sind, liegen im QQ-Plot alle Punkte auf einer (diagonalen) Linie.</p>
+<p>Im QQ-Plot für Normalverteilung werden auf der x-Achse die Quantile einer Normalverteilung (theoretisch erwartete Werte) eingetragen und auf der y-Achse die Quantile der beobachteten Daten (Stichprobendaten).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-norm-test" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-norm-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-norm-test-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-norm-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.18: Histogramm, Boxplot und QQ-Plot für eine Normalverteilung.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Weichen die Daten nicht/nur wenig von einer Normalverteilung ab, dann…</p>
+<ul>
+<li>… hat das Histogramm annähernd die Form einer symmetrischen Glockenkurve.</li>
+<li>… ist der Boxplot symmetrisch, Median und Mittelwert (roter Punkt) sind annähernd identisch.</li>
+<li>… liegen die Punkte im QQ-Plot annähernd auf einer diagnonalen Geraden.</li>
+</ul>
+<p>Somit besteht wenig Evidenz, dass die Daten nicht normalverteilt sind.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-leftskewed" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-leftskewed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-leftskewed-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-leftskewed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.19: Histogramm Boxplot und QQ-Plot für eine linksschiefe Verteilung.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Beispiel für eine linksschiefe Verteilung (<a href="#fig-plot-leftskewed" class="quarto-xref">Abbildung&nbsp;<span>2.19</span></a>):</p>
+<ul>
+<li>Im Histogramm sind die Daten linksschief verteilt.</li>
+<li>Der Boxplot ist asymmetrisch, der Mittelwert (roter Punkt) ist kleiner als der Median.</li>
+<li>Der QQ-Plot weist eine deutliche, nach oben konvexe Krümmung auf.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-rightskewed" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-rightskewed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-rightskewed-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-rightskewed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.20: Histogramm, Boxplot und QQ-Plot für eine rechtsschiefe Verteilung.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Beispiel für eine rechtsschiefe Verteilung (<a href="#fig-plot-rightskewed" class="quarto-xref">Abbildung&nbsp;<span>2.20</span></a>):</p>
+<ul>
+<li>Im Histogramm sind die Daten rechtsschief verteilt.</li>
+<li>Der Boxplot ist asymmetrisch, der Mittelwert (roter Punkt) ist grösser als der Median.</li>
+<li>Der QQ-Plot weist eine deutliche, nach unten konvexe Krümmung auf.</li>
+</ul>
+<p>Die Interpretation von QQ-Plots für kleine Stichproben ist schwierig und nicht immer ganz eindeutig möglich.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-qq-n-small" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-qq-n-small-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-qq-n-small-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-qq-n-small-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.21: QQ-Plots für 10 Stichproben (n = 28) aus einer perfekten Normalverteilung
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In der <a href="#fig-plot-qq-n-small" class="quarto-xref">Abbildung&nbsp;<span>2.21</span></a> wurden zehn Stichproben im Umfang von <span class="math inline">\(n\)</span> = 28 aus einer perfekt normalverteilten Population gezogen. Die Grafiken 3, 6 und 8 könnten auch zur Einschätzung führen, dass die Daten nicht normal verteilt sind. Mit anderen Worten: solche Abweichung sind unter einer Normalverteilung zu erwarten.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-qq-real" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-qq-real-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-qq-real-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-qq-real-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.22: Reale Daten zur Körpergrösse
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Diese <a href="#fig-plot-qq-real" class="quarto-xref">Abbildung&nbsp;<span>2.22</span></a> zeigt reale Daten zur Körpergrösse aus einer Stichprobe <span class="math inline">\(n\)</span> = 50 Personen. Obwohl wir theoretisch wissen, dass Körpergrösse eine normalverteilte Variable ist, würden wir aus den Stichprobendaten vermutlich einen anderen Schluss ziehen.</p>
+<p>In gewissen Disziplinen sind statistische Tests zur Normalitätsprüfung populär. Diese Tests sind Hypothesentests (siehe <a href="03_inference.html" class="quarto-xref"><span>Chapter 3</span></a>) auf Normalverteilung. Die Nullhypothese dieser Tests ist, dass sich die Stichprobenverteilung und eine Normalverteilung nicht unterscheiden.</p>
+<ul>
+<li>Wenn der P-Wert des Tests gleich oder kleiner als 0.05 ist, dann wird die Normalitätshypothese durch den Test (z.B. den Shapiro-Test) abgelehnt. Das heisst, dass die Daten mit mindestens 95%iger Sicherheit nicht der Normalverteilung entsprechen.</li>
+<li>Ist der P-Wert des Tests grösser als 0.05 ist der Test “bestanden” und es besteht nicht genug Evidenz für eine signifikante Abweichung von der Normalverteilung.</li>
+</ul>
+<p>Wie oben schon erwähnt, raten wir von solchen Tests zur Prüfung auf Normalverteilung ab. Die Normalverteilung ist ein Konstrukt, das in seiner mathematisch reinen Form in der Natur nicht vorkommt. Keine Variable ist exakt normalverteilt. Es ist daher sinnlos zu fragen “Sind meine Daten normalverteilt?”, weil die Antwort immer “NEIN” ist. Als Modell leistet die Normalverteilung jedoch gute Dienste und die bessere Fragestellung lautet “Habe ich Hinweise, die dagegen sprechen, dass meine Daten annähernd normalverteilt sind?” bzw. “Liegt Evidenz dafür vor, dass ich nicht von normalverteilten Daten ausgehen kann?”.</p>
+</section>
+</section>
+<section id="die-t-verteilung" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="die-t-verteilung"><span class="header-section-number">2.8</span> Die <span class="math inline">\(t\)</span>-Verteilung</h2>
+<p>Die <span class="math inline">\(t\)</span>-Verteilung wird hier eingeführt, weil Statistikprogramme wie <code>R</code> bei Test- und Schätzverfahren häufig nicht die <span class="math inline">\(z\)</span>-, sondern die <span class="math inline">\(t\)</span>-Verteilung verwenden – unabhängig vom Stichprobenumfang. Der Grund dafür ist, dass die <span class="math inline">\(t\)</span>-Verteilung die Unsicherheit bei der Schätzung der Standardabweichung berücksichtigt und dadurch präzisere Ergebnisse liefert. Die <span class="math inline">\(t\)</span>-Verteilung ist eine Variante der Normalverteilung, die in der Statistik eine zentrale Rolle spielt. <a href="https://higherlogicdownload.s3.amazonaws.com/AMSTAT/1484431b-3202-461e-b7e6-ebce10ca8bcd/UploadedImages/Classroom_Activities/HS_7__t-ditribution_and_GOSSET.pdf">William S. Gosset, Pseudonym: Student</a> zeigte, dass die standardisierte Schätzfunktion des Stichprobenmittelwerts bei normalverteilten Daten nicht mehr normalverteilt, sondern exakt <span class="math inline">\(t\)</span>-verteilt ist, wenn die zur Standardisierung benötigte Varianz nicht bekannt, sondern aus der Stichprobe geschätzt wird – was in der Praxis fast immer der Fall ist.Die <span class="math inline">\(t\)</span>-Verteilung erlaubt daher – insbesondere bei kleinen Stichproben – eine korrekte Berechnung der Verteilung der Differenz zwischen dem Stichprobenmittelwert und dem wahren Mittelwert der Grundgesamtheit.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-t-distr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-t-distr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02_prop_distributions_files/figure-html/fig-plot-t-distr-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-t-distr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.23: t-Verteilung für df = 3, 10, 30 und 50; Normalverteilung
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Was muss ich zur t-Verteilung wissen?</p>
+<ul>
+<li>Für die praktische Arbeit gilt, dass die <span class="math inline">\(t\)</span>-Verteilung als Anpassung der Normalverteilung für kleine Stichprobenumfänge aufgefasst werden kann. Ab einem Stichprobenumfang von <span class="math inline">\(n\)</span> &gt; 30 entspricht sie annähernd der Normalverteilung (diese Grenze ist bei den Statistikern umstritten, für uns ist sie jedoch als Faustregel gültig). Der <span class="math inline">\(t\)</span>-Wert, den Statistikprogramme berechnen, wird gleich wie ein <span class="math inline">\(z\)</span>-Wert interpretiert.</li>
+<li>Die Form der <span class="math inline">\(t\)</span>-Verteilung ist abhängig vom Stichprobenumfang <span class="math inline">\(n\)</span>. Dieser wird in Freiheitsgraden (degrees of freedom, <span class="math inline">\(df\)</span> angegeben). Wie Sie die Anzahl Freiheitsgrade berechnen, erfahren Sie in den entsprechenden Kapiteln). Im einfachsten Fall ist <span class="math inline">\(df = n - 1\)</span>. Je grösser die Anzahl Freiheitsgrade <span class="math inline">\(df\)</span> ist, desto mehr nähert sich die <span class="math inline">\(t\)</span>-Verteilung der Normalverteilung an.</li>
+<li>Wie bei der Normalverteilung können auch Flächen unter der <span class="math inline">\(t\)</span>-Verteilung bestimmt werden. Dafür existieren ebenfalls Tabellen, einfacher und genauer geht es mit <code>R</code>.</li>
+<li>Um <span class="math inline">\(P(T_{df} \le t)\)</span> zu berechnen, verwenden Sie, analog zur Funktion <code>pnorm()</code>, die Funktion <code>pt()</code>, wobei Sie zusätzlich die Anzahl Freiheitsgrade angeben.</li>
+</ul>
+<p><strong>Beispiele zur Berechnung von Wahrscheinlichkeiten anhand der</strong> <span class="math inline">\(t\)</span><strong>-Verteilung:</strong></p>
+<p><span class="math inline">\(P(T_{19} \le -1.5)\)</span></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pt</span>(<span class="sc">-</span><span class="fl">1.5</span>, <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.07502427</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(P(T_{9} \ge 2)\)</span></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pt</span>(<span class="dv">2</span>, <span class="dv">9</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03827641</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(P(-2 \le T_{14} \le 2)\)</span></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">pt</span>(<span class="dv">2</span>, <span class="dv">14</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">pt</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">14</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>a<span class="sc">-</span>b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.934712</code></pre>
+</div>
+</div>
+<p>Wenn Sie die gleichen Wahrscheinlichkeiten unter der Normalverteilung berechnen werden Sie feststellen, dass diese leicht verschieden sind.</p>
+</section>
+<section id="anhang-hilfreiche-r-codes-für-die-binomial--und-normalverteilung" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="anhang-hilfreiche-r-codes-für-die-binomial--und-normalverteilung"><span class="header-section-number">2.9</span> Anhang: hilfreiche <code>R</code> Codes für die Binomial- und Normalverteilung</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wahrscheinlichkeiten anhand einer Normalverteilung berechnen</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">170</span> <span class="co"># angenommener Mittelwert der Körpergrösse</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">12</span> <span class="co"># angenommene Standardabweichung der Körpergrösse</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Was ist der z-Wert, wenn eine Person 165 gross ist?</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">165</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> (x<span class="sc">-</span>mu)<span class="sc">/</span>sigma <span class="co"># z-Transformation</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>z</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Die Wahrscheinlichkeit, dass jemand gleich gross oder kleiner ist als x</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(z)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Die Wahrscheinlichkeit, dass jemand gleich gross oder grösser ist als x</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(z) <span class="co"># pnorm berechnet die Fläche links von x</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Wie gross muss jemand sein, um bei den grössten 10% zu sein?</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Hier muss anhand der Wahrscheinlichkeit der z-Wert gefunden werden</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="dv">1</span><span class="sc">-</span>p) <span class="co"># wir suchen den z-Wert, welcher zu 10%, bzw. 90%</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> z <span class="sc">*</span> sigma <span class="sc">+</span> mu <span class="co"># Umformung der z-Transformation, um den gesuchten Wert zu finden.</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Wie gross ist die Wahrscheinlichkeit, dass jemand zwischen 160 und 175 gross ist?</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="dv">160</span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>z1 <span class="ot">&lt;-</span> (x1<span class="sc">-</span>mu)<span class="sc">/</span>sigma</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(z1) <span class="co"># Fläche unterhlab von 160cm</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>p1</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="dv">175</span></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>z2 <span class="ot">&lt;-</span> (x2<span class="sc">-</span>mu)<span class="sc">/</span>sigma</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(z2) <span class="co"># Fläche oberhalb von 175cm</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>p2</span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> (p1<span class="sc">+</span>p2) <span class="co"># Wir addieren die beiden Randflächen und ziehen sie von der totalen Fläche (1) ab</span></span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Die norm()-Funktionen</span></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="fl">1.96</span>) <span class="co"># Das p steht für probability. Es wird die Fläche, also die Wahrscheinlichkeit für einen z-Wert kleiner oder gleich gross 1.96 berechnet.</span></span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="co"># Das q steht für quantile. Es wird der z-Wert für das entsprechende Quantil berechnet.</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">10</span>, <span class="dv">2</span>) <span class="co"># Dar r steht für random. Aus einer Normalverteilung mit mu = 10 und sigma = 2 werden zufällig 100 Werte gezogen.</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a><span class="do">## QQ-Plot um zu überprüfen, ob die Daten aus einer normalverteilten Population stammen</span></span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">10</span>, <span class="dv">2</span>)</span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(x); <span class="fu">qqline</span>(x)</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a><span class="co"># t-Verteilung</span></span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> z <span class="co"># der t-Wert wird gleich berechnet wie der z-Wert</span></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="dv">19</span> <span class="co"># Die 20 ist ein willkürliches Beispiel. In einfachen Situationen ist df = n-1</span></span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a><span class="fu">pt</span>(t, df) <span class="co"># P(T &lt;= t) mit df = 19</span></span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pt</span>(t, df) <span class="co"># P(T &gt;= t) mit df = 19</span></span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="fl">0.975</span>, df) <span class="co"># Das q steht für quantile. Es wird der t-Wert für das entsprechende Quantil berechnet.</span></span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Binomialverteilung</span></span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a><span class="do">## Die Funktionen pbinom() und dbinom() brauchen die Argumente x, n und p:</span></span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="fl">0.5</span>) <span class="co"># Wahrscheinlichkeit für MAXIMAL 5 Erfolge bei 10 Versuchen und einer Erfolgswahrscheinlichkeit von 50%</span></span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="fl">0.5</span>) <span class="co"># Wahrscheinlichkeit für GENAU 5 Erfolge bei 10 Versuchen und einer Erfolgswahrscheinlichkeit von 50%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01_descriptives.html" class="pagination-link" aria-label="Deskriptive Statistik">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03_inference.html" class="pagination-link" aria-label="Grundlagen der Inferenzstatistik">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

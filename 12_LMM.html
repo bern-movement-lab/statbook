@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12&nbsp; Linear Mixed Model – Skript zum Modul Angewandte Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./11_survival.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12_LMM.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skript zum Modul Angewandte Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Einführung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-recapLM" id="toc-sec-recapLM" class="nav-link active" data-scroll-target="#sec-recapLM"><span class="header-section-number">12.1</span> Recap: General Linear Model (LM)</a>
+  <ul class="collapse">
+  <li><a href="#kleinster-quadrate-schätzer" id="toc-kleinster-quadrate-schätzer" class="nav-link" data-scroll-target="#kleinster-quadrate-schätzer"><span class="header-section-number">12.1.1</span> Kleinster Quadrate Schätzer*</a></li>
+  </ul></li>
+  <li><a href="#linear-mixed-model" id="toc-linear-mixed-model" class="nav-link" data-scroll-target="#linear-mixed-model"><span class="header-section-number">12.2</span> Linear Mixed Model</a>
+  <ul class="collapse">
+  <li><a href="#bedingte-unabhängigkeit" id="toc-bedingte-unabhängigkeit" class="nav-link" data-scroll-target="#bedingte-unabhängigkeit"><span class="header-section-number">12.2.1</span> Bedingte Unabhängigkeit</a></li>
+  </ul></li>
+  <li><a href="#allgemeiner-fall" id="toc-allgemeiner-fall" class="nav-link" data-scroll-target="#allgemeiner-fall"><span class="header-section-number">12.3</span> Allgemeiner Fall*</a></li>
+  <li><a href="#random-intercept-model" id="toc-random-intercept-model" class="nav-link" data-scroll-target="#random-intercept-model"><span class="header-section-number">12.4</span> Random Intercept Model</a>
+  <ul class="collapse">
+  <li><a href="#erwartungswert-und-varianz" id="toc-erwartungswert-und-varianz" class="nav-link" data-scroll-target="#erwartungswert-und-varianz"><span class="header-section-number">12.4.1</span> Erwartungswert und Varianz</a></li>
+  </ul></li>
+  <li><a href="#gepaarter-t-test-als-lmm" id="toc-gepaarter-t-test-als-lmm" class="nav-link" data-scroll-target="#gepaarter-t-test-als-lmm"><span class="header-section-number">12.5</span> Gepaarter <span class="math inline">\(t\)</span>-Test als LMM</a>
+  <ul class="collapse">
+  <li><a href="#daten" id="toc-daten" class="nav-link" data-scroll-target="#daten"><span class="header-section-number">12.5.1</span> Daten</a></li>
+  <li><a href="#wide-und-long-format" id="toc-wide-und-long-format" class="nav-link" data-scroll-target="#wide-und-long-format"><span class="header-section-number">12.5.2</span> Wide und Long Format</a></li>
+  <li><a href="#beschreiben" id="toc-beschreiben" class="nav-link" data-scroll-target="#beschreiben"><span class="header-section-number">12.5.3</span> Beschreiben</a></li>
+  <li><a href="#analyse-als-gepaarter-t-test" id="toc-analyse-als-gepaarter-t-test" class="nav-link" data-scroll-target="#analyse-als-gepaarter-t-test"><span class="header-section-number">12.5.4</span> Analyse: Als gepaarter <span class="math inline">\(t\)</span>-test</a></li>
+  <li><a href="#analyse-als-repeated-measures-anova" id="toc-analyse-als-repeated-measures-anova" class="nav-link" data-scroll-target="#analyse-als-repeated-measures-anova"><span class="header-section-number">12.5.5</span> Analyse: Als Repeated Measures ANOVA*</a></li>
+  <li><a href="#analyse-als-linear-mixed-model-lmm" id="toc-analyse-als-linear-mixed-model-lmm" class="nav-link" data-scroll-target="#analyse-als-linear-mixed-model-lmm"><span class="header-section-number">12.5.6</span> Analyse: Als Linear Mixed Model (LMM)</a></li>
+  </ul></li>
+  <li><a href="#within-subject-design" id="toc-within-subject-design" class="nav-link" data-scroll-target="#within-subject-design"><span class="header-section-number">12.6</span> Within-subject Design</a>
+  <ul class="collapse">
+  <li><a href="#daten-und-design" id="toc-daten-und-design" class="nav-link" data-scroll-target="#daten-und-design"><span class="header-section-number">12.6.1</span> Daten und Design</a></li>
+  <li><a href="#beschreiben-1" id="toc-beschreiben-1" class="nav-link" data-scroll-target="#beschreiben-1"><span class="header-section-number">12.6.2</span> Beschreiben</a></li>
+  <li><a href="#anpassen-des-lmm" id="toc-anpassen-des-lmm" class="nav-link" data-scroll-target="#anpassen-des-lmm"><span class="header-section-number">12.6.3</span> Anpassen des LMM</a></li>
+  </ul></li>
+  <li><a href="#within-between-subject-design" id="toc-within-between-subject-design" class="nav-link" data-scroll-target="#within-between-subject-design"><span class="header-section-number">12.7</span> Within-Between-subject Design</a>
+  <ul class="collapse">
+  <li><a href="#modellstruktur" id="toc-modellstruktur" class="nav-link" data-scroll-target="#modellstruktur"><span class="header-section-number">12.7.1</span> Modellstruktur</a></li>
+  <li><a href="#simulation-von-daten-aus-modell" id="toc-simulation-von-daten-aus-modell" class="nav-link" data-scroll-target="#simulation-von-daten-aus-modell"><span class="header-section-number">12.7.2</span> Simulation von Daten aus Modell*</a></li>
+  <li><a href="#design-und-daten" id="toc-design-und-daten" class="nav-link" data-scroll-target="#design-und-daten"><span class="header-section-number">12.7.3</span> Design und Daten</a></li>
+  <li><a href="#beschreiben-2" id="toc-beschreiben-2" class="nav-link" data-scroll-target="#beschreiben-2"><span class="header-section-number">12.7.4</span> Beschreiben</a></li>
+  <li><a href="#modelle-anpassen" id="toc-modelle-anpassen" class="nav-link" data-scroll-target="#modelle-anpassen"><span class="header-section-number">12.7.5</span> Modelle anpassen</a></li>
+  <li><a href="#angepasste-modelle" id="toc-angepasste-modelle" class="nav-link" data-scroll-target="#angepasste-modelle"><span class="header-section-number">12.7.6</span> Angepasste Modelle</a></li>
+  <li><a href="#testen-von-fixed-effects" id="toc-testen-von-fixed-effects" class="nav-link" data-scroll-target="#testen-von-fixed-effects"><span class="header-section-number">12.7.7</span> Testen von Fixed Effects</a></li>
+  <li><a href="#trends-und-kontraste-von-trends" id="toc-trends-und-kontraste-von-trends" class="nav-link" data-scroll-target="#trends-und-kontraste-von-trends"><span class="header-section-number">12.7.8</span> Trends und Kontraste von Trends</a></li>
+  <li><a href="#modellannahmen" id="toc-modellannahmen" class="nav-link" data-scroll-target="#modellannahmen"><span class="header-section-number">12.7.9</span> Modellannahmen</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math display">\[
+\def\logit{\text{logit}}
+\def\Var{\text{Var}}
+\def\iid{\text{i.i.d.}}
+\newcommand{\vect}[1]   {\left( \begin{array}{c} #1 \end{array}\right)}
+\def\Cor{\text{Cor}}
+  \def\Cov{\text{Cov}}
+\]</span> <!-- remove definitions to enable html and pdf --></p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Lernziele
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Sie können ein Random Intercept Modell anpassen mit den Packeten <code>lme4</code> und <code>lmerTest</code>.</li>
+<li>Sie kennen den Code zum Anpassen von einem Random Intercept Model für Response <span class="math inline">\(Y\)</span>, Eingangsgrösse(n) <span class="math inline">\(x\)</span> und Cluster <span class="math inline">\(ID\)</span>, <code>lmer(Y~x+(1|ID))</code>.</li>
+<li>Sie können ein Random Intercept Modell interpretieren (feste Effekte, zufällige Effekte, Varianzkomponenten und Intraklassenkorrelation).</li>
+<li>Sie müssen sonst <strong>keinen zusätzlichen Code kennen (lernen)</strong> (zusätzlich benötigter Code für Übungen oder Prüfung zu diesem Thema wird gegeben).</li>
+<li>Alternativer Code ist zum späteren Nachschauen gedacht (relativ viele MSc-Arbeiten brauchen Mixed-Models).</li>
+</ol>
+<p>Abschnitte mit * sind <strong>für die Interessierten</strong>.</p>
+</div>
+</div>
+<!-- ##  Inhalte {.smaller60} -->
+<!-- - Recap General Linear Model -->
+<!-- - Bedingte Unabhängigkeit -->
+<!-- - Linear Mixed Models -->
+<!-- - Gepaarter $t$-Test  -->
+<!-- - Within-subject Design -->
+<!-- - Between-Within-subject Design -->
+<!--   - Random intercept -->
+<!--   - Random slope -->
+<section id="sec-recapLM" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="sec-recapLM"><span class="header-section-number">12.1</span> Recap: General Linear Model (LM)</h2>
+<p>Das Allgemeine Lineare Modell mit kontinuierlicher abhängiger Variable <span class="math inline">\(Y\)</span> war:</p>
+<p><span class="math display">\[
+\boxed{Y_i=\mathbf{x}_i^ T\mathbf{\beta}+\epsilon_i}, \quad i=1,\dots, n
+\]</span></p>
+<p>Dabei stand <span class="math inline">\(\mathbf{x}_i^ T\mathbf{\beta}\)</span> für den linearen Prädiktor (<span class="math inline">\(T\)</span> steht für <em>transponiert</em>; wenn <span class="math inline">\(\mathbf{x}\)</span> ein Kolonnenvektor ist, ist <span class="math inline">\(\mathbf{x}^T\)</span> ein Zeilenvektor). Der lineare Prädiktor ist das Skalarprodukt</p>
+<p><span class="math display">\[
+\mathbf{x}_i^T\mathbf{\beta}=(1, x_{i1}, \ldots, x_{im}) \vect{\beta_0\\\vdots \\
+  \beta_{im}}=\beta_0+\beta_1x_{i1}+\dots+\beta_mx_{im}.
+\]</span></p>
+<p>Dabei nahmen wir unabhängige und identisch verteilte stochastische Fehler an, <span class="math inline">\(\epsilon_i\, \iid\)</span>, meistens <span class="math inline">\(\epsilon_i \sim \mathcal{N}(0,\sigma^2)\)</span>. Mit <span class="math inline">\(m\)</span> Eingangsgrössen und einem Intercept, also mit <span class="math inline">\(p=m+1\)</span> Parametern und <span class="math inline">\(n\)</span> Beobachtungen können wir das Modell auch in Matrixform schreiben:</p>
+<p><span class="math display">\[\begin{equation}
+  \label{eq:42}
+  \boxed{\overset{n\times 1}{\mathbf{Y}}=\overset{n\times
+  p}{X}\times\overset{p\times
+  1}{\mathbf{\beta}}+\overset{n\times 1}{\mathbf{\epsilon}}}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\small
+  \label{eq:43}
+  \vect{Y_1\\Y_2\\\vdots\\Y_i\\\vdots\\Y_n}=
+  \begin{pmatrix}
+    1&amp; x_{11}&amp;\ldots&amp;x_{1m}\\
+    1&amp;x_{21}&amp;\ldots &amp;x_{2m}\\
+    \vdots&amp;\vdots&amp;\vdots\\
+    1&amp;x_{i1}&amp;\ldots&amp; x_{im}\\
+    \vdots&amp;\vdots&amp;\vdots\\
+    1&amp;x_{n1}&amp;\ldots &amp;x_{nm}
+\end{pmatrix}
+  \vect{\beta_0\\ \vdots \\\beta_m}
+  +\vect{\epsilon_1\\\epsilon_2\\\vdots\\\epsilon_i\\\vdots\\\epsilon_n}.  
+\end{equation}\]</span></p>
+<!-- - Wir schrieben bisher: $Y_i=\beta_0+\beta_1x_{i1}+\cdots+\beta_mx_{im}+\epsilon_i, -->
+<!--   \quad i=1,\ldots,n.$ -->
+<p>Man nennt die Matrix <span class="math inline">\(X\)</span> <strong>Design-Matrix</strong>. Wir haben also <span class="math inline">\(n\)</span> Gleichungen mit <span class="math inline">\(p\)</span> Unbekannten.</p>
+<section id="kleinster-quadrate-schätzer" class="level3" data-number="12.1.1">
+<h3 data-number="12.1.1" class="anchored" data-anchor-id="kleinster-quadrate-schätzer"><span class="header-section-number">12.1.1</span> Kleinster Quadrate Schätzer*</h3>
+<p>Die Methode der kleinsten Quadrate haben wir kennengelernt in <a href="09_logistic_regression.html#sec-LeastSquares" class="quarto-xref"><span>Section 9.7.1</span></a>. Die Optimierungsfunktion ist also für dieses Modell</p>
+<p><span class="math display">\[
+\mathbf{\hat{\beta}}=\arg \underset{\mathbf{\beta}}{\operatorname{min\,}}||\mathbf{Y}-X\mathbf{\beta}||^2.
+\]</span></p>
+<p>Der Ausdruck <span class="math inline">\(\|\mathbf{Y} - X\boldsymbol{\beta}\|^2\)</span> bezeichnet die quadratische Norm der Residuen im linearen Regressionsmodell und ist nichts anderes als die Residuenquadratsumme <span class="math display">\[
+\|\mathbf{Y} - X\boldsymbol{\beta}\|^2 = (\mathbf{Y} - X\boldsymbol{\beta})^\top (\mathbf{Y} - X\boldsymbol{\beta}) = \sum_{i=1}^n (y_i - \hat{y}_i)^2.
+\]</span></p>
+<p>Ableiten der Optimierungsfunktion nach <span class="math inline">\(\mathbf{\hat{\beta}}\)</span> gibt <span class="math display">\[\begin{equation}
+  (-2)X^T(\mathbf{Y}-X\mathbf{\hat{\beta}})=\mathbf{0}
+\end{equation}\]</span></p>
+<p>Dies führt uns zu den <strong>Normalgleichungen</strong> <span class="math display">\[\begin{equation}
+   \overset{p\times p}{X^TX}\quad\overset{p\times
+     1}{\mathbf{\hat{\beta}}}=\overset{p\times 1}{X^T\mathbf{Y}}.
+\end{equation}\]</span></p>
+<p><span class="math inline">\(X^T\)</span> ist die transponierte Design-Matrix. Das sind dann <span class="math inline">\(p\)</span> lineare Gleichungen für <span class="math inline">\(p\)</span> Unbekannte (Komponenten von <span class="math inline">\(\mathbf{\hat{\beta}}\)</span>). Wenn die Kolonnen der Design-Matrix <span class="math inline">\(X\)</span> linear unabhängig sind, dann ist die <span class="math inline">\(p\times p\)</span>-Matrix <span class="math inline">\(X^TX\)</span> invertierbar und der Kleinste-Quadrate-Schätzer ist dann <span class="math display">\[\begin{equation}
+  \boxed{\mathbf{\hat{\beta}}=(X^TX)^{-1}X^T\mathbf{Y}}
+\end{equation}\]</span> und kann aus den Daten berechnet werden. Aus den Residuen <span class="math inline">\(r_i=y_i-\mathbf{x}_i^T\mathbf{\hat{\beta}}\)</span> bekommt man schliesslich eine Schätzung für <span class="math inline">\(\sigma^2\)</span>, <span class="math display">\[\begin{equation}
+  \label{eq:s2hat}
+  \boxed{\hat{\sigma}^2=\frac{1}{n-p}\sum_{i=1}^n r^2_i}
+\end{equation}\]</span> Dabei entspricht <span class="math inline">\(n-p\)</span>, also Anzahl Beobachteten minus die Anzahl Parameter dem Freiheitsgraden.</p>
+<section id="verteilung-der-schätzer-bei-normalverteilung" class="level4" data-number="12.1.1.1">
+<h4 data-number="12.1.1.1" class="anchored" data-anchor-id="verteilung-der-schätzer-bei-normalverteilung"><span class="header-section-number">12.1.1.1</span> Verteilung der Schätzer bei Normalverteilung*</h4>
+<p>Unter der Annahme <span class="math inline">\(\epsilon_i \,\iid \sim \mathcal{N}(0,\sigma^2)\)</span> gilt dann:</p>
+<ul>
+<li>Schätzer ist multivariat normalverteilt, <span class="math inline">\(\mathbf{\hat{\beta}}\sim \mathcal{N}_p(\mathbf{\beta},\Cov(\mathbf{\hat\beta}))\)</span></li>
+</ul>
+<p>mit</p>
+<p><span class="math display">\[\begin{align}
+\Cov(\mathbf{\hat\beta})=
+\begin{pmatrix}
+\Var(\hat{\beta}_1) &amp; \Cov(\hat{\beta}_1,\hat{\beta}_2) &amp; \cdots &amp; \Cov(\hat{\beta}_1,\hat{\beta}_p) \\ \\
+\Cov(\hat{\beta}_2,\hat{\beta}_1)  &amp; \Var\hat{\beta}_2) &amp; \cdots &amp; \Cov(\hat{\beta}_2,\hat{\beta}_p) \\ \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ \\
+\Cov(\hat{\beta}_p,\hat{\beta}_1) &amp; \Cov(\hat{\beta}_p,\hat{\beta}_2)
+&amp; \cdots &amp; \Var(\hat{\beta}_p)
+\end{pmatrix}
+\end{align}\]</span></p>
+<ul>
+<li><p>Die Wurzeln der Diagonalelemente entsprechen dann den Standardfehlern.</p></li>
+<li><p>Man kann zeigen, dass <span class="math inline">\(\Cov(\mathbf{\hat\beta})=\sigma^2 (X^TX)^{-1}\)</span>.</p></li>
+<li><p>Die geschätzte Residualvarianz hat die Verteilung: <span class="math inline">\(\hat{\sigma}^2\sim \frac{\sigma^2}{n-p}\chi^2_{n-p}\)</span></p></li>
+</ul>
+<p>Die Normalverteilung der Fehler ist oft nicht erfüllt. Für grosse <span class="math inline">\(n\)</span> sind die Aussagen dann trotzdem annähernd wahr (Zentraler Grenzwertsatz). Das ist dann die herkömmliche Begründung in der Praxis für die Konstruktion von Konfidenzintervallen und Tests für die Parameter des Modells.</p>
+</section>
+</section>
+</section>
+<section id="linear-mixed-model" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="linear-mixed-model"><span class="header-section-number">12.2</span> Linear Mixed Model</h2>
+<p>Wir kommen nun zu einer Erweiterung des Linearen Modells, zum Linear Mixed Model (LMM) (Lineares Gemischtes Modell). Oft haben wir in der Gesundheitsforschung zum Beispiel Messwiederholungen innerhalb einer statistischen Einheit (mehrere Beobachtungen innerhalb einer Person) oder wir haben mehrere Beobachtungen innerhalb eines Clusters (z.B. einem Spital). Die Beobachtungen <strong>innerhalb</strong> einer Person (oder eines Clusters) sind dann ähnlicher als die Beobachtungen <strong>zwischen</strong> Personen (oder Clustern). Die Beobachtungen innerhalb einer statistischen Einheit sind dann nicht mehr unabhängig. Wir haben dann korrelierte Fehler, die wir berücksichtigen müssen (da i.i.d. Annahme dadurch verletzt). Die statistische Einheit ist die Person oder das Cluster, nicht die Beobachtung.</p>
+<section id="bedingte-unabhängigkeit" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="bedingte-unabhängigkeit"><span class="header-section-number">12.2.1</span> Bedingte Unabhängigkeit</h3>
+<p>Bedingte Unabhängigkeit spielt eine zentrale Rolle bei den Modellen, die wir unten einführen.</p>
+<p>Bei Jugendlichen sind <code>Körpergrösse</code> und <code>Wortschatz</code> offensichtlich nicht unabhängig. Aber sie sind <strong>bedingt unabhängig</strong>, wenn wir für jeden Jugendlichen eine <strong>latente Variable</strong> wie <code>Maturität</code> kennen würden. Wenn man den Reifegrad (Maturität) kennt, liefert die Körpergrösse keine zusätzliche Information über den Wortschatz. Das gilt natürlich unter der Annahme, dass die Körpergrösse nur über die Maturität mit dem Wortschatz zusammenhängt.</p>
+<p>Dieses Prinzip wird nun in Modellen mit latenten Variablen angewandt. Man nimmt an, dass die manifesten Variablen nichts mehr <strong>gemeinsam</strong> haben, nachdem man für eine latente Variable kontrolliert hat.</p>
+<p>Wir können dies z.B. anwenden für gepaarte Beobachtungen <span class="math inline">\(Y_{i1}\)</span> und <span class="math inline">\(Y_{i2}\)</span> innerhalb einer <span class="math inline">\(i\)</span>ten Einheit. Beobachtungen innerhalb einer statistischen Einheit <span class="math inline">\(i\)</span> sind nun korreliert, weil sie einen gemeinsamen Term <span class="math inline">\(U_i\)</span> enthalten. Dieser gemeinsame Term ist latent. Wenn wir ihn kennen würden (auf ihn bedingen), dann sind die Beobachtungen innerhalb einer Einheit unabhängig. Die bedingte Verteilung von <span class="math inline">\(Y_1\)</span> gegeben <span class="math inline">\(Y_2\)</span>​ und <span class="math inline">\(U_i\)</span>​ ist dann gleich der bedingten Verteilung von <span class="math inline">\(Y_1\)</span> gegeben nur <span class="math inline">\(U_i\)</span>​, <span class="math display">\[
+\Pr(Y_{i1}\mid Y_{i2},U_i)=\Pr(Y_{i1} \mid U_i).
+\]</span></p>
+<p>Wenn man also den latenten Effekt <span class="math inline">\(U_i\)</span> kennt, dann liefert die Information über <span class="math inline">\(Y_2\)</span> keinen zusätzlichen Erkenntnisgewinn über die Verteilung von <span class="math inline">\(Y_1\)</span>​. Der gemeinsame Einfluss ist dann herausgerechnet – und die Beobachtungen <span class="math inline">\(Y_{ij}\)</span> sind nur noch durch unabhängige Fehler beeinflusst. Wenn wir <span class="math inline">\(U_i\)</span> nicht kennen, dann sind <span class="math inline">\(Y_{i1}\)</span> und <span class="math inline">\(Y_{i2}\)</span> marginal abhängig.</p>
+<p>Wir können die Korrelation der Beobachtungen innerhalb einer Einheit (Person, Cluster) durch das Hinzufügen von zufälligen oder latenten Variablen <span class="math inline">\(\mathbf{U}_i\)</span> berücksichtigen. Diese zusätzliche(n) Zufallsvariable(n) induzieren eine Korrelation der wiederholten Beobachtungen und erklären dann die Korrelation der wiederholten Beobachtungen. Bedingt auf die latenten Zufallsvariable(n) <span class="math inline">\(U_i\)</span> sind die Beobachtungen innerhalb einer Einheit unabhängig.</p>
+<p>Der Vorteil, die <span class="math inline">\(\mathbf{U}_i\)</span> als zufällig zu behandeln, ist, dass wir weniger Parameter brauchen. In linearen Mixed Models (LMM) sind die zusätzlichen Parameter <strong>Varianzkomponenten</strong>, die die Varianz der <span class="math inline">\(\mathbf{U}_i\)</span> spezifizieren, nicht die <span class="math inline">\(\mathbf{U}_i\)</span> selber. Zudem hätten Fixed-Effects-Parameter <span class="math inline">\(\mathbf{U}_i\)</span> keine Interpretation als Populationsparameter.</p>
+</section>
+</section>
+<section id="allgemeiner-fall" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="allgemeiner-fall"><span class="header-section-number">12.3</span> Allgemeiner Fall*</h2>
+<p>Für die Interessierten betrachten wir zuerst den allgemeinen Fall. Die für uns wichtigen Spezialfälle weiter unten sind dann einfacher.<br>
+Neu ist nun der <span class="math inline">\(\color{red}{rote}\)</span> Teil in der Modellformel.</p>
+<p>Das Modell für die Einheit <span class="math inline">\(i\)</span> (Person, Cluster) mit <span class="math inline">\(n_i\)</span> Beobachtungen lautet:</p>
+<p><span id="eq-LMM"><span class="math display">\[
+\mathbf{Y}_i = \underbrace{X_i\boldsymbol{\beta}}_{\text{fixed}} + \underbrace{\color{red}{Z_i \mathbf{U}_i}}_{\text{random}} + \underbrace{\boldsymbol{\epsilon}_i}_{\text{random}}, \quad i = 1,\dots,n.
+\tag{12.1}\]</span></span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{Y}_i\)</span>: <span class="math inline">\(n_i \times 1\)</span>-Vektor der kontinuierlichen Zielgrößen für Einheit <span class="math inline">\(i\)</span> (Individuum oder Cluster).</li>
+<li><span class="math inline">\(X_i\)</span>: <span class="math inline">\(n_i \times p\)</span> Designmatrix der erklärenden Variablen (Kovariaten), die <strong>Fixed Effects</strong>.</li>
+<li><span class="math inline">\(\boldsymbol{\beta}\)</span>: <span class="math inline">\(p \times 1\)</span>-Vektor der Populationsparameter (Fixed-Effects-Koeffizienten).</li>
+<li><span class="math inline">\(\color{red}{Z_i}\)</span>: <span class="math inline">\(n_i \times k\)</span> Designmatrix der Zufallseffekte.</li>
+<li><span class="math inline">\(\color{red}{\mathbf{U}_i}\)</span>: <span class="math inline">\(k \times 1\)</span>-Vektor der Zufallseffekte mit Erwartungswert <span class="math inline">\(0\)</span> und Kovarianzmatrix <span class="math inline">\(D\)</span>.</li>
+<li><span class="math inline">\(\boldsymbol{\epsilon}_i\)</span>: <span class="math inline">\(n_i \times 1\)</span> Fehlerterm mit unabhängigen Komponenten, jede mit Erwartungswert <span class="math inline">\(0\)</span> und Varianz <span class="math inline">\(\sigma^2\)</span> (within-subject).</li>
+</ul>
+<p>Bezüglich Erwartungswert und Varianz gilt:</p>
+<ul>
+<li>Bedingte Erwartung: <span class="math inline">\(E(\mathbf{Y}_i \mid \mathbf{U}_i) = X_i\boldsymbol{\beta} + Z_i\mathbf{U}_i\)</span></li>
+<li>Marginale Erwartung: <span class="math inline">\(E(\mathbf{Y}_i) = X_i\boldsymbol{\beta}\)</span></li>
+<li>Bedingte Varianz: <span class="math inline">\(\operatorname{Cov}(\mathbf{Y}_i \mid \mathbf{U}_i) = \sigma^2 I_{n_i}\)</span></li>
+<li>Marginale Varianz: <span class="math inline">\(\operatorname{Cov}(\mathbf{Y}_i) = Z_i D Z_i^\top + \sigma^2 I_{n_i}\)</span><br>
+mit <span class="math inline">\(I_{n_i}\)</span> als <span class="math inline">\(n_i \times n_i\)</span>-Einheitsmatrix.</li>
+</ul>
+<p>Wenn z. B. <span class="math inline">\(Z_i\)</span> eine Spalte aus Einsen ist (<span class="math inline">\(k = 1\)</span>), haben wir das <strong>Random Intercept Model</strong>:</p>
+<p><span class="math display">\[
+\mathbf{Y}_i = X_i\boldsymbol{\beta} + \mathbf{U}_i + \boldsymbol{\epsilon}_i, \quad i = 1,\dots,n.
+\]</span></p>
+<p>Die bedingte Kovarianz ist:</p>
+<p><span class="math display">\[
+\operatorname{Cov}(\mathbf{Y}_i \mid \mathbf{U}_i) =
+\begin{bmatrix}
+\sigma^2 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; \sigma^2 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; \sigma^2
+\end{bmatrix}
+\]</span></p>
+<p>Die marginale Kovarianz ist:</p>
+<p><span class="math display">\[
+\operatorname{Cov}(\mathbf{Y}_i) =
+\begin{bmatrix}
+\nu^2 + \sigma^2 &amp; \nu^2 &amp; \cdots &amp; \nu^2 \\
+\nu^2 &amp; \nu^2 + \sigma^2 &amp; \cdots &amp; \nu^2 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\nu^2 &amp; \nu^2 &amp; \cdots &amp; \nu^2 + \sigma^2
+\end{bmatrix}
+\]</span></p>
+<p>Dies entspricht einem Modell mit <strong>konstanter Korrelation (Intraklassenkorrelation)</strong>:</p>
+<p><span class="math display">\[
+\rho = \frac{\nu^2}{\nu^2 + \sigma^2}.
+\]</span></p>
+<p>Es gibt viele Modelle mit <strong>nicht-konstanter Korrelation</strong> (z.B. auto-regressive Fehlern), die wir hier nicht behandeln.</p>
+<p><!-- =\nu^2 J_{n_i}+\sigma^2I_{n_i}$ [^1] --> <!-- [^1]: Mit $J_{n_j}$ als eine $n_i\times n_i$ Matrix mit Einsen und $I_{n_i}$ als eine $n_i\times n_i$ Matrix mit Einsen in der Diagonale. --></p>
+</section>
+<section id="random-intercept-model" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="random-intercept-model"><span class="header-section-number">12.4</span> Random Intercept Model</h2>
+<p>Wir bleiben nun beim Random Intercept Model, welches das bei weitem häufigste LMM darstellt. Eine Zeile (eine Beobachtung <span class="math inline">\(j\)</span> von Einheit <span class="math inline">\(i\)</span>) schreiben wir dann <span id="eq-LMMRI"><span class="math display">\[
+\boxed{Y_{ij}=\mathbf{x}^T_{ij}\mathbf{\beta}+{\color{red}{U_i}}+\epsilon_{ij}}, \quad i=1,\dots,n, \quad j=1,\dots,n_i.
+\tag{12.2}\]</span></span></p>
+<p><span class="math inline">\(n\)</span> steht für die Anzahl Personen oder Cluster und <span class="math inline">\(n_i\)</span> für die Anzahl Beobachtungen für Einheit <span class="math inline">\(i\)</span>. Wir haben also total <span class="math inline">\(\sum_{i=1}^n n_i\)</span> Beobachtungen. Im Gegensatz zum linearen Modell haben wir jetzt zwei Zufallsvariablen, <span class="math inline">\(U_i\)</span> zusätzlich zu <span class="math inline">\(\epsilon_{ij}\)</span>. Wir nehmen für beide Normalverteilungen an, nämlich <span class="math inline">\(U_i\sim \mathcal{N}(0, \nu^2)\)</span> und <span class="math inline">\(\epsilon_{ij}\sim \mathcal{N}(0,\sigma^2)\)</span>.</p>
+<p><strong>Between-und within-subject Varianz</strong>: Der Parameter <span class="math inline">\(\nu^2\)</span> stellt nun die <strong>between-subject Varianz</strong> und der Parameter <span class="math inline">\(\sigma^2\)</span> stellt die <strong>within-subject Varianz</strong> dar.</p>
+<p>Verglichen mit einem linearen Modell haben wir also zusätzlich ein <strong>random intercept</strong>, <span class="math display">\[\beta_{0i}=\beta_0+U_i.\]</span> Wir können <a href="#eq-LMM" class="quarto-xref"><span>12.1</span></a> dann schreiben als <span class="math display">\[
+Y_{ij}=\underbrace{\beta_0+U_i}_{\beta_{0i}}+\beta_1x_{i1}+\dots+\beta_m x_{im}+\epsilon_{ij}.
+\]</span></p>
+<section id="erwartungswert-und-varianz" class="level3" data-number="12.4.1">
+<h3 data-number="12.4.1" class="anchored" data-anchor-id="erwartungswert-und-varianz"><span class="header-section-number">12.4.1</span> Erwartungswert und Varianz</h3>
+<p>Erwartungswert und Varianz sind dann:</p>
+<ul>
+<li>Erwartungswert
+<ul>
+<li>Bedingte Erwartung: <span class="math inline">\(E(Y_{ij} \mid U_i)=\mathbf{x}^T_{ij}\mathbf{\beta}+U_i\)</span></li>
+<li>Marginale Erwartung: <span class="math inline">\(E(Y_{ij})=\mathbf{x}^T_{ij}\mathbf{\beta}\)</span></li>
+</ul></li>
+<li>Varianz
+<ul>
+<li>Bedingte Varianz: <span class="math inline">\(\Var(Y_{ij}\mid U_i)=\sigma^ 2\)</span></li>
+<li>Marginale Varianz: <span class="math inline">\(\Var(Y_{ij})=\nu^2+\sigma^ 2\)</span></li>
+</ul></li>
+<li>Intraklassenkorrelation: <span class="math inline">\(\Cor(Y_{ij},Y_{ij'})=\frac{\nu^2}{\nu^2+\sigma^2}\)</span>. Diese Grösse stellt den Anteil der between-subject Varianz and der totalen Varianz dar.</li>
+</ul>
+</section>
+</section>
+<section id="gepaarter-t-test-als-lmm" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="gepaarter-t-test-als-lmm"><span class="header-section-number">12.5</span> Gepaarter <span class="math inline">\(t\)</span>-Test als LMM</h2>
+<p>Das grundlegendste LMM ist ein Modell, das wir schon kennen, nämlich das Modell, das einem gepaarten <span class="math inline">\(t\)</span>-Test entspricht.</p>
+<p>Mit einen dichotomen Prädiktor <span class="math inline">\(T\)</span>, der z.B. einen pre- und einen post-Zeitpunkt definiert, ist das Modell <span id="eq-ttestpaired"><span class="math display">\[
+Y_{ij}=\beta_0+\beta_1T_{ij}+U_i+\epsilon_{ij}
+\tag{12.3}\]</span></span> mit <span class="math inline">\(i=1,\dots, n, \quad j=1,2\)</span> und <span class="math inline">\(T_{ij}=\begin{cases} 1 &amp;\mbox{wenn } j=2, \\
+0 &amp; \mbox{wenn } j=1  \end{cases}\)</span></p>
+<p>Wir haben wieder <span class="math inline">\(U_i\sim \mathcal{N}(0, \nu^2),\quad \epsilon_{ij}\sim \mathcal{N}(0,\sigma^2)\)</span> und <span class="math inline">\(\Cor(Y_{i1},Y_{i2})=\frac{\nu^2}{\nu^2+\sigma^2}\)</span>.</p>
+<p>Die Quantität von Interesse ist wie beim gepaarten <span class="math inline">\(t\)</span>-Test die erwartete Veränderung zwischen <span class="math inline">\(t_1\)</span> und <span class="math inline">\(t_2\)</span>. Diese Quantität entspricht dem Parameter <span class="math inline">\(\beta_1\)</span>.</p>
+<section id="daten" class="level3" data-number="12.5.1">
+<h3 data-number="12.5.1" class="anchored" data-anchor-id="daten"><span class="header-section-number">12.5.1</span> Daten</h3>
+<p>Das data.frame <code>d.long2</code> beinhaltet eine kontinuierliche abhängige Variable zu zwei Zeitpunkten mit <span class="math inline">\(n=30\)</span> und <span class="math inline">\(n_i=2\)</span> für alle <span class="math inline">\(i\)</span>. Daten sind im <strong>Long Format</strong>, d.h. wir haben eine Zeile für jede Beobachtung, also zwei Zeilen für jede statistische Einheit.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>d.long2<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/mcdr65/StatsRsource/master/Data/Rep2.csv"</span>,<span class="at">stringsAsFactors=</span><span class="cn">TRUE</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(d.long2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   60 obs. of  3 variables:
+ $ subject : Factor w/ 30 levels "s1","s10","s11",..: 1 1 12 12 23 23 25 25 26 26 ...
+ $ time    : Factor w/ 2 levels "t1","t2": 1 2 1 2 1 2 1 2 1 2 ...
+ $ response: num  22.9 38.4 10.8 18.2 33.2 ...</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">headTail</span>(d.long2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    subject time response
+1        s1   t1    22.93
+2        s1   t2    38.43
+3        s2   t1     10.8
+4        s2   t2    18.17
+...    &lt;NA&gt; &lt;NA&gt;      ...
+57      s29   t1     6.53
+58      s29   t2    16.07
+59      s30   t1    34.25
+60      s30   t2     42.4</code></pre>
+</div>
+</div>
+</section>
+<section id="wide-und-long-format" class="level3" data-number="12.5.2">
+<h3 data-number="12.5.2" class="anchored" data-anchor-id="wide-und-long-format"><span class="header-section-number">12.5.2</span> Wide und Long Format</h3>
+<p>Mit <code>reshape()</code> kann man Daten vom Wide Format ins Long Format umwandeln und umgekehrt.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>d.wide2<span class="ot">&lt;-</span><span class="fu">reshape</span>(d.long2,<span class="at">timevar=</span><span class="st">"time"</span>,<span class="at">idvar=</span><span class="st">"subject"</span>,<span class="at">direction=</span><span class="st">"wide"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">headTail</span>(d.wide2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    subject response.t1 response.t2
+1        s1       22.93       38.43
+3        s2        10.8       18.17
+5        s3       33.22        37.9
+7        s4       24.82       41.64
+...    &lt;NA&gt;         ...         ...
+53      s27       29.69       36.21
+55      s28       23.93       33.57
+57      s29        6.53       16.07
+59      s30       34.25        42.4</code></pre>
+</div>
+</div>
+<p>Das Studieren der Beispiele in <code>?reshape</code> lohnt sich, da entsprechende Umwandlungen doch oft benötigt werden. Wenn man gerne <code>tidyverse</code> verwendet, kann man mit den Funktionen <code>pivot_longer</code> und <code>pivot_wider</code> arbeiten.</p>
+<p>Im Wide Format haben wir nun eine Zeile pro statistische Einheit, dafür mehrere (hier zwei) Kolonnen.</p>
+<p>Die beobachtete Korrelation der wiederholten Messungen bekommen wir mit</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(d.wide2[,<span class="sc">-</span><span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            response.t1 response.t2
+response.t1   1.0000000   0.7097983
+response.t2   0.7097983   1.0000000</code></pre>
+</div>
+</div>
+<p>Um ein Linear Mixed Model anzupassen, brauchen wir Daten <strong>immer im Long Format</strong>. Eine Zeile entspricht dann einer Beobachtung, nicht einer statistischen Einheit.</p>
+</section>
+<section id="beschreiben" class="level3" data-number="12.5.3">
+<h3 data-number="12.5.3" class="anchored" data-anchor-id="beschreiben"><span class="header-section-number">12.5.3</span> Beschreiben</h3>
+<p>Zuerst beschreiben wir die Daten</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">describeBy</span>(d.long2<span class="sc">$</span>response,<span class="at">group=</span>d.long2<span class="sc">$</span>time,<span class="at">mat=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     item group1 vars  n mean       sd median trimmed     mad min max range
+X1*1    1     t1    1 30 15.5 8.803408   15.5    15.5 11.1195   1  30    29
+X1*2    2     t2    1 30 15.5 8.803408   15.5    15.5 11.1195   1  30    29
+     skew  kurtosis       se
+X1*1    0 -1.320495 1.607275
+X1*2    0 -1.320495 1.607275</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Alternativen</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(d.long2<span class="sc">$</span>response,d.long2<span class="sc">$</span>time,summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$t1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  6.528  17.648  23.270  24.734  33.667  41.388 
+
+$t2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  9.754  32.226  36.445  34.892  40.367  52.976 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">split</span>(d.long2<span class="sc">$</span>response,d.long2<span class="sc">$</span>time),summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               t1        t2
+Min.     6.528457  9.754138
+1st Qu. 17.648453 32.225761
+Median  23.270037 36.444692
+Mean    24.734463 34.891809
+3rd Qu. 33.666633 40.366996
+Max.    41.388153 52.975589</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">describe</span>(d.wide2[,<span class="sc">-</span><span class="dv">1</span>]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            vars  n  mean   sd median trimmed  mad  min   max range  skew
+response.t1    1 30 24.73 9.15  23.27   24.73 9.94 6.53 41.39 34.86  0.07
+response.t2    2 30 34.89 9.25  36.44   35.73 6.45 9.75 52.98 43.22 -0.76
+            kurtosis   se
+response.t1    -1.10 1.67
+response.t2     0.57 1.69</code></pre>
+</div>
+</div>
+<p>Mit <code>arsenal::paired()</code> bekommen wir</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span>arsenal<span class="sc">::</span><span class="fu">paired</span>(time<span class="sc">~</span>response,<span class="at">id=</span>subject,<span class="at">data=</span>d.long2,<span class="at">test=</span><span class="cn">FALSE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tmp,<span class="at">text=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+|             |   t1 (N=30)    |   t2 (N=30)    | Difference (N=30) |
+|:------------|:--------------:|:--------------:|:-----------------:|
+|response     |                |                |                   |
+|-  Mean (SD) | 24.734 (9.148) | 34.892 (9.252) |  10.157 (7.009)   |
+|-  Range     | 6.528 - 41.388 | 9.754 - 52.976 |  -3.896 - 27.889  |</code></pre>
+</div>
+</div>
+<p>Ein <strong>Spaghetti plot</strong> ist bei gepaarten Daten besser geeignet als ein Boxplot, da aus einem Boxplot das Design nicht eindeutig ist. Die Paarung der Beobachtungen ist im Boxplot nicht ersichtlich.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(d.long2,<span class="fu">interaction.plot</span>(time,subject,response,<span class="at">ylab=</span><span class="st">"response"</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(response<span class="sc">~</span>time,d.long2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Es gibt viele Alternativen zum Plotten, z.B. mit <code>lattice</code> oder <code>ggplot2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">xyplot</span>(response<span class="sc">~</span>time,<span class="at">groups=</span>subject,<span class="at">data=</span>d.long2,<span class="at">type=</span><span class="st">"b"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)  </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> d.long2, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> response, <span class="at">group =</span> subject))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p<span class="sc">+</span><span class="fu">geom_point</span>()<span class="sc">+</span><span class="fu">geom_line</span>()<span class="sc">+</span><span class="fu">stat_smooth</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>),<span class="at">method=</span><span class="st">"lm"</span>,<span class="at">se=</span><span class="cn">FALSE</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>), <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">fun =</span> mean,<span class="at">shape =</span> <span class="dv">17</span>, <span class="at">size =</span> <span class="dv">4</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="analyse-als-gepaarter-t-test" class="level3" data-number="12.5.4">
+<h3 data-number="12.5.4" class="anchored" data-anchor-id="analyse-als-gepaarter-t-test"><span class="header-section-number">12.5.4</span> Analyse: Als gepaarter <span class="math inline">\(t\)</span>-test</h3>
+<p>Ein gepaarter Test ist bekannterweise äquivalent zu einem one-sample Test der Veränderung:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pre<span class="ot">&lt;-</span>d.long2<span class="sc">$</span>response[d.long2<span class="sc">$</span>time<span class="sc">==</span><span class="st">"t1"</span>]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>post<span class="ot">&lt;-</span>d.long2<span class="sc">$</span>response[d.long2<span class="sc">$</span>time<span class="sc">==</span><span class="st">"t2"</span>]</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>change<span class="ot">&lt;-</span>post<span class="sc">-</span>pre</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">t.test</span>(post,pre,<span class="at">paired=</span><span class="cn">TRUE</span>,<span class="at">data=</span>d.long2),<span class="at">digits=</span><span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Paired t-test
+
+data:  post and pre
+t = 7.937, df = 29, p-value = 9.4e-09
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+  7.53997 12.77472
+sample estimates:
+mean difference 
+        10.1573 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">t.test</span>(change),<span class="at">digits=</span><span class="dv">6</span>) <span class="co"># äquivalent  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  change
+t = 7.937, df = 29, p-value = 9.4e-09
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+  7.53997 12.77472
+sample estimates:
+mean of x 
+  10.1573 </code></pre>
+</div>
+</div>
+</section>
+<section id="analyse-als-repeated-measures-anova" class="level3" data-number="12.5.5">
+<h3 data-number="12.5.5" class="anchored" data-anchor-id="analyse-als-repeated-measures-anova"><span class="header-section-number">12.5.5</span> Analyse: Als Repeated Measures ANOVA*</h3>
+<p><code>aov()</code> dient wie <code>lm()</code> zum Anpassen linearer Modelle. Der Unterschied ist die Art und Weise, wie <code>print()</code> und <code>summary()</code> den Fit behandeln. Mit <code>aov()</code> ist der Ausdruck in der traditionellen Sprache der Varianzanalyse anstelle der linearen Modelle. Wenn die Modellformel einen einzelnen Fehlerterm enthält, wird dieser verwendet, um Fehlerstrata zu spezifizieren, und es werden geeignete Modelle innerhalb jeder Fehlerschicht angepasst.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>m.aov<span class="ot">&lt;-</span><span class="fu">aov</span>(response<span class="sc">~</span>time<span class="sc">+</span><span class="fu">Error</span>(subject),<span class="at">data=</span>d.long2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.aov)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: subject
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+Residuals 29   4197   144.7               
+
+Error: Within
+          Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+time       1 1547.6  1547.6      63 9.4e-09 ***
+Residuals 29  712.4    24.6                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Wir können die entsprechenden Quadratsummen von <code>aov()</code> reproduzieren. Dazu passen wir folgende Modelle an:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>mod0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(response<span class="sc">~</span><span class="dv">1</span>,d.long2) </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">lm</span>(response<span class="sc">~</span>subject,d.long2)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>modt <span class="ot">&lt;-</span> <span class="fu">lm</span>(response<span class="sc">~</span>time,d.long2)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>modts <span class="ot">&lt;-</span><span class="fu">lm</span>(response<span class="sc">~</span>subject<span class="sc">+</span>time,d.long2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Die Residual-Quadratsummen der Modelle sind dann:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rss<span class="fl">.0</span> <span class="ot">&lt;-</span> <span class="fu">sum</span>((mod0<span class="sc">$</span>residuals)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>rss.s <span class="ot">&lt;-</span> <span class="fu">sum</span>((mods<span class="sc">$</span>residuals)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>rss.t <span class="ot">&lt;-</span> <span class="fu">sum</span>((modt<span class="sc">$</span>residuals)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>rss.ts<span class="ot">&lt;-</span> <span class="fu">sum</span>((modts<span class="sc">$</span>residuals)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Wir haben dann:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rss<span class="fl">.0</span> <span class="co">#SS_total</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6456.65</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rss<span class="fl">.0</span><span class="sc">-</span>rss.t <span class="co">#SS_time</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1547.575</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rss<span class="fl">.0</span><span class="sc">-</span>rss.s <span class="co">#SS_subject</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4196.653</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rss.ts <span class="co">#SS_residual_within</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 712.4216</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>rss<span class="fl">.0</span><span class="sc">-</span>rss.t<span class="sc">+</span>rss.ts<span class="co">#SS_total_within</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2259.997</code></pre>
+</div>
+</div>
+<p>Repeated Measures ANOVA ist meistens nicht empfehlenswert für die Analyse von wiederholten Messungen. Eine flexiblere und moderne Alternative ist ein LMM. Ein solches Modell wollen wir jetzt an die Daten anpassen.</p>
+</section>
+<section id="analyse-als-linear-mixed-model-lmm" class="level3" data-number="12.5.6">
+<h3 data-number="12.5.6" class="anchored" data-anchor-id="analyse-als-linear-mixed-model-lmm"><span class="header-section-number">12.5.6</span> Analyse: Als Linear Mixed Model (LMM)</h3>
+<p>Lineare Gemischte Modelle (LMM) sind die moderne Alternative zur Analyse von Messwiederholungen oder Beobachtungen mit korrelierten Fehlern. Der Vorteil gegenüber Repeated-Measures ANOVA ist, dass LMM nicht-balancierte Daten oder Daten mit fehlenden Werten besser verarbeiten. Klassische Repeated Measures ANOVA <code>aov(...+Error(subject))</code> brauchen balancierte Daten ohne Missings.</p>
+<p>Wir verwenden im Folgenden die Funktion <code>lmer()</code> aus dem Paket <code>lme4</code> Zusätzlich nutzen wir auch das Paket <code>lmerTest</code> (mehr dazu später). LMM werden mit der Maximum-Likelihood-Schätzung (siehe <a href="09_logistic_regression.html#sec-maxLik" class="quarto-xref"><span>Section 9.7.3</span></a>) angepasst (im Gegensatz zu <code>lm()</code> und <code>aov()</code>, die mit der Methode der kleinsten Quadrate angepasst werden).</p>
+<section id="lmm-anpassen" class="level4" data-number="12.5.6.1">
+<h4 data-number="12.5.6.1" class="anchored" data-anchor-id="lmm-anpassen"><span class="header-section-number">12.5.6.1</span> LMM anpassen</h4>
+<p>Wir laden zuerst <code>lme4</code>, gefolgt von <code>lmerTest</code></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4) </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest) <span class="co">#immer laden nach lme4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Die Syntax für ein Random Intercept Modell ist</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>m<span class="fl">.2</span>rep<span class="ot">&lt;-</span><span class="fu">lmer</span>(response<span class="sc">~</span>time<span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>subject), <span class="at">data=</span>d.long2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Wir brauchen die <code>lmer()</code> Funktion. Das neue Element in der Modellformel ist der Term <code>(1|subject)</code>. Dieser stellt ein Random Intercept dar (Abstand für Einheit <span class="math inline">\(i\)</span> zum fixed Intercept). Der Grund ist inzwischen bekannt: Die Beobachtungen innerhalb eines Subjekts sind gruppiert (wiederholte Messungen innerhalb eines Subjekts). Das Random Intercept induziert dann eine Korrelation der wiederholten Messungen.</p>
+</section>
+<section id="model-fit" class="level4" data-number="12.5.6.2">
+<h4 data-number="12.5.6.2" class="anchored" data-anchor-id="model-fit"><span class="header-section-number">12.5.6.2</span> Model Fit</h4>
+<p><code>summary()</code> ist eine generische Funktion, der auch <code>lmer</code> Objekte übergeben werden können:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m<span class="fl">.2</span>rep,<span class="at">cor=</span><span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: response ~ time + (1 | subject)
+   Data: d.long2
+
+REML criterion at convergence: 408.5
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0380 -0.4875 -0.0289  0.5657  2.1045 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ subject  (Intercept) 60.07    7.751   
+ Residual             24.57    4.956   
+Number of obs: 60, groups:  subject, 30
+
+Fixed effects:
+            Estimate Std. Error    df t value Pr(&gt;|t|)    
+(Intercept)    24.73       1.68 38.57  14.726  &lt; 2e-16 ***
+timet2         10.16       1.28 29.00   7.937  9.4e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Im Output sind neu die Between-subject und Within-subject Varianz der Random effects ersichtlich. Das sind die Parameter, die die Verteilung der Random effects spezifizieren. Die Random effects selber, die <span class="math inline">\(U_i\)</span>, sehen wir hier nicht. Ersichtlich ist auch die Anzahl Beobachtungen und die Anzahl statistischer Einheiten. Die Fixed effects sind analog zum Linearen Modell zu interpretieren. Die geschätzte erwartete Veränderung ist 10.1573458.</p>
+</section>
+<section id="shrinkage" class="level4" data-number="12.5.6.3">
+<h4 data-number="12.5.6.3" class="anchored" data-anchor-id="shrinkage"><span class="header-section-number">12.5.6.3</span> Shrinkage*</h4>
+<p>Die geschätzten Random effects <span class="math inline">\(\hat{U}_i\)</span> selber können wir extrahieren mit <code>ranef()</code>. Sie sind posterior-Schätzungen bedingt auf die Daten, <span class="math inline">\(\hat{U}_i=E(U_i\mid Y_i)\)</span>. Ihre Varianz ist kleiner als die wahre Varianzkomponente aufgrund von sogenannter Shrinkage (auf die wir hier nicht eingehen), <span class="math inline">\(\Var(\hat{U}_i)&lt;\nu^2\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ranef</span>(m<span class="fl">.2</span>rep)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$subject
+    (Intercept)
+s1    0.7234120
+s10   8.9460286
+s11  -1.5461913
+s12  -2.7086903
+s13   2.4543710
+s14  -3.6550798
+s15  -0.8162158
+s16  -2.1832215
+s17   7.6531476
+s18  -4.1532914
+s19  -3.3900425
+s2  -12.7239664
+s20  -5.1947473
+s21   8.5356755
+s22  -3.8224224
+s23   8.0093269
+s24   6.2283789
+s25  -0.4167840
+s26  -3.7005501
+s27   2.6031749
+s28  -0.8796224
+s29 -15.3696272
+s3    4.7682908
+s30   7.0648977
+s4    2.8367827
+s5    7.7111655
+s6    5.3103447
+s7  -15.0365021
+s8   -8.8412370
+s9   11.5931946
+
+with conditional variances for "subject" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">ranef</span>(m<span class="fl">.2</span>rep)<span class="sc">$</span>subject<span class="sc">$</span><span class="st">"(Intercept)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -4.186281e-14</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(<span class="fu">ranef</span>(m<span class="fl">.2</span>rep)<span class="sc">$</span>subject<span class="sc">$</span><span class="st">"(Intercept)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 49.875</code></pre>
+</div>
+</div>
+<!-- Einen besseren  Output bekommen wir mit -->
+<!-- ```{r } -->
+<!-- parameters::parameters(m.2rep) -->
+<!-- parameters(m.2rep,ci_method="satterthwaite") -->
+<!-- ``` -->
+</section>
+<section id="verteilung-der-t-statistik-für-fixed-effects" class="level4" data-number="12.5.6.4">
+<h4 data-number="12.5.6.4" class="anchored" data-anchor-id="verteilung-der-t-statistik-für-fixed-effects"><span class="header-section-number">12.5.6.4</span> Verteilung der <span class="math inline">\(t\)</span>-Statistik für fixed effects*</h4>
+<p>In gemischten linearen Modellen (LMMs) ist die Verteilung der Teststatistiken für feste Effekte komplizierter als in klassischen linearen Modellen, da die Schätzung der Varianzkomponenten (zufällige Effekte) zusätzliche Unsicherheit einführt.</p>
+<p>Angenommen, wir testen einen festen Effekt <span class="math inline">\(\beta_j\)</span>. Die Teststatistik lautet: <span class="math display">\[
+t = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}
+\]</span></p>
+<p>Da die Standardabweichung von geschätzten Varianzkomponenten abhängt, ist die Verteilung von <span class="math inline">\(t\)</span> nicht exakt eine <span class="math inline">\(t\)</span>-Verteilung mit bekannten Freiheitsgraden. Die Satterthwaite-Methode approximiert die Freiheitsgrade <span class="math inline">\(\nu\)</span> sodass:</p>
+<p><span class="math display">\[
+t \sim t_\nu
+\]</span></p>
+<p>Die Approximation basiert auf der Idee, die Varianz der Schätzung selbst als Zufallsvariable zu behandeln und deren Unsicherheit zu berücksichtigen.</p>
+<!-- Die geschätzten Freiheitsgrade $\nu$ werden durch folgende Formel berechnet: -->
+<!-- $$ -->
+<!-- \nu \approx \frac{2 \cdot \left[\text{Var}(\hat{\beta}_j)\right]^2}{\text{Var}\left[\text{Var}(\hat{\beta}_j)\right]} -->
+<!-- $$ -->
+<!-- Diese Formel basiert auf der Delta-Methode, einer Technik zur Approximation der Varianz einer Funktion einer Zufallsvariablen. -->
+<p>Die <code>lmerTest</code>-Erweiterung zu <code>lme4</code> berechnet <span class="math inline">\(p\)</span>-Werte und Freiheitsgrade für feste Effekte. Die Freiheitsgrade sind nicht ganzzahlig und hängen vom jeweiligen Effekt und der Struktur der zufälligen Effekte ab. Die Methode ist besonders nützlich bei unausgeglichenen Designs oder komplexen Random-Strukturen, wo klassische df-Schätzungen versagen. Das Laden von <code>lmerTest</code> nach dem Laden von <code>lme4</code> wird empfohlen (und das haben wir auch gemacht), wenn <span class="math inline">\(p\)</span>-Werte benötigt werden, da es Freiheitsgrade approximiert und die <span class="math inline">\(t\)</span>-Statistiken somit für Hypothesentests interpretierbarer macht.</p>
+</section>
+<section id="tests" class="level4" data-number="12.5.6.5">
+<h4 data-number="12.5.6.5" class="anchored" data-anchor-id="tests"><span class="header-section-number">12.5.6.5</span> Tests</h4>
+<p>Den Zeiteffekt explizit als Modellvergleich machen wir mit einem Modellvergleich:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>m<span class="fl">.2</span>rep0<span class="ot">&lt;-</span><span class="fu">update</span>(m<span class="fl">.2</span>rep,.<span class="sc">~</span>.<span class="sc">-</span>time)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m<span class="fl">.2</span>rep0,m<span class="fl">.2</span>rep)<span class="do">##LR-Test</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data: d.long2
+Models:
+m.2rep0: response ~ (1 | subject)
+m.2rep: response ~ time + (1 | subject)
+        npar    AIC    BIC  logLik -2*log(L)  Chisq Df Pr(&gt;Chisq)    
+m.2rep0    3 454.16 460.44 -224.08    448.16                         
+m.2rep     4 421.52 429.90 -206.76    413.52 34.633  1   3.98e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Alternativen wären <code>drop1()</code> für Wald-Tests und einfach <code>anova()</code>, weil wir nur eine Eingangsgrösse haben:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(m<span class="fl">.2</span>rep) <span class="do">##Wald-type</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions using Satterthwaite's method:
+
+Model:
+response ~ time + (1 | subject)
+     Sum Sq Mean Sq NumDF DenDF F value  Pr(&gt;F)    
+time 1547.6  1547.6     1    29  62.996 9.4e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m<span class="fl">.2</span>rep)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+     Sum Sq Mean Sq NumDF DenDF F value  Pr(&gt;F)    
+time 1547.6  1547.6     1    29  62.996 9.4e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="intraklassenkorrelation" class="level4" data-number="12.5.6.6">
+<h4 data-number="12.5.6.6" class="anchored" data-anchor-id="intraklassenkorrelation"><span class="header-section-number">12.5.6.6</span> Intraklassenkorrelation</h4>
+<p>Die Intraklassenkorrelation hatten wir oben schon berechnet.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">VarCorr</span>(m<span class="fl">.2</span>rep),<span class="at">comp=</span><span class="st">"Variance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Groups   Name        Variance
+ subject  (Intercept) 60.073  
+ Residual             24.566  </code></pre>
+</div>
+</div>
+<p>Die geschätzte Intraklassenkorrelation ist also</p>
+<p><span class="math display">\[
+\widehat{\Cor}(Y_{i1},Y_{i2})=\frac{\hat{\nu}^2}{\hat{\nu}^2+\hat{\sigma}^2}=0.7097532
+\]</span></p>
+<!-- ## Alternativer Output{.smaller60} -->
+<!-- ```{r } -->
+<!-- library(easystats) -->
+<!-- model_parameters(m.2rep,ci_method="satterthwaite") -->
+<!-- `` -->
+<!-- ## Model performance{.smaller60} -->
+<!-- ```{r } -->
+<!-- performance::icc(m.2rep) -->
+<!-- ``` -->
+</section>
+<section id="kontraste" class="level4" data-number="12.5.6.7">
+<h4 data-number="12.5.6.7" class="anchored" data-anchor-id="kontraste"><span class="header-section-number">12.5.6.7</span> Kontraste</h4>
+<p>In diesem Fall gibt es nur einen Kontrast von Interesse, der selber schon ein Parameter der Grundparametrisierung ist:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">emmeans</span>(m<span class="fl">.2</span>rep,revpairwise<span class="sc">~</span>time),<span class="at">infer=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+ time emmean   SE   df lower.CL upper.CL t.ratio p.value
+ t1     24.7 1.68 38.6     21.3     28.1  14.726 &lt;0.0001
+ t2     34.9 1.68 38.6     31.5     38.3  20.773 &lt;0.0001
+
+Degrees-of-freedom method: kenward-roger 
+Confidence level used: 0.95 
+
+$contrasts
+ contrast estimate   SE df lower.CL upper.CL t.ratio p.value
+ t2 - t1      10.2 1.28 29     7.54     12.8   7.937 &lt;0.0001
+
+Degrees-of-freedom method: kenward-roger 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p>Hier bringt dieser Schritt keine zusätzliche Information. Mit dem <code>emmeans()</code> kann man sich dann aber vor allem bei komplexeren Modellen Kontraste von Interesse berechnen lassen, wie wir das früher schon gemacht haben.</p>
+</section>
+<section id="vorhersagen" class="level4" data-number="12.5.6.8">
+<h4 data-number="12.5.6.8" class="anchored" data-anchor-id="vorhersagen"><span class="header-section-number">12.5.6.8</span> Vorhersagen</h4>
+<p>LMM sind zweistufige Modelle, man hat bedingte (auf Subject bedingt) und marginale Vorhersagen. Wir können ein Data frame erstellen mit den bedingten und marginalen Vorhersagen und diese plotten:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">actual =</span> d.long2<span class="sc">$</span>response,</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">CondPred =</span> <span class="fu">predict</span>(m<span class="fl">.2</span>rep),  <span class="co"># PREDICT AT SUBJECT LEVEL</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">MargPred=</span><span class="fu">predict</span>(m<span class="fl">.2</span>rep,<span class="at">re.form=</span><span class="sc">~</span><span class="dv">0</span>), <span class="co"># PREDICT MARGINALLY</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time =</span> d.long2<span class="sc">$</span>time,</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject=</span>d.long2<span class="sc">$</span>subject)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Wir sehen, dass die marginalen Vorhersagen nicht von <code>subject</code> abhängen.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">headTail</span>(predictions,<span class="dv">8</span>,<span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    actual CondPred MargPred time subject
+1    22.93    25.46    24.73   t1      s1
+2    38.43    35.62    34.89   t2      s1
+3     10.8    12.01    24.73   t1      s2
+4    18.17    22.17    34.89   t2      s2
+5    33.22     29.5    24.73   t1      s3
+6     37.9    39.66    34.89   t2      s3
+7    24.82    27.57    24.73   t1      s4
+8    41.64    37.73    34.89   t2      s4
+...    ...      ...      ... &lt;NA&gt;    &lt;NA&gt;
+53   29.69    27.34    24.73   t1     s27
+54   36.21    37.49    34.89   t2     s27
+55   23.93    23.85    24.73   t1     s28
+56   33.57    34.01    34.89   t2     s28
+57    6.53     9.36    24.73   t1     s29
+58   16.07    19.52    34.89   t2     s29
+59   34.25     31.8    24.73   t1     s30
+60    42.4    41.96    34.89   t2     s30</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(predictions, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> CondPred, <span class="at">color =</span> subject)) <span class="sc">+</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>actual,<span class="at">color=</span>subject))<span class="sc">+</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>CondPred,<span class="at">group=</span>subject),<span class="at">lty=</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>MargPred,<span class="at">group=</span>subject),<span class="at">lty=</span><span class="dv">2</span>,<span class="at">lwd=</span><span class="fl">1.3</span>,<span class="at">col=</span><span class="st">"black"</span>)<span class="sc">+</span><span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)<span class="sc">+</span><span class="fu">ylab</span>(<span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Eine Alternative für bedingte Vorhersagen wäre</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">xyplot</span>(<span class="fu">fitted</span>(m<span class="fl">.2</span>rep)<span class="sc">~</span>time,<span class="at">groups=</span>subject,<span class="at">data=</span>d.long2,<span class="at">type=</span><span class="st">"b"</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="do">##oder</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>d.longG <span class="ot">&lt;-</span> nlme<span class="sc">::</span><span class="fu">groupedData</span>(<span class="fu">fitted</span>(m<span class="fl">.2</span>rep) <span class="sc">~</span> time <span class="sc">|</span> subject, <span class="at">data =</span> d.long2)</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(d.longG)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="nicht-berücksichtigung-der-korrelation" class="level4" data-number="12.5.6.9">
+<h4 data-number="12.5.6.9" class="anchored" data-anchor-id="nicht-berücksichtigung-der-korrelation"><span class="header-section-number">12.5.6.9</span> Nicht-Berücksichtigung der Korrelation</h4>
+<p>Was passiert bei Nicht-Berücksichtigung der korrelierten Fehler? Die Punktschätzungen werden nicht beeinflusst, aber die Standardfehler, und damit die Resultate von Intervallschätzungen und Tests:</p>
+<ul>
+<li><p>Die Unsicherheit des Effekts von between-subject oder between-cluster Variablen wird unterschätzt. (Grund: Künstliche Erhöhung der Stichprobengrösse).</p></li>
+<li><p>Die Unsicherheit des Effekts von within-subject oder within-cluster Variablen wird überschätzt. (Grund: Die Variabilität wird überschätzt, z. B. hat ein gepaarter <span class="math inline">\(t\)</span>-Test mehr Power als ein unabhängiger <span class="math inline">\(t\)</span>-Test).</p></li>
+<li><p>Vergleichen wir also mit den Resultate, wenn wir statt ein LMM ein LM (<code>lm()</code>) anpassen würden:</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(response<span class="sc">~</span>time,<span class="at">data=</span>d.long2))<span class="sc">$</span>coef <span class="do">## false</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept) 24.73446   1.679675 14.725746 2.976139e-21
+timet2      10.15735   2.375419  4.276023 7.190056e-05</code></pre>
+</div>
+</div>
+<p>Wir sehen, dass der within-subject Effekt dann einen grösseren Standardfehler hat und damit einen kleineren <span class="math inline">\(t\)</span>-Wert als im LMM:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m<span class="fl">.2</span>rep)<span class="sc">$</span>coef <span class="do">## correct</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error       df   t value     Pr(&gt;|t|)
+(Intercept) 24.73446   1.679675 38.57025 14.725746 2.025810e-17
+timet2      10.15735   1.279746 29.00000  7.936999 9.399616e-09</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="within-subject-design" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="within-subject-design"><span class="header-section-number">12.6</span> Within-subject Design</h2>
+<p>Wir verallgemeinern nun den gepaarten <span class="math inline">\(t\)</span>-Test auf ein within-subject Design.</p>
+<section id="daten-und-design" class="level3" data-number="12.6.1">
+<h3 data-number="12.6.1" class="anchored" data-anchor-id="daten-und-design"><span class="header-section-number">12.6.1</span> Daten und Design</h3>
+<p>Das Data frame <code>d.long</code> besteht aus 80 Beobachtungen mit <span class="math inline">\(n_i=4\)</span> wiederholten Messungen (<code>time</code>) von <span class="math inline">\(n=20\)</span> subjects (<code>subject</code>) auf einer kontinuierlichen abhängigen Variablen (<code>response</code>).</p>
+<p>Hier haben wir <span class="math inline">\(n_i=4\)</span> konstant für alle <span class="math inline">\(i\)</span>. Die Anzahl Beobachtungen pro Einheit muss aber nicht konstant sein. Wir könnten ein LMM auch dann anpassen, wenn wir für jede Einheit <span class="math inline">\(i\)</span> eine unterschiedliche Anzahl Beobachtungen hätten (z.B. <span class="math inline">\(n_1=2,n_2=5,\dots,n_n=3\)</span>).</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>d.long<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/mcdr65/StatsRsource/master/Data/ToyRepAnova.csv"</span>,</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">stringsAsFactors=</span><span class="cn">TRUE</span>)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(d.long)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   80 obs. of  3 variables:
+ $ subject : Factor w/ 20 levels "s1","s10","s11",..: 1 1 1 1 12 12 12 12 14 14 ...
+ $ time    : Factor w/ 4 levels "t1","t2","t3",..: 1 2 3 4 1 2 3 4 1 2 ...
+ $ response: num  53 43 66.2 62.5 26.4 ...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">headTail</span>(d.long)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    subject time response
+1        s1   t1    52.98
+2        s1   t2       43
+3        s1   t3    66.25
+4        s1   t4    62.47
+...    &lt;NA&gt; &lt;NA&gt;      ...
+77      s20   t1    63.77
+78      s20   t2    23.15
+79      s20   t3    54.46
+80      s20   t4    26.16</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(d.long,<span class="fu">xtabs</span>(<span class="sc">~</span>time))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>time
+t1 t2 t3 t4 
+20 20 20 20 </code></pre>
+</div>
+</div>
+</section>
+<section id="beschreiben-1" class="level3" data-number="12.6.2">
+<h3 data-number="12.6.2" class="anchored" data-anchor-id="beschreiben-1"><span class="header-section-number">12.6.2</span> Beschreiben</h3>
+<p>Zuerst beschreiben wir die Daten.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(d.long,<span class="fu">interaction.plot</span>(time,subject,response,<span class="at">ylab=</span><span class="st">"response"</span>))</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="do">## alternative with ggplot2</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> d.long, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> response, <span class="at">group =</span> subject))</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p<span class="sc">+</span><span class="fu">geom_point</span>()<span class="sc">+</span><span class="fu">geom_line</span>(<span class="at">lty=</span><span class="dv">2</span>)<span class="sc">+</span><span class="fu">stat_summary</span>(<span class="at">fun=</span>mean,<span class="at">geom=</span><span class="st">"line"</span>,<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>),<span class="at">color=</span><span class="st">"red"</span>,<span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>), <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">fun =</span> mean,<span class="at">shape =</span> <span class="dv">17</span>, <span class="at">size =</span> <span class="dv">4</span>)</span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-31-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<!-- Wie immer gibt es viele Alternativen, z.B.: -->
+<!-- ```{r } -->
+<!-- #| layout-ncol: 2 -->
+<!-- d.longG<-nlme::groupedData(response~time|subject,data=d.long) -->
+<!-- plot(d.longG) -->
+<!-- d.longG<-nlme::groupedData(response~as.numeric(time)|subject,data=d.long) -->
+<!-- plot(d.longG) -->
+<!-- ``` -->
+<p>Wir können jeden Zeitpunkt einzeln beschreiben:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">describeBy</span>(d.long<span class="sc">$</span>response,<span class="at">group=</span>d.long<span class="sc">$</span>time,<span class="at">mat=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     item group1 vars  n mean      sd median trimmed   mad min max range skew
+X1*1    1     t1    1 20 10.5 5.91608   10.5    10.5 7.413   1  20    19    0
+X1*2    2     t2    1 20 10.5 5.91608   10.5    10.5 7.413   1  20    19    0
+X1*3    3     t3    1 20 10.5 5.91608   10.5    10.5 7.413   1  20    19    0
+X1*4    4     t4    1 20 10.5 5.91608   10.5    10.5 7.413   1  20    19    0
+      kurtosis       se
+X1*1 -1.380929 1.322876
+X1*2 -1.380929 1.322876
+X1*3 -1.380929 1.322876
+X1*4 -1.380929 1.322876</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(d.long<span class="sc">$</span>response,d.long<span class="sc">$</span>time,summary) <span class="co">#alternative</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$t1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -9.232  10.966  26.576  26.582  35.109  63.772 
+
+$t2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.5464 24.2050 36.4388 39.0144 52.7406 72.5708 
+
+$t3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  11.93   27.87   47.44   44.69   55.25   96.31 
+
+$t4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  6.818  22.668  32.504  36.900  48.607  81.482 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(response<span class="sc">~</span>time,<span class="at">data=</span>d.long,summary) <span class="co">#alternative</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  time response.Min. response.1st Qu. response.Median response.Mean
+1   t1    -9.2323379       10.9655202      26.5757505    26.5815129
+2   t2    -0.5464301       24.2050217      36.4388469    39.0143684
+3   t3    11.9344197       27.8672784      47.4391539    44.6869727
+4   t4     6.8175026       22.6681781      32.5041280    36.8996576
+  response.3rd Qu. response.Max.
+1       35.1086532    63.7719879
+2       52.7406216    72.5707588
+3       55.2541992    96.3130758
+4       48.6071278    81.4817148</code></pre>
+</div>
+</div>
+<p>Wir können auch mit dem Wide-Format arbeiten. Manchmal ist das für die deskriptive Anlayse einfacher.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>d.wide<span class="ot">&lt;-</span><span class="fu">reshape</span>(d.long,<span class="at">v.names=</span><span class="st">"response"</span>,<span class="at">idvar=</span><span class="st">"subject"</span>,<span class="at">timevar=</span><span class="st">"time"</span>,<span class="at">direction=</span><span class="st">"wide"</span>)</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">headTail</span>(d.wide)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    subject response.t1 response.t2 response.t3 response.t4
+1        s1       52.98          43       66.25       62.47
+5        s2       26.43       26.45       57.62       47.31
+9        s3       10.35       71.25       49.91       64.49
+13       s4       10.88       13.85       61.11       32.41
+...    &lt;NA&gt;         ...         ...         ...         ...
+65      s17          11       23.05       32.81       23.58
+69      s18       26.93       33.05       11.93       18.14
+73      s19       22.18       48.82       50.68        32.6
+77      s20       63.77       23.15       54.46       26.16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d.wide[,<span class="sc">-</span><span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  response.t1      response.t2       response.t3     response.t4    
+ Min.   :-9.232   Min.   :-0.5464   Min.   :11.93   Min.   : 6.818  
+ 1st Qu.:10.966   1st Qu.:24.2050   1st Qu.:27.87   1st Qu.:22.668  
+ Median :26.576   Median :36.4388   Median :47.44   Median :32.504  
+ Mean   :26.582   Mean   :39.0144   Mean   :44.69   Mean   :36.900  
+ 3rd Qu.:35.109   3rd Qu.:52.7406   3rd Qu.:55.25   3rd Qu.:48.607  
+ Max.   :63.772   Max.   :72.5708   Max.   :96.31   Max.   :81.482  </code></pre>
+</div>
+</div>
+</section>
+<section id="anpassen-des-lmm" class="level3" data-number="12.6.3">
+<h3 data-number="12.6.3" class="anchored" data-anchor-id="anpassen-des-lmm"><span class="header-section-number">12.6.3</span> Anpassen des LMM</h3>
+<p>Die Syntax ist äquivalent zum gepaarten <span class="math inline">\(t\)</span>-Test. Wir nennen das neue Modellobjekt <code>m.4rep</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>m<span class="fl">.4</span>rep<span class="ot">&lt;-</span><span class="fu">lmer</span>(response<span class="sc">~</span>time<span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>subject), <span class="at">data=</span>d.long)</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m<span class="fl">.4</span>rep,<span class="at">cor=</span><span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: response ~ time + (1 | subject)
+   Data: d.long
+
+REML criterion at convergence: 684
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8422 -0.5911 -0.1200  0.6007  2.2892 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ subject  (Intercept)  97.31    9.865  
+ Residual             333.95   18.274  
+Number of obs: 80, groups:  subject, 20
+
+Fixed effects:
+            Estimate Std. Error     df t value Pr(&gt;|t|)    
+(Intercept)   26.582      4.644 65.930   5.724 2.77e-07 ***
+timet2        12.433      5.779 57.000   2.151  0.03569 *  
+timet3        18.105      5.779 57.000   3.133  0.00273 ** 
+timet4        10.318      5.779 57.000   1.786  0.07950 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Neu sind nun zusätzliche feste Effekte, da <code>time</code> nun vierwertig ist. Der Globaltest für den Effekt von <code>time</code> mit <code>drop1()</code> zeigt, dass man <code>time</code> nicht aus dem Modell nehmen darf.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(m<span class="fl">.4</span>rep) <span class="do">##Wald-type</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions using Satterthwaite's method:
+
+Model:
+response ~ time + (1 | subject)
+     Sum Sq Mean Sq NumDF DenDF F value  Pr(&gt;F)  
+time 3430.7  1143.6     3    57  3.4244 0.02305 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Die Between-und within-subject Varianz ist im Output ersichtlich, kann aber auch extrahiert werden mit</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">VarCorr</span>(m<span class="fl">.4</span>rep),<span class="at">comp=</span><span class="st">"Variance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Groups   Name        Variance
+ subject  (Intercept)  97.31  
+ Residual             333.95  </code></pre>
+</div>
+</div>
+<p>Die geschätzte within-subject (within-unit) Korrelation – also die Intraklassenkorrelation – ist:</p>
+<p><span class="math inline">\(\widehat{\Cor}(Y_{ij},Y_{ij'})=\frac{\hat{\sigma}^2_{U}}{\hat{\sigma}^2_{U}+\hat{\sigma}^2_{\epsilon}}=0.2256404\)</span></p>
+<!-- ```{r } -->
+<!-- pie(v$percent,labels=c("Subject","Residual")) -->
+<!-- ``` -->
+<p>Wir schauen uns noch den Tukey-Anscombe- und den Q-Q Plot an. Die Varianz der Residuen sollte homogen sein und sie sollten normalverteilt sein.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m<span class="fl">.4</span>rep,<span class="at">type=</span><span class="fu">c</span>(<span class="st">"p"</span>,<span class="st">"smooth"</span>))</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">residuals</span>(m<span class="fl">.4</span>rep))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-38-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Es gibt hier keine klare Evidenz gegen die Modellannahmen.</p>
+<p>Im <code>summary()</code>-Output sehen wir die geschätzten Zeiteffekte relativ zur Referenzkategorie. Wenn wir alle paarweisen Kontraste wollen (mit Konfidenzintervallen), können wir wieder <code>emmeans</code> brauchen.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">emmeans</span>(m<span class="fl">.4</span>rep,revpairwise<span class="sc">~</span>time,<span class="at">infer=</span><span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+ time emmean   SE   df lower.CL upper.CL t.ratio p.value
+ t1     26.6 4.64 65.9     17.3     35.9   5.724 &lt;0.0001
+ t2     39.0 4.64 65.9     29.7     48.3   8.402 &lt;0.0001
+ t3     44.7 4.64 65.9     35.4     54.0   9.623 &lt;0.0001
+ t4     36.9 4.64 65.9     27.6     46.2   7.946 &lt;0.0001
+
+Degrees-of-freedom method: kenward-roger 
+Confidence level used: 0.95 
+
+$contrasts
+ contrast estimate   SE df lower.CL upper.CL t.ratio p.value
+ t2 - t1     12.43 5.78 57    -2.86    27.73   2.151  0.1495
+ t3 - t1     18.11 5.78 57     2.81    33.40   3.133  0.0141
+ t3 - t2      5.67 5.78 57    -9.62    20.97   0.982  0.7604
+ t4 - t1     10.32 5.78 57    -4.98    25.61   1.786  0.2908
+ t4 - t2     -2.11 5.78 57   -17.41    13.18  -0.366  0.9831
+ t4 - t3     -7.79 5.78 57   -23.08     7.51  -1.348  0.5370
+
+Degrees-of-freedom method: kenward-roger 
+Confidence level used: 0.95 
+Conf-level adjustment: tukey method for comparing a family of 4 estimates 
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="within-between-subject-design" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="within-between-subject-design"><span class="header-section-number">12.7</span> Within-Between-subject Design</h2>
+<p>Wir kommen jetzt zu einem Design, das in den Gesundheitswissenschaften häufig ist. Wir haben jetzt einen between-subject Faktor <code>group</code> <span class="math inline">\(G\)</span> und eine within-subject Variable <code>time</code> <span class="math inline">\(T\)</span>.</p>
+<p>Es werden also z.B. zwei Gruppen <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> (Levels des between-subject Faktors <code>group</code>) über die Zeit (within) beobachtet. Im Folgenden behandeln wir aber <code>time</code> nicht als Faktor, sondern als eine kontinuierliche Eingangsgrösse. <code>time</code> <span class="math inline">\(T\)</span> könnte aber auch als Faktor behandelt werden (Zeitpunkt statt Zeit).</p>
+<section id="modellstruktur" class="level3" data-number="12.7.1">
+<h3 data-number="12.7.1" class="anchored" data-anchor-id="modellstruktur"><span class="header-section-number">12.7.1</span> Modellstruktur</h3>
+<p>Wir haben jetzt einen linearen Prädiktor mit vier Parametern <span class="math inline">\(\beta_0,\dots,\beta_3\)</span>, da jede Gruppe eine Lage und eine Steigung bezüglich Zeit hat. Das Random Intercept Modell schreiben wir <span id="eq-SPRI"><span class="math display">\[
+Y_{ij}=\underbrace{\beta_0+\beta_1 G_{ij} + \beta_2 T_{ij}+\beta_3 GT_{ij}}_{fixed}+\underbrace{\overbrace{U_i}^{rand.intercept}+\overbrace{\epsilon_{ij}}^{resid.error}}_{random}
+\tag{12.4}\]</span></span></p>
+<p>mit</p>
+<p><span class="math display">\[G_{ij}=\begin{cases} 1 &amp;\mbox{if }group=B\\
+0 &amp; \mbox{if } group=A  \end{cases}, \qquad GT_{ij}=\begin{cases} T_{ij} &amp;\mbox{if }group=B\\
+0 &amp; \mbox{if } group=A  \end{cases}
+\]</span></p>
+<p><strong>Marginale Erwartung</strong>: Schauen wir uns die Erwartungswerte an. Für die <strong>marginale Erwartung</strong> haben wir – da alle random effects im Schnitt Null sind – einfach den linearen Prädiktor <span class="math inline">\(\beta_0+\beta_1 G_{ij} + \beta_2 T_{ij}+\beta_3 GT_{ij}\)</span>. Für Gruppe <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> gibt das:</p>
+<p><span class="math display">\[
+\begin{align}
+A: E(Y_{ij})=&amp;\beta_0+ \beta_2 T_{ij}\\
+B: E(Y_{ij})=&amp;(\beta_0+\beta_1) + (\beta_2+\beta_3)T_{ij}\\
+\end{align}
+\]</span></p>
+<p>Wir sehen hier schön, dass jede Gruppe eine eigene Lage und eine eigene Steigung hat. Der Parameter von Interesse ist häufig der <strong>Interaktionsparameter</strong><span class="math inline">\(\beta_3\)</span>. Dieser ist als <strong>Unterschied der Steigungen zwischen den beiden Gruppen</strong> zu interpretieren. Interaktion bedeutet: Der Effekt von <code>group</code> ist dann <span class="math inline">\(\beta_1+\beta_3 T\)</span>, also eine Funktion der Zeit! Oder: Der Effekt von <code>time</code> ist dann <span class="math inline">\(\beta_2+\beta_3 G\)</span>, also eine Funktion der Gruppe!</p>
+<p>Die <span class="math inline">\(U_i\)</span>’s interessieren häufig nicht, sie müssen aber im Modell sein, um der Korrelationsstruktur der Daten Rechnung zu tragen.</p>
+<p>Eine Erweiterung des Modells ist das <strong>Random Slope Modell</strong>, dieses erlaubt zusätzlich zum Random Intercept Modell noch unterschiedliche Slopes (also unterschiedliche Zeiteffekte) für jedes Subject. Das Random Slope Modell schreiben wir <span id="eq-SPRS"><span class="math display">\[
+Y_{ij}=\underbrace{\beta_0+\beta_1 G_{ij} + \beta_2 T_{ij}+\beta_3 GT_{ij}}_{fixed}+\underbrace{\overbrace{U_{i0}}^{rand.intercept}+T_{ij}\overbrace{U_{i1}}^{rand.slope}+\overbrace{\epsilon_{ij}}^{resid.error}}_{random}
+\tag{12.5}\]</span></span></p>
+<p>Die Interpretation der Fixed Effects ist analog. Das Modell erlaubt aber noch unterschiedliche Slopes bezüglich <code>time</code>. Jedes Subject hat dann eine eigene Lage und eine eigene Steigung.</p>
+<!-- **Bedingte Erwartung** (für die Interessierten) -->
+<!-- - Random Intercept -->
+<!-- $$ -->
+<!-- \begin{align} -->
+<!-- A: E(Y_{ij}|U_i)=&\beta_0+ \beta_2 T_{ij}+U_i\\ -->
+<!-- B: E(Y_{ij}|U_i)=&(\beta_0+\beta_1) + (\beta_2+\beta_3)T_{ij}+U_i -->
+<!-- \end{align} -->
+<!-- $$ -->
+<!-- - Random slope -->
+<!-- $$ -->
+<!-- \begin{align} -->
+<!-- A: E(Y_{ij}|U_{i0},U_{i1})=&\beta_0+ \beta_2 T_{ij}+U_{i0}+T_{ij}U_{i1}\\ -->
+<!-- B: E(Y_{ij}|U_{i0},U_{i1})=&(\beta_0+\beta_1) + (\beta_2+\beta_3)T_{ij}+U_{i0}+T_{ij}U_{i1} -->
+<!-- \end{align} -->
+<!-- $$ -->
+</section>
+<section id="simulation-von-daten-aus-modell" class="level3" data-number="12.7.2">
+<h3 data-number="12.7.2" class="anchored" data-anchor-id="simulation-von-daten-aus-modell"><span class="header-section-number">12.7.2</span> Simulation von Daten aus Modell*</h3>
+<p>Für die Interessierten: Mit dem folgenden Code simulieren wir Daten aus dem besprochenen Design: Wir simulieren den Verlauf von <span class="math inline">\(n=100\)</span> statistischen Einheiten aus zwei Gruppen <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>. Jede Einheit hat vier Beobachtungen über die Zeit. Die abhängige Variable ist <span class="math inline">\(Y\)</span>. Natürlich kennen wir bei realen Daten die wahren Parameter nicht, aber es lohnt sich, Daten aus einem Modell zu simulieren und dann die Analyse zu machen. Dies ist sehr hilfreich für das Verständnis des Designs, des Modells und schliesslich der Anlayse.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>simulate <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">seed=</span><span class="dv">62</span>) {</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>    n <span class="ot">&lt;-</span><span class="dv">100</span>  <span class="co"># number of subjects</span></span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>    K <span class="ot">&lt;-</span> <span class="dv">4</span>  <span class="co"># number of measurements per subject</span></span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># data frame with the design: everyone has a baseline measurement, and then measurements at random follow-up times</span></span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>    d.SP <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="fu">seq_len</span>(n), <span class="at">each =</span> K), <span class="at">time =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>K, n), <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">gl</span>(<span class="dv">2</span>, n<span class="sc">/</span><span class="dv">2</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>)), <span class="at">each =</span> K))</span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># design matrices for the fixed and random effects</span></span>
+<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a>    X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>group <span class="sc">*</span> time, <span class="at">data =</span> d.SP)</span>
+<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a>    Z_base <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>, d.SP<span class="sc">$</span>time[<span class="dv">1</span><span class="sc">:</span>K])  <span class="co"># intercept and time columns for one subject</span></span>
+<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a>    Z <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(<span class="fu">diag</span>(n), Z_base)   <span class="co"># Block-diagonal matrix for all subjects</span></span>
+<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">4</span>)  <span class="co"># fixed effects coefficients</span></span>
+<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a>    <span class="do">##</span></span>
+<span id="cb95-12"><a href="#cb95-12" aria-hidden="true" tabindex="-1"></a>    var_intercept <span class="ot">&lt;-</span> <span class="dv">1</span>           <span class="co"># variance of random intercepts</span></span>
+<span id="cb95-13"><a href="#cb95-13" aria-hidden="true" tabindex="-1"></a>    var_slope <span class="ot">&lt;-</span> <span class="dv">1</span>               <span class="co"># variance of random slopes</span></span>
+<span id="cb95-14"><a href="#cb95-14" aria-hidden="true" tabindex="-1"></a>    correlation <span class="ot">&lt;-</span> <span class="dv">0</span>             <span class="co"># correlation between intercept and slope</span></span>
+<span id="cb95-15"><a href="#cb95-15" aria-hidden="true" tabindex="-1"></a>    D <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(var_intercept, correlation <span class="sc">*</span> <span class="fu">sqrt</span>(var_intercept <span class="sc">*</span> var_slope),</span>
+<span id="cb95-16"><a href="#cb95-16" aria-hidden="true" tabindex="-1"></a>                       correlation <span class="sc">*</span> <span class="fu">sqrt</span>(var_intercept <span class="sc">*</span> var_slope), var_slope), <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb95-17"><a href="#cb95-17" aria-hidden="true" tabindex="-1"></a>    sigma <span class="ot">&lt;-</span> <span class="dv">2</span>  <span class="co"># sd error terms</span></span>
+<span id="cb95-18"><a href="#cb95-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate random effects for intercept and slope</span></span>
+<span id="cb95-19"><a href="#cb95-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(seed)</span>
+<span id="cb95-20"><a href="#cb95-20" aria-hidden="true" tabindex="-1"></a>    B <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(Z_base)), D)</span>
+<span id="cb95-21"><a href="#cb95-21" aria-hidden="true" tabindex="-1"></a>    b <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(B))</span>
+<span id="cb95-22"><a href="#cb95-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># linear predictor</span></span>
+<span id="cb95-23"><a href="#cb95-23" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta <span class="sc">+</span> Z<span class="sc">%*%</span>b</span>
+<span id="cb95-24"><a href="#cb95-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we simulate continuous longitudinal data</span></span>
+<span id="cb95-25"><a href="#cb95-25" aria-hidden="true" tabindex="-1"></a>    d.SP<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n <span class="sc">*</span> K, <span class="at">mean =</span> eta, <span class="at">sd =</span> sigma)</span>
+<span id="cb95-26"><a href="#cb95-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">data=</span>d.SP,<span class="at">parms=</span><span class="fu">list</span>(<span class="at">random=</span><span class="fu">data.frame</span>(<span class="at">varInt=</span><span class="dv">1</span>,<span class="at">varSlope=</span><span class="dv">1</span>,<span class="at">Corr=</span><span class="dv">0</span>),<span class="at">fixed=</span><span class="fu">data.frame</span>(<span class="at">beta0=</span><span class="dv">10</span>,<span class="at">beta1=</span><span class="dv">3</span>,<span class="at">beta2=</span><span class="dv">1</span>,<span class="at">beta3=</span><span class="dv">4</span>),<span class="at">sigma2=</span>sigma<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb95-27"><a href="#cb95-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb95-28"><a href="#cb95-28" aria-hidden="true" tabindex="-1"></a>simSP<span class="ot">&lt;-</span><span class="fu">simulate</span>()</span>
+<span id="cb95-29"><a href="#cb95-29" aria-hidden="true" tabindex="-1"></a>d.SP<span class="ot">&lt;-</span>simSP<span class="sc">$</span>data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="design-und-daten" class="level3" data-number="12.7.3">
+<h3 data-number="12.7.3" class="anchored" data-anchor-id="design-und-daten"><span class="header-section-number">12.7.3</span> Design und Daten</h3>
+<p>Wir haben ein <code>group</code>(2) <span class="math inline">\(\times\)</span> <code>time</code>(4) between-within Design (auch Split-Plot Design), mit <span class="math inline">\(n=100\)</span> (50 pro Gruppe mit je vier Beobachtungen). Wir behandeln Zeit als eine kontinuierliche Eingangsgrösse!</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(d.SP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   400 obs. of  4 variables:
+ $ id   : int  1 1 1 1 2 2 2 2 3 3 ...
+ $ time : int  1 2 3 4 1 2 3 4 1 2 ...
+ $ group: Factor w/ 2 levels "A","B": 1 1 1 1 1 1 1 1 1 1 ...
+ $ y    : num  12.5 12.9 13.7 18.8 10.2 ...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(d.SP,<span class="fu">xtabs</span>(<span class="sc">~</span>group<span class="sc">+</span>time))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     time
+group  1  2  3  4
+    A 50 50 50 50
+    B 50 50 50 50</code></pre>
+</div>
+</div>
+<p>Da wir die Daten aus einem Modell simuliert haben, kennen wir hier die wahren Werte der Parameter. Unter <code>$fixed</code> sehen wir die wahren Parameter der fixed effects. Unter <code>$random</code> sehen wir die wahre Varianz der Random Intercepts, der Random Slopes und die Korrelation dieser (die wir auf Null gesetzt haben). Unter <code>$sigma2</code> sehen wir die Residualvarianz.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>simSP<span class="sc">$</span>parms</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$random
+  varInt varSlope Corr
+1      1        1    0
+
+$fixed
+  beta0 beta1 beta2 beta3
+1    10     3     1     4
+
+$sigma2
+[1] 4</code></pre>
+</div>
+</div>
+<p>Die (aus dem bekannten Modell simulierten) Daten im Long Format (400 Zeilen) sind dann</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">headTail</span>(d.SP,<span class="dv">4</span>,<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     id time group     y
+1     1    1     A 12.48
+2     1    2     A 12.93
+3     1    3     A 13.71
+4     1    4     A 18.82
+... ...  ...  &lt;NA&gt;   ...
+397 100    1     B 16.04
+398 100    2     B  22.9
+399 100    3     B 29.33
+400 100    4     B 32.19</code></pre>
+</div>
+</div>
+<p>und im Wide Format (100 Zeilen), oft nützlich für deskriptive Statistik:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>d.SPwide<span class="ot">&lt;-</span><span class="fu">reshape</span>(d.SP,<span class="at">v.names=</span><span class="st">"y"</span>,<span class="at">timevar=</span><span class="st">"time"</span>,<span class="at">idvar=</span><span class="st">"id"</span>,<span class="at">direction=</span><span class="st">"wide"</span>)</span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">headTail</span>(d.SPwide,<span class="dv">4</span>,<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     id group   y.1   y.2   y.3   y.4
+1     1     A 12.48 12.93 13.71 18.82
+5     2     A 10.16 14.46  9.18 14.67
+9     3     A  7.27  9.44  6.97  6.88
+13    4     A 17.14 15.11 16.96 15.81
+... ...  &lt;NA&gt;   ...   ...   ...   ...
+385  97     B 16.94 21.71 20.28 31.72
+389  98     B 19.42 20.78 32.12 34.45
+393  99     B 19.31 25.29  31.9 31.84
+397 100     B 16.04  22.9 29.33 32.19</code></pre>
+</div>
+</div>
+</section>
+<section id="beschreiben-2" class="level3" data-number="12.7.4">
+<h3 data-number="12.7.4" class="anchored" data-anchor-id="beschreiben-2"><span class="header-section-number">12.7.4</span> Beschreiben</h3>
+<p>Hier wieder mit mehreren Varianten:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(d.SP,<span class="fu">interaction.plot</span>(<span class="at">x.factor=</span>time,<span class="at">trace.factor=</span>group,<span class="at">response=</span>y))</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">xyplot</span>(<span class="at">data =</span> d.SP, y <span class="sc">~</span> time <span class="sc">|</span> group,<span class="at">groups =</span> id, <span class="at">type =</span> <span class="st">"l"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-45-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(d.SP<span class="sc">$</span>y, <span class="fu">list</span>(d.SP<span class="sc">$</span>group,d.SP<span class="sc">$</span>time), mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1        2        3        4
+A 11.10430 12.43844 13.20379 14.75693
+B 18.07467 23.24057 28.65372 34.07037</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">describeBy</span>(d.SP<span class="sc">$</span>y, <span class="fu">list</span>(d.SP<span class="sc">$</span>group,d.SP<span class="sc">$</span>time), <span class="at">mat =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     item group1 group2 vars  n mean       sd median trimmed     mad min max
+X1*1    1      A      1    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+X1*2    2      B      1    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+X1*3    3      A      2    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+X1*4    4      B      2    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+X1*5    5      A      3    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+X1*6    6      B      3    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+X1*7    7      A      4    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+X1*8    8      B      4    1 50 25.5 14.57738   25.5    25.5 18.5325   1  50
+     range skew  kurtosis       se
+X1*1    49    0 -1.272202 2.061553
+X1*2    49    0 -1.272202 2.061553
+X1*3    49    0 -1.272202 2.061553
+X1*4    49    0 -1.272202 2.061553
+X1*5    49    0 -1.272202 2.061553
+X1*6    49    0 -1.272202 2.061553
+X1*7    49    0 -1.272202 2.061553
+X1*8    49    0 -1.272202 2.061553</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(y<span class="sc">~</span>time<span class="sc">+</span>group,<span class="at">data=</span>d.SP,summary)<span class="do">##Alternative</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  time group    y.Min. y.1st Qu.  y.Median    y.Mean y.3rd Qu.    y.Max.
+1    1     A  6.086921  9.327115 10.600989 11.104296 12.848087 17.608980
+2    2     A  7.400169 10.410568 12.740514 12.438442 14.324042 17.327829
+3    3     A  3.591481 10.185784 13.058277 13.203787 16.477755 21.812738
+4    4     A  6.877855 11.556186 14.380528 14.756929 17.703400 22.928708
+5    1     B 13.001167 17.025762 18.298287 18.074673 19.320991 22.855254
+6    2     B 17.528504 21.137155 22.842381 23.240574 25.285105 31.719640
+7    3     B 20.279260 25.879617 28.568727 28.653717 31.480437 38.704880
+8    4     B 24.810750 31.304031 33.857658 34.070374 36.346075 45.635979</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(d.SPwide,d.SPwide<span class="sc">$</span>group,summary)<span class="do">##mit d.SPwide</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$A
+       id        group       y.1              y.2             y.3        
+ Min.   : 1.00   A:50   Min.   : 6.087   Min.   : 7.40   Min.   : 3.591  
+ 1st Qu.:13.25   B: 0   1st Qu.: 9.327   1st Qu.:10.41   1st Qu.:10.186  
+ Median :25.50          Median :10.601   Median :12.74   Median :13.058  
+ Mean   :25.50          Mean   :11.104   Mean   :12.44   Mean   :13.204  
+ 3rd Qu.:37.75          3rd Qu.:12.848   3rd Qu.:14.32   3rd Qu.:16.478  
+ Max.   :50.00          Max.   :17.609   Max.   :17.33   Max.   :21.813  
+      y.4        
+ Min.   : 6.878  
+ 1st Qu.:11.556  
+ Median :14.381  
+ Mean   :14.757  
+ 3rd Qu.:17.703  
+ Max.   :22.929  
+
+$B
+       id         group       y.1             y.2             y.3       
+ Min.   : 51.00   A: 0   Min.   :13.00   Min.   :17.53   Min.   :20.28  
+ 1st Qu.: 63.25   B:50   1st Qu.:17.03   1st Qu.:21.14   1st Qu.:25.88  
+ Median : 75.50          Median :18.30   Median :22.84   Median :28.57  
+ Mean   : 75.50          Mean   :18.07   Mean   :23.24   Mean   :28.65  
+ 3rd Qu.: 87.75          3rd Qu.:19.32   3rd Qu.:25.29   3rd Qu.:31.48  
+ Max.   :100.00          Max.   :22.86   Max.   :31.72   Max.   :38.70  
+      y.4       
+ Min.   :24.81  
+ 1st Qu.:31.30  
+ Median :33.86  
+ Mean   :34.07  
+ 3rd Qu.:36.35  
+ Max.   :45.64  </code></pre>
+</div>
+</div>
+</section>
+<section id="modelle-anpassen" class="level3" data-number="12.7.5">
+<h3 data-number="12.7.5" class="anchored" data-anchor-id="modelle-anpassen"><span class="header-section-number">12.7.5</span> Modelle anpassen</h3>
+<p>Wir haben als fixed effects: <code>group</code>, <code>time</code> und <code>group:time</code>-Interaktion. Wir haben zwei verschiedene Random-Effects Strukturen <code>(1|subject)</code> (für das random intercept Modell) und <code>(time|subject)</code> (für das random slope Modell):</p>
+<ol type="1">
+<li>Random intercept model</li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y <span class="sc">~</span> group <span class="sc">*</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> d.SP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li>Random slope. Schätzt zusätzlich die Varianz der Slopes und die Kovarianz Intercept-Slopes. Syntax: <code>time|id</code></li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y <span class="sc">~</span> group <span class="sc">*</span> time <span class="sc">+</span> (time <span class="sc">|</span> id), <span class="at">data =</span> d.SP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="angepasste-modelle" class="level3" data-number="12.7.6">
+<h3 data-number="12.7.6" class="anchored" data-anchor-id="angepasste-modelle"><span class="header-section-number">12.7.6</span> Angepasste Modelle</h3>
+<section id="random-intercept" class="level4" data-number="12.7.6.1">
+<h4 data-number="12.7.6.1" class="anchored" data-anchor-id="random-intercept"><span class="header-section-number">12.7.6.1</span> Random Intercept</h4>
+<p>Versuchen Sie, die Parameterschätzungen der festen Effekte unten in der rechten Graphik nachzuvollziehen. So ist z.B. <span class="math inline">\(\hat{\beta}_3=4.1677004\)</span> der geschätzte erwartete Unterschied in der Steigung zwischen Gruppe <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>, <span class="math inline">\(\hat{\beta}_2=1.1723243\)</span> ist die geschätzte erwartete Steigung für Gruppe <span class="math inline">\(A\)</span>, usw.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1, <span class="at">cor =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: y ~ group * time + (1 | id)
+   Data: d.SP
+
+REML criterion at convergence: 1985.8
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.97793 -0.54881  0.00251  0.58228  2.78736 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 6.778    2.603   
+ Residual             5.342    2.311   
+Number of obs: 400, groups:  id, 100
+
+Fixed effects:
+            Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)   9.9451     0.5439 266.3516  18.285  &lt; 2e-16 ***
+groupB        2.7147     0.7692 266.3517   3.529 0.000491 ***
+time          1.1723     0.1462 298.0000   8.020 2.44e-14 ***
+groupB:time   4.1677     0.2067 298.0000  20.161  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(m1)</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">xyplot</span>(<span class="at">data =</span> d.SP, y <span class="sc">~</span> time <span class="sc">|</span> group,<span class="at">groups =</span> id, <span class="at">type =</span> <span class="st">"l"</span>,<span class="at">main=</span><span class="st">"Daten"</span>)</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">xyplot</span>(<span class="at">data =</span> d.SP, predicted <span class="sc">~</span> time <span class="sc">|</span> group, <span class="at">groups =</span> id, <span class="at">type =</span> <span class="st">"l"</span>,<span class="at">main=</span><span class="st">"Modell"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-55-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-55-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="random-slope" class="level4" data-number="12.7.6.2">
+<h4 data-number="12.7.6.2" class="anchored" data-anchor-id="random-slope"><span class="header-section-number">12.7.6.2</span> Random Slope</h4>
+<p>Für das random slope Modell sehen wir zusätzlich eine Variabilität in den Steigungen für jede statistische Einheit. Die Punktschätzungen für die fixed effects bleiben aber gleich.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2, <span class="at">cor =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: y ~ group * time + (time | id)
+   Data: d.SP
+
+REML criterion at convergence: 1908.9
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.9705 -0.5587  0.0275  0.5456  2.2772 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr  
+ id       (Intercept) 1.600    1.265          
+          time        1.015    1.007    -0.12 
+ Residual             3.673    1.917          
+Number of obs: 400, groups:  id, 100
+
+Fixed effects:
+            Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)   9.9451     0.3771 97.9991  26.374  &lt; 2e-16 ***
+groupB        2.7147     0.5333 97.9991   5.091 1.73e-06 ***
+time          1.1723     0.1871 98.0009   6.267 9.87e-09 ***
+groupB:time   4.1677     0.2645 98.0009  15.755  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(m2)</span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">xyplot</span>(<span class="at">data =</span> d.SP, y <span class="sc">~</span> time <span class="sc">|</span> group,<span class="at">groups =</span> id, <span class="at">type =</span> <span class="st">"l"</span>,<span class="at">main=</span><span class="st">"Daten"</span>)</span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">xyplot</span>(<span class="at">data =</span> d.SP, predicted <span class="sc">~</span> time <span class="sc">|</span> group, <span class="at">groups =</span> id, <span class="at">type =</span> <span class="st">"l"</span>,<span class="at">main=</span><span class="st">"Modell"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-57-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-57-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Beim Random Slope Modell ist die Varianz des zufälligen Beitrags eine quadratische Funktion der Zeit, also nicht mehr konstant wie beim Random Intercept Modell. Die zufällige Komponente für Zeit <span class="math inline">\(T\)</span> ist <span class="math inline">\(U_{i0} + U_{i1} \cdot T\)</span> und die Varianz</p>
+<p><span class="math display">\[
+\begin{align}
+\text{Var}(U_{i0} + U_{i1} \cdot T)
+&amp;= \text{Var}(U_{i0}) + T^2 \text{Var}(U_{i1}) + 2T \,\text{Cov}(U_{i0}, U_{i1})\\
+&amp;= \sigma^2_0 + T^2 \sigma^2_1 + 2T \sigma_{01}.
+\end{align}
+\]</span></p>
+</section>
+<section id="testen-von-random-effects" class="level4" data-number="12.7.6.3">
+<h4 data-number="12.7.6.3" class="anchored" data-anchor-id="testen-von-random-effects"><span class="header-section-number">12.7.6.3</span> Testen von Random Effects</h4>
+<p>Modell <code>m1</code> ist ja verschachtelt im Modell <code>m2</code>. Wir können also die Hypothese testen, dass die Variabilität der random slopes Null ist:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m2,<span class="at">refit=</span><span class="cn">FALSE</span>) <span class="co">#damit REML wie lmerTest::ranova()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data: d.SP
+Models:
+m1: y ~ group * time + (1 | id)
+m2: y ~ group * time + (time | id)
+   npar    AIC    BIC  logLik -2*log(L)  Chisq Df Pr(&gt;Chisq)    
+m1    6 1997.8 2021.7 -992.89    1985.8                         
+m2    8 1924.9 1956.8 -954.44    1908.9 76.908  2  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>oder</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>lmerTest<span class="sc">::</span><span class="fu">ranova</span>(m2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ANOVA-like table for random-effects: Single term deletions
+
+Model:
+y ~ group * time + (time | id)
+                    npar  logLik    AIC    LRT Df Pr(&gt;Chisq)    
+&lt;none&gt;                 8 -954.44 1924.9                         
+time in (time | id)    6 -992.89 1997.8 76.908  2  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Das Random Intercept Modell wird also zugunsten des Random Slope Modells verworfen.</p>
+</section>
+<section id="caterpillar-plot-von-random-effects" class="level4" data-number="12.7.6.4">
+<h4 data-number="12.7.6.4" class="anchored" data-anchor-id="caterpillar-plot-von-random-effects"><span class="header-section-number">12.7.6.4</span> Caterpillar Plot von Random Effects</h4>
+<p>Im Output hatten wir bis jetzt <strong>Varianzparameter</strong>, nicht die Random Effects selber. Die geschätzten zufälligen Effekte (<strong>Best linear unbiased predictions (BLUPs)</strong>) für jedes Subjekt im Modell, dargestellt als Punktdiagramm bekommen wir mit</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot.ranef.mer</span>(<span class="fu">ranef</span>(m2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$id</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="testen-von-fixed-effects" class="level3" data-number="12.7.7">
+<h3 data-number="12.7.7" class="anchored" data-anchor-id="testen-von-fixed-effects"><span class="header-section-number">12.7.7</span> Testen von Fixed Effects</h3>
+<p>Das Hauptinteresse liegt meistens im Testen der fixed effects. Zuerst der Interaktionseffekt:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(m2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions using Satterthwaite's method:
+
+Model:
+y ~ group * time + (time | id)
+           Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
+group:time 911.66  911.66     1 98.001  248.21 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p><code>drop1()</code> testet richtigerweise nur die Interaktion. Haupteffekte sollten in der Gegenwart von Interaktion nicht getestet werden.</p>
+<p><strong>Type III Tests</strong>: Macht man es trotzdem, muss man sogenannte Type III Tests und den Zusammenhang mit der Default-Effektkodierung sehr gut verstehen. Wir gehen hier nicht näher darauf ein. Die Funktion <code>anova.lmerModLmerTest()</code> aus <code>lmerTest</code> macht diese Tests korrekt bei Aufruf von <code>anova()</code> und Übergabe eines <code>lmer</code>-Objekts und ist unabhängig von der Parametrisierung (im Gegensatz zu <code>car::Anova(...,type=3)</code>).</p>
+</section>
+<section id="trends-und-kontraste-von-trends" class="level3" data-number="12.7.8">
+<h3 data-number="12.7.8" class="anchored" data-anchor-id="trends-und-kontraste-von-trends"><span class="header-section-number">12.7.8</span> Trends und Kontraste von Trends</h3>
+<p>Die Effektparameterisierung gab uns für die fixed effects:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)<span class="sc">$</span>coef</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error       df   t value     Pr(&gt;|t|)
+(Intercept) 9.945053  0.3770772 97.99907 26.374053 2.650478e-46
+groupB      2.714720  0.5332676 97.99908  5.090727 1.725057e-06
+time        1.172324  0.1870577 98.00087  6.267181 9.871747e-09
+groupB:time 4.167700  0.2645395 98.00088 15.754548 1.313324e-28</code></pre>
+</div>
+</div>
+<p>Wir wollen jetzt eine Schätzung für die Zeiteffekte in beiden Gruppen <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> und eine Schätzung des Unterschieds des Zeiteffekts zwischen Gruppe <span class="math inline">\(A\)</span> und <span class="math inline">\(B.\)</span> Dies bekommen wir die mit <code>emmeans::emtrends()</code></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(emmeans<span class="sc">::</span><span class="fu">emtrends</span>(m2,trt.vs.ctrl<span class="sc">~</span>group,<span class="at">var=</span><span class="st">"time"</span>),<span class="at">infer=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emtrends
+ group time.trend    SE df lower.CL upper.CL t.ratio p.value
+ A           1.17 0.187 98    0.801     1.54   6.267 &lt;0.0001
+ B           5.34 0.187 98    4.969     5.71  28.547 &lt;0.0001
+
+Degrees-of-freedom method: kenward-roger 
+Confidence level used: 0.95 
+
+$contrasts
+ contrast estimate    SE df lower.CL upper.CL t.ratio p.value
+ B - A        4.17 0.265 98     3.64     4.69  15.755 &lt;0.0001
+
+Degrees-of-freedom method: kenward-roger 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p>Die Gruppe <span class="math inline">\(B\)</span> verändert sich pro Zeiteinheit um 4.17 Einheiten auf <span class="math inline">\(Y\)</span> mehr als die Gruppe <span class="math inline">\(A\)</span>. Eine Schätzung der Steigung in der Gruppe <span class="math inline">\(A\)</span> und vom Unterschied in den Steigungen zwischen den Gruppen hatten wir schon in der Effektparameterisierung. Die Steigung in der Gruppe <span class="math inline">\(B\)</span> ist 5.34, das entspricht in der Grundparametrisierung 1.172+4.168.</p>
+</section>
+<section id="modellannahmen" class="level3" data-number="12.7.9">
+<h3 data-number="12.7.9" class="anchored" data-anchor-id="modellannahmen"><span class="header-section-number">12.7.9</span> Modellannahmen</h3>
+<p>Das Testen von Modellannahmen ist oft nicht trivial. Es lohnt sich diesbezüglich bei Bedarf Hilfe zu holen.</p>
+<p>Hier gibt es keine Evidenz gegen die Modellannahmen. Das wäre auch erstaunlich, haben wir doch die Daten aus demselben Modell simuliert, welches wir dann an die Daten angepasst haben.</p>
+<p>Streuung Residuen</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m2,<span class="fu">resid</span>(.)<span class="sc">~</span><span class="fu">fitted</span>(.)<span class="sc">|</span>group)</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m2,<span class="fu">resid</span>(.)<span class="sc">~</span><span class="fu">fitted</span>(.)<span class="sc">|</span>group<span class="sc">*</span>time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-64-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Streuung und Verteilung Random effects</p>
+<div class="cell quarto-layout-panel" data-layout="[[1,1,1],[1,1,1]]" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-65-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-65-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-65-4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-65-5.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="12_LMM_files/figure-html/unnamed-chunk-65-6.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<!-- ## Software {.smaller50} -->
+<!-- ```{r echo=FALSE} -->
+<!-- library(grateful) -->
+<!-- cite_packages(pkgs = "Session",output="table",out.dir=getwd(),cite.tidyverse=FALSE,omit=c("grateful","knitr")) -->
+<!-- ``` -->
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./11_survival.html" class="pagination-link" aria-label="Einführung in die Überlebensanalyse">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -8,7 +8,7 @@
 
 <meta name="author" content="Nathanael Lutz">
 <meta name="author" content="André Meichtry">
-<meta name="dcterms.date" content="2024-10-24">
+<meta name="dcterms.date" content="2026-06-23">
 
 <title>Skript zum Modul Angewandte Statistik</title>
 <style>
@@ -46,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-54427c74024eba8e34e34421ce4d6b49.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -126,6 +126,72 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -171,7 +237,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 24, 2024</p>
+      <p class="date">June 23, 2026</p>
     </div>
   </div>
   
@@ -183,6 +249,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p><br></p>
+<p><img src="illustrations/cc.png" class="img-fluid" style="width:15.0%"></p>
+<hr>
 <section id="einführung" class="level1 unnumbered">
 <h1 class="unnumbered">Einführung</h1>
 <blockquote class="blockquote">
@@ -221,7 +290,7 @@ Abbildung&nbsp;1: Was zu diesem Modul gehört und was nicht.
 </section>
 <section id="danksagung" class="level2">
 <h2 class="anchored" data-anchor-id="danksagung">Danksagung</h2>
-<p>Viele Inhalte dieses Skripts basieren auf der Arbeit von Dr.&nbsp;Lukas Stammler und wurden von mir, Nathanael Lutz, für diesen Kurs angepasst und erweitert. Ich danke Lukas von Herzen für das zur Verfügungstellen seiner aussergewöhnlichen Vorarbeit, seine kreativen Ideen, die intensiven Recherchen nach geeigneten Datensätzen und nicht zuletzt für sein unermüdliches Engagement, komplexe Sachverhalte didaktisch so aufzubereiten, dass sie für Studierende zugänglich und verständlich sind. Ebenfalls bedanken möchte ich mich bei André Meichtry für seine großartige Unterstützung beim Korrekturlesen. Sein präzises Gespür für Details, kombiniert mit seiner umfassenden Expertise im Bereich der Statistik, hat dieses Skript nachhaltig verbessert.</p>
+<p>Viele Inhalte dieses Skripts basieren auf der Arbeit von Dr.&nbsp;Lukas Stammler und wurden von mir, Nathanael Lutz, für diesen Kurs angepasst und erweitert. Ich danke Lukas von Herzen für das zur Verfügungstellen seiner aussergewöhnlichen Vorarbeit, seine kreativen Ideen, die intensiven Recherchen nach geeigneten Datensätzen und nicht zuletzt für sein unermüdliches Engagement, komplexe Sachverhalte didaktisch so aufzubereiten, dass sie für Studierende zugänglich und verständlich sind. Ebenfalls bedanken möchte ich mich bei André Meichtry für das Beisteuern weiterer Kapitel sowie seine grossartige Unterstützung beim Korrekturlesen. Sein präzises Gespür für Details, kombiniert mit seiner umfassenden Expertise im Bereich der Statistik, hat dieses Skript nachhaltig verbessert.</p>
 
 
 </section>

@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Einfache lineare Regression – Skript zum Modul Angewandte Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./07_multiple_linear-regression.html" rel="next">
+<link href="./05_correlation.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ebfc3df13b83a4df80a9a05dab4e25a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_simple_linear-regression.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skript zum Modul Angewandte Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Einführung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Deskriptive Statistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_prop_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Verteilungen von Wahrscheinlichkeiten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Grundlagen der Inferenzstatistik</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_compare_means.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Vergleich von Mittelwerten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_simple_linear-regression.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_multiple_linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_inf_cat_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inferenz für nominale Daten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_logistic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_poisson_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Poisson Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Einführung in die Überlebensanalyse</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_LMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Mixed Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link active" data-scroll-target="#lernziele"><span class="header-section-number">6.1</span> Lernziele</a></li>
+  <li><a href="#eine-bücherbestellung" id="toc-eine-bücherbestellung" class="nav-link" data-scroll-target="#eine-bücherbestellung"><span class="header-section-number">6.2</span> Eine Bücherbestellung</a></li>
+  <li><a href="#unabhängige-und-abhängige-variable" id="toc-unabhängige-und-abhängige-variable" class="nav-link" data-scroll-target="#unabhängige-und-abhängige-variable"><span class="header-section-number">6.3</span> Unabhängige und abhängige Variable</a>
+  <ul class="collapse">
+  <li><a href="#zusammenhang-zwischen-den-variablen" id="toc-zusammenhang-zwischen-den-variablen" class="nav-link" data-scroll-target="#zusammenhang-zwischen-den-variablen"><span class="header-section-number">6.3.1</span> Zusammenhang zwischen den Variablen</a></li>
+  </ul></li>
+  <li><a href="#einfache-lineare-regression" id="toc-einfache-lineare-regression" class="nav-link" data-scroll-target="#einfache-lineare-regression"><span class="header-section-number">6.4</span> Einfache lineare Regression</a>
+  <ul class="collapse">
+  <li><a href="#lineare-funktion" id="toc-lineare-funktion" class="nav-link" data-scroll-target="#lineare-funktion"><span class="header-section-number">6.4.1</span> Lineare Funktion</a></li>
+  <li><a href="#das-einfache-lineare-modell" id="toc-das-einfache-lineare-modell" class="nav-link" data-scroll-target="#das-einfache-lineare-modell"><span class="header-section-number">6.4.2</span> Das einfache lineare Modell</a></li>
+  <li><a href="#der-kleinste-quadrate-schätzer" id="toc-der-kleinste-quadrate-schätzer" class="nav-link" data-scroll-target="#der-kleinste-quadrate-schätzer"><span class="header-section-number">6.4.3</span> Der Kleinste-Quadrate Schätzer</a></li>
+  <li><a href="#warum-man-nicht-über-die-gemessenen-daten-hinaus-extrapolieren-sollte" id="toc-warum-man-nicht-über-die-gemessenen-daten-hinaus-extrapolieren-sollte" class="nav-link" data-scroll-target="#warum-man-nicht-über-die-gemessenen-daten-hinaus-extrapolieren-sollte"><span class="header-section-number">6.4.4</span> Warum man nicht über die gemessenen Daten hinaus extrapolieren sollte</a></li>
+  <li><a href="#sec-das-bestimmtheitsmass-r2" id="toc-sec-das-bestimmtheitsmass-r2" class="nav-link" data-scroll-target="#sec-das-bestimmtheitsmass-r2"><span class="header-section-number">6.4.5</span> Das Bestimmtheitsmass <span class="math inline">\(R^2\)</span></a></li>
+  </ul></li>
+  <li><a href="#einfache-lineare-regression-in-r" id="toc-einfache-lineare-regression-in-r" class="nav-link" data-scroll-target="#einfache-lineare-regression-in-r"><span class="header-section-number">6.5</span> Einfache lineare Regression in <code>R</code></a>
+  <ul class="collapse">
+  <li><a href="#modell-erstellen-und-output-interpretieren" id="toc-modell-erstellen-und-output-interpretieren" class="nav-link" data-scroll-target="#modell-erstellen-und-output-interpretieren"><span class="header-section-number">6.5.1</span> Modell erstellen und Output interpretieren</a></li>
+  </ul></li>
+  <li><a href="#residuenanalyse" id="toc-residuenanalyse" class="nav-link" data-scroll-target="#residuenanalyse"><span class="header-section-number">6.6</span> Residuenanalyse</a>
+  <ul class="collapse">
+  <li><a href="#diagnostische-plots" id="toc-diagnostische-plots" class="nav-link" data-scroll-target="#diagnostische-plots"><span class="header-section-number">6.6.1</span> Diagnostische Plots</a></li>
+  <li><a href="#interpretation-der-plots" id="toc-interpretation-der-plots" class="nav-link" data-scroll-target="#interpretation-der-plots"><span class="header-section-number">6.6.2</span> Interpretation der Plots:</a></li>
+  <li><a href="#was-bedeutet-es-wenn-die-voraussetzungen-nicht-erfüllt-sind" id="toc-was-bedeutet-es-wenn-die-voraussetzungen-nicht-erfüllt-sind" class="nav-link" data-scroll-target="#was-bedeutet-es-wenn-die-voraussetzungen-nicht-erfüllt-sind"><span class="header-section-number">6.6.3</span> Was bedeutet es, wenn die Voraussetzungen nicht erfüllt sind?</a></li>
+  <li><a href="#beispielplots-zu-homo--und-heteroskedastizität" id="toc-beispielplots-zu-homo--und-heteroskedastizität" class="nav-link" data-scroll-target="#beispielplots-zu-homo--und-heteroskedastizität"><span class="header-section-number">6.6.4</span> Beispielplots zu Homo- und Heteroskedastizität</a></li>
+  </ul></li>
+  <li><a href="#sec-einfache-lineare-regression-mit-dichotomen-praediktorvariablen" id="toc-sec-einfache-lineare-regression-mit-dichotomen-praediktorvariablen" class="nav-link" data-scroll-target="#sec-einfache-lineare-regression-mit-dichotomen-praediktorvariablen"><span class="header-section-number">6.7</span> Dichotomer Prädiktor</a></li>
+  <li><a href="#anhang-hilfreiche-r-codes-für-die-einfache-lineare-regression" id="toc-anhang-hilfreiche-r-codes-für-die-einfache-lineare-regression" class="nav-link" data-scroll-target="#anhang-hilfreiche-r-codes-für-die-einfache-lineare-regression"><span class="header-section-number">6.8</span> Anhang: hilfreiche <code>R</code> Codes für die einfache lineare Regression</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Einfache lineare Regression</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Hat man einen linearen Zusammenhang zwischen zwei Variablen entdeckt, möchte man diesen Zusammenhang präzise beschreiben und quantifizieren. Das Ziel der Regressionsanalyse ist es, ein Modell an die Daten anzupassen, das den linearen Zusammenhang beschreibt. Im Unterschied zur Korrelation wird hier ein gerichteter Zusammenhang untersucht. Wir möchten die Variabilität einer abhängigen Variable <span class="math inline">\(Y\)</span>, in unserem Beispiel der Kalorienverbrauch, durch eine unabhängige Variable <span class="math inline">\(X\)</span>, die Laufgeschwindigkeit, erklären.</p>
+<section id="lernziele" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="lernziele"><span class="header-section-number">6.1</span> Lernziele</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Definiere die erklärende Variable als unabhängige Variable (Prädiktor) und die Antwortvariable als abhängige Variable.</li>
+<li>Erstelle Streudiagramme so, dass die unabhängige Variable auf der x-Achse und die abhängige Variable auf der y-Achse liegt.</li>
+<li>Wenn <span class="math inline">\(X\)</span> die unabhängige und <span class="math inline">\(Y\)</span> die abhängige Variable ist, wird das lineare Regressionsmodell gebildet als<br>
+<span class="math display">\[Y_i = \beta_0 + \beta_1x_i + \epsilon_i, \quad i=1,\dots,n,\]</span> wobei der Parameter <span class="math inline">\(\beta_0\)</span> den Schnittpunkt mit der y-Achse (Achsenabschnitt, engl. intercept), der Parameter <span class="math inline">\(\beta_1\)</span> die Steigung der Geraden beschreibt und <span class="math inline">\(\epsilon_i\)</span> ein Zufallsfehler darstellt. Der Erwartungswert von <span class="math inline">\(Y\)</span> ist eine deterministische lineare Funktion von <span class="math inline">\(x\)</span>, der lineare Prädiktor <span class="math display">\[E(Y_i)=\beta_0+\beta_1x_i.\]</span> Für die stochastischen Fehler <span class="math inline">\(\epsilon_i\)</span> gelten die Annahmen: Die Fehler haben Erwartungswert 0, sind unabhängig und haben gleiche Varianz. Für Tests und Konfidenzintervallen bezüglich den Parametern müssen die Fehler auch normalverteilt sein.</li>
+<li>Definiere die Residuen <span class="math inline">\(r_i\)</span> als Differenz zwischen den beobachteten <span class="math inline">\(Y_i\)</span> und den durch das Modell vorhergesagten (gefitteten) <span class="math inline">\(\hat{Y}_i\)</span> Werten der abhängigen Variablen.</li>
+<li>Definiere die Kleinstquadratlinie (Regressionsgerade) als die Linie, welche die Summe der quadrierten Residuen minimiert.</li>
+<li>Du kannst die Bedingungen dafür nennen, dass die Konfidenzintervalle und Hypothesentests für die Koeffizienten der Kleinstquadratlinie gültig sind und diese überprüfen:
+<ol type="a">
+<li>Linearität –&gt; Scatterplot</li>
+<li>Konstante Variabilität (Homoskedastizität) –&gt; Residuen-Plot</li>
+<li>Normalverteilung der Residuen –&gt; QQ-Plot</li>
+</ol></li>
+<li>Interpretiere die Steigung <span class="math inline">\(\beta_1\)</span> wie folgt
+<ul>
+<li>“Für jede Einheit um die sich der Wert von <span class="math inline">\(x\)</span> erhöht, erwarten wir, dass <span class="math inline">\(Y\)</span> im Durchschnitt um <span class="math inline">\(|\beta_1|\)</span> Einheiten grösser bzw. kleiner wird.”</li>
+<li>Beachte dass es vom Vorzeichen von <span class="math inline">\(\beta_1\)</span> abhängig ist, ob der Wert der abhängigen Variable zu- oder abnimmt.</li>
+</ul></li>
+<li>Beachte, dass die Kleinstquadratlinie stets durch den Mittelwert der abhängigen <span class="math inline">\(\bar{y}\)</span> und der unabhängigen Variable <span class="math inline">\(\bar{x}\)</span> verläuft.</li>
+<li>Interpretiere <span class="math inline">\(\beta_0\)</span> (intercept) folgendermassen: “Wenn <span class="math inline">\(x = 0\)</span>, erwarten wir dass <span class="math inline">\(Y\)</span> im Durchschnitt den Wert von <span class="math inline">\(\beta\)</span> annimmt.</li>
+<li>Berechne den geschätzten Wert der abhängigen Variablen für einen bestimmten Wert der unabhängigen Variablen, <span class="math inline">\(x_i\)</span>, durch Einsetzen von <span class="math inline">\(x\)</span> in das geschätzte lineare Modell:<br>
+<span class="math display">\[\hat{Y} = \hat{\beta}_0 + \hat{\beta}_1x\]</span>
+<ul>
+<li>Verwende nur Werte für <span class="math inline">\(x\)</span>, die im Bereich der beobachteten Daten liegen.</li>
+<li>Extrapoliere nicht über die Variationsbreite hinaus, ausser du bist dir sicher, dass das lineare Muster darüber hinaus gültig ist.</li>
+</ul></li>
+<li>Definiere das Bestimmtheitmass <span class="math inline">\(R^2\)</span> als prozentualen Anteil der Variabilität der abhängigen Variablen, der durch die unabhängige Variable erklärt wird.
+<ul>
+<li>Im Falle einer einfachen linearen Regression wird das Bestimmtheitsmass berechnet als das Quadrat des Korrelationskoeffizienten nach Pearson: <span class="math inline">\(R^2 = r^2\)</span></li>
+</ul></li>
+<li>Entscheide anhand des Outputs im Statistikprogramm (<span class="math inline">\(t\)</span>-Wert und P-Wert), ob die unabhängige Variable ein signifikanter Prädiktor für die abhängige Variable ist.</li>
+<li>Führe die einfache lineare Regression in <code>R</code> durch und interpretiere den Output.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="eine-bücherbestellung" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="eine-bücherbestellung"><span class="header-section-number">6.2</span> Eine Bücherbestellung</h2>
+<p>Ein Buchhändler muss jeweils einen Monat bevor das Semester beginnt die Statistik-Bücher für die Studierenden im Statistik-Kurs bestellen. Er geht davon aus, dass die Anzahl Statistik-Bücher, die er in diesem Semester verkaufen wird, davon abhängt, wieviele Studierende für den Statistik-Kurs angemeldet sind. Aus den vergangenen 12 Semestern besitzt der Buchhändler die Listen mit der Anzahl der eingeschriebenen Studierenden und mit der Anzahl der pro Semester verkauften Bücher.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-stat-books" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-stat-books-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;6.1: Buchhandlung
+</figcaption>
+<div aria-describedby="tbl-stat-books-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="lightable-classic cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">Semester</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Studierende</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Buecher</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">31</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">38</td>
+<td style="text-align: center;">38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">38</td>
+<td style="text-align: center;">33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">29</td>
+<td style="text-align: center;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">26</td>
+<td style="text-align: center;">26</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Für das kommende Semester haben sich 33 Studierende für den Statistikkurs angemeldet. Um möglichst nicht zu viele oder zu wenige Bücher zu bestellen, bittet er uns um Hilfe.</p>
+</section>
+<section id="unabhängige-und-abhängige-variable" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="unabhängige-und-abhängige-variable"><span class="header-section-number">6.3</span> Unabhängige und abhängige Variable</h2>
+<p>Im vorliegenden Fall können wir davon ausgehen, dass ein kausaler Zusammenhang zwischen der Anzahl der Studierenden und der Anzahl der verkauften Bücher vorliegt: Der Wert der Variablen <code>Studierende</code> erlaubt eine Vorhersage über den Wert der Variablen <code>Buecher</code> oder m.a.W. der Wert der Variablen <code>Buecher</code> hängt vom Wert der Variablen <code>Studierende</code>ab. Damit können wir die Variable <code>Buecher</code>als <strong>abhängige Variable</strong> und die Variable <code>Studierende</code> als <strong>unabhängige Variable</strong> bzw. als <strong>Prädiktor</strong> bezeichnen.</p>
+<section id="zusammenhang-zwischen-den-variablen" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="zusammenhang-zwischen-den-variablen"><span class="header-section-number">6.3.1</span> Zusammenhang zwischen den Variablen</h3>
+<p>Wie bereits gewohnt, formulieren wir zuerst die Hypothesen:</p>
+<ul>
+<li><span class="math inline">\(H_0: \rho = 0\)</span> Es gibt keinen Zusammenhang zwischen der Anzahl Studierender und der verkauften Anzahl Bücher.</li>
+<li><span class="math inline">\(H_A: \rho \neq 0\)</span> Es gibt einen Zusammenhang zwischen der Anzahl Studierender und der verkauften Anzahl Bücher.</li>
+</ul>
+<p>Als nächstes erstellen wir ein Streudiagramm: Wenn ein kausaler Zusammenhang vermutet wird, wird die unabhängige Variable auf der x-Achse und die abhängige Variable auf der y-Achse dargestellt.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-stat-books" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-stat-books-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-stat-books-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-stat-books-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.1: Zusammenhang Anzahl verkaufte Bücher und Anzahl Studierende
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Daten zeigen einen moderaten bis starken positiven linearen Zusammenhang zwischen der abhängigen und der unabhängigen Variablen. Mit der Berechnung des Korrelationskoeffizienten können wir die Stärke des Zusammenhangs quantifizieren (das Signifikanzniveau legen wir auf <span class="math inline">\(\alpha = 0.05\)</span> fest):</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's product-moment correlation
+
+data:  bookstore$Studierende and bookstore$Buecher
+t = 7.3326, df = 10, p-value = 2.504e-05
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.7279819 0.9771876
+sample estimates:
+      cor 
+0.9182485 </code></pre>
+</div>
+</div>
+<p><em>Die Daten liefern Evidenz für einen statistisch signifikanten, starken, positiven und linearen Zusammenhang zwischen der Anzahl an Studierenden und der Anzahl verkaufter Bücher (</em><span class="math inline">\(r\)</span> = 0.918 [0.73; 0.98], p &lt; 0.001)</p>
+</section>
+</section>
+<section id="einfache-lineare-regression" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="einfache-lineare-regression"><span class="header-section-number">6.4</span> Einfache lineare Regression</h2>
+<p>Mit der Korrelation konnten wir die Annahme eines Zusammenhangs zwischen Anzahl Studierender und der Anzahl verkaufter Bücher bestätigen. Die Frage ist allerdings nicht beantwortet, wieviele Bücher der Buchhändler für dieses Semester, an dem 33 Studierende für den Statistik-Kurs eingeschrieben sind, bestellen muss. Es wäre ideal, wenn wir auf Grundlage der vorliegenden Daten ein funktionelles Modell erstellen könnten, das uns bei der Schätzung der Anzahl Bücher helfen würde.</p>
+<p>Die Regressionsanalyse liefert das Werkzeug dafür: Sie liefert uns ein Modell - nämlich eine Gerade und die zugehörige Gleichung - welches unsere Daten so gut wie möglich beschreibt. Im vorliegenden Fall hilft uns die Gleichung vorherzusagen, wieviele Bücher wir für jede zusätzliche Studierende verkaufen werden.</p>
+<section id="lineare-funktion" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="lineare-funktion"><span class="header-section-number">6.4.1</span> Lineare Funktion</h3>
+<ul>
+<li><p>Eine lineare Funktion kann grafisch durch eine Gerade dargestellt werden.</p></li>
+<li><p>Die allgemeine Formel für eine Gerade im zweidimensionalen Koordinatensystem kennen wir aus der Schule. Sie lautet: <span class="math display">\[y = a + bx\]</span></p>
+<p><span class="math inline">\(a\)</span> = Achsenabschnitt: Wo schneidet die Gerade die y-Achse wenn x = 0?<br>
+<span class="math inline">\(b\)</span> = Steigung: Um wieviel steigt y, wenn x um 1 Einheit grösser wird?</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-geraden-gleichung" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-geraden-gleichung-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-geraden-gleichung-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-geraden-gleichung-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.2: Geradengleichung
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir sehen, dass wenn <span class="math inline">\(x\)</span> um eine Einheit zunimmt (<span class="math inline">\(\Delta x\)</span>), nimmt <span class="math inline">\(y\)</span> um zwei Einheiten zu (<span class="math inline">\(\Delta y\)</span>), d.h.</p>
+<p><span class="math display">\[b = \frac{\Delta y}{\Delta x} = \frac{2}{1} = 2\]</span></p>
+<p>Wenn <span class="math inline">\(x = 0\)</span> ist <span class="math inline">\(y = 4\)</span>, d.h. <span class="math inline">\(a = 4\)</span>.</p>
+<p>Unsere Geradengleichung lautet somit:</p>
+<p><span class="math display">\[y = 4 + 2x\]</span></p>
+</section>
+<section id="das-einfache-lineare-modell" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="das-einfache-lineare-modell"><span class="header-section-number">6.4.2</span> Das einfache lineare Modell</h3>
+<p>Die lineare Regression ist eine statistische Methode zur Konstruktion einer Geraden, die den Zusammenhang zwischen zwei Variablen <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span> beschreibt. Sie wird verwendet, wenn der Zusammenhang zwischen den Variablen näherungsweise linear ist, also durch eine Gerade modelliert werden kann. Diese Gerade dient als Modell für <span class="math inline">\(Y\)</span> in Abhängigkeit von <span class="math inline">\(X\)</span> und wird so bestimmt, dass sie die beobachteten Daten möglichst gut beschreibt.</p>
+<p>Das <strong>einfache lineare Modell</strong> ist:</p>
+<p><span class="math display">\[\boxed{Y_i = \beta_0 + \beta_1x_i + \epsilon_i, \quad i=1,\dots,n}\]</span></p>
+<ul>
+<li><span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> sind die Parameter des Modells.</li>
+<li><span class="math inline">\(\epsilon_i\)</span> bezeichnet den Zufallsfehler, der für jede Beobachtung unabhängig ist.</li>
+<li><span class="math inline">\(\beta_0\)</span> ist der Achsenabschnitt (in Statistikprogrammen oft als intercept bezeichnet) und gibt den erwarteten Wert von <span class="math inline">\(Y\)</span> an, wenn <span class="math inline">\(x = 0\)</span> ist.</li>
+<li><span class="math inline">\(\beta_1\)</span> ist die Steigung der Regressionsgeraden und beschreibt, wie stark sich <span class="math inline">\(Y\)</span> im Mittel verändert, wenn sich <span class="math inline">\(x\)</span> um eine Einheit verändert.</li>
+</ul>
+<p>Die zentralen Annahmen des Modells sind:</p>
+<ul>
+<li>Die Fehler <span class="math inline">\(\epsilon_i\)</span> haben den Erwartungswert Null, <span class="math inline">\(E(\epsilon_i)=0\)</span></li>
+<li>Die Fehler besitzen eine konstante Varianz (Homoskedastizität).</li>
+<li>Die Fehler sind voneinander unabhängig.</li>
+</ul>
+<p>Daraus ergibt sich, dass der Erwartungswert von <span class="math inline">\(Y\)</span> eine <strong>lineare Funktion</strong> von <span class="math inline">\(x_i\)</span> ist: <span class="math display">\[E(Y_i)=\beta_0+\beta_1x_i\]</span></p>
+<p>Die Grösse <span class="math inline">\(\beta_0+\beta_1x_i\)</span> wird als <strong>linearer Prädiktor</strong> bezeichnet.</p>
+<p>Was also unser Modell von einer linearen Funktion unterscheidet ist der stochastische Teil. Gemäss Modell stellt <span class="math inline">\(Y_i\)</span> dann eine Summe dar aus einem linearen Prädiktor und einem Zufallsfehler: <span class="math display">\[\begin{equation}
+  Y_i=\underbrace{\beta_0+\beta_1 \cdot x_i}_{linearer\,\,Prädiktor} +\underbrace{\epsilon_i}_{stochastisch},\qquad i=1,\ldots,n.
+\end{equation}\]</span></p>
+<p>Wir wollen hier die Annahmen des Modells nochmal aufführen:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 24%">
+<col style="width: 30%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Nr.</th>
+<th>Annahme</th>
+<th>Mathematische Formulierung</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Fehler mit Erwartungswert null</td>
+<td><span class="math inline">\(\mathbb{E}[\varepsilon_i] = 0\)</span></td>
+<td>Das Modell ist im Mittel korrekt spezifiziert.</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Homoskedastizität</td>
+<td><span class="math inline">\(\text{Var}(\varepsilon_i ) = \sigma^2\)</span></td>
+<td>Die Fehler haben konstante Varianz (keine Heteroskedastizität).</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Unabhängigkeit der Fehler</td>
+<td><span class="math inline">\(\varepsilon_i\)</span> unabhängig</td>
+<td>Die Fehlerterme beeinflussen sich nicht gegenseitig.</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Normalverteilung der Fehler <em>(optional)</em></td>
+<td><span class="math inline">\(\varepsilon_i \sim \mathcal{N}(0, \sigma^2)\)</span></td>
+<td>Nur für Inferenz (Tests, Konfidenzintervalle) notwendig.</td>
+</tr>
+</tbody>
+</table>
+<p>Die letzte Annahme (Normalverteilung der Fehler) ist für die Punktschätzung von <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> (also für die empirische Gerade) nicht nötig, aber für Intervallschätzung und für statistische Tests. Wir schreiben als Annahme für die Fehler oft: <span class="math inline">\(\epsilon_i \overset{\text{iid}}\sim \mathcal{N}(0, \sigma^2)\)</span>, mit iid als <strong>unabhängig und gleich verteilt</strong> (independent and identically distributed).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Damit wir später auf diesem Modell aufbauen können, ist es sehr wichtig, dass Sie dieses grundlegende Modell gut verstehen und durchdringen.</p>
+</div>
+</div>
+</section>
+<section id="der-kleinste-quadrate-schätzer" class="level3" data-number="6.4.3">
+<h3 data-number="6.4.3" class="anchored" data-anchor-id="der-kleinste-quadrate-schätzer"><span class="header-section-number">6.4.3</span> Der Kleinste-Quadrate Schätzer</h3>
+<p>Ziel ist es nun, aus Daten die Parameter <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span>, zu schätzen, d.h. wir brauchen eine Punktschätzung <span class="math inline">\(\hat{\beta_0}\)</span> und <span class="math inline">\(\hat{\beta_1}\)</span> für <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span>.</p>
+<p>Eine Gerade in ein Streudiagramm einzeichnen heisst dann <span class="math inline">\(\hat{\beta_0}\)</span> und <span class="math inline">\(\hat{\beta_1}\)</span> aus den Daten bestimmen.</p>
+<p>Betrachten wir noch einmal das Streudiagramm unseres Buchhändlers: Wie würden Sie die Gerade einzeichnen, welche die Daten am ehesten repräsentieren? Welche der vorgeschlagenen Geraden würden Sie als das am besten zutreffende Modell wählen?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-LS-line" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-LS-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-LS-line-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-LS-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.3: Welche Gerade ist ein optimales Modell?
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ol type="a">
+<li>Die Gerade beschreibt keinen linearen Zusammenhang.</li>
+<li>Die Gerade beschreibt keinen linearen Zusammenhang.</li>
+<li>Mögliches Modell, allerdings liegen mehr Punkte über als unter der Geraden.</li>
+<li>Mögliches Modell, allerdings liegen mehr Punkte unter als über der Geraden.</li>
+<li>Optimales Modell</li>
+<li>Die Gerade beschreibt einen negativen linearen Zusammenhang, das ist in dieser Situation Unsinn.</li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-stat-book-residuals" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-stat-book-residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-stat-book-residuals-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-stat-book-residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.4: Anzahl verkaufter Bücher nach der Anzahl der Studierenden
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die <a href="#fig-plot-stat-book-residuals" class="quarto-xref">Abbildung&nbsp;<span>6.4</span></a> zeigt die Gerade (e), die den funktionalen Zusammenhang zwischen Anzahl Studierender und Anzahl verkauften Büchern modelliert. Die blauen Punkte sind die Anzahl effektiv verkaufter Bücher für entsprechende Studierendenanzahl und die roten Punkte sind die Anzahl der Bücher, die unser Modell vorhersagt. Die roten Punkte sind also die vom Modell berechneten Werte <em>(fitted values)</em> und wir sehen, dass die Gerade die meisten blauen Punkte verfehlt. Die senkrechten Linien zwischen den gemessenen Werten (blau) und den gefitteten Werten (rot) bezeichnen wir als <strong>Residuen</strong>.</p>
+<p>Definition <strong>Residuum</strong>: Differenz zwischen dem Modell vorhergesagten Wert <span class="math inline">\(\hat{y}\)</span> (gefitteter Wert) und dem tatsächlich beobachteten Wert <span class="math inline">\(y\)</span>. Das Residuum <span class="math inline">\(r_i\)</span> der i-ten Beobachtung ist die Differenz zwischen dem beobachteten Wert <span class="math inline">\(y_i\)</span> und dem vom Modell vorhergesagten Wert <span class="math inline">\(\hat{y_i}\)</span>.</p>
+<p><span class="math display">\[r_i = y_i-\hat{y_i}\]</span></p>
+<p><span class="math inline">\(\hat{y_i}\)</span> berechnen wir durch Einsetzen von <span class="math inline">\(x_i\)</span> in den linearen Prädiktor.</p>
+<p>Nun stellt sich die Frage: Was ist ein gutes Mass um die beste Gerade zu finden? Aus mathematischer Sicht möchten wir eine Gerade, die möglichst kleine Residuen ergibt. Die erste Option ist, eine Linie zu finden, bei der die Summe der Absolutwerte der Residuen minimal ist:</p>
+<p><span class="math display">\[|r_1| + |r_2| + \dots + |r_n|=minimal\]</span></p>
+<p>Dies wäre eine durchaus eine Möglichkeit, die üblichere Praxis ist allerdings, dass eine Gerade berechnet wird, bei der die <strong>Summe der quadrierten Residuen</strong> minimiert wird.</p>
+<p>Dieser <strong>Kleinste-Quadrate-Schätzer</strong> ist – neben anderen Gründen – optimal, weil er unter den klassischen Annahmen der linearen Regression der <strong>beste lineare unverzerrte Schätzer (BLUE)</strong> ist – er liefert also im Mittel richtige Ergebnisse mit minimaler Streuung (ohne Beweis).</p>
+<p>Wir minimieren also:</p>
+<p><span class="math display">\[r_1^2 + r_2^2 +\dots + r_n^2\]</span></p>
+<p>Man bestimmt also diejenigen <span class="math inline">\(\hat{\beta_0}\)</span> und <span class="math inline">\(\hat{\beta_1}\)</span>, für die die Quadratsumme <span class="math inline">\(\sum r_i^2\)</span> minimal wird. Man hat damit ein Optimierungsproblem zu lösen, nämlich <span class="math display">\[\begin{equation}
+\arg\underset{\beta_0,\beta_1}{\operatorname{min\,}}\sum r_i^2=\arg\underset{\beta_0,\beta_1}{\operatorname{min\,}}\sum(Y_i-\beta_0-\beta_1 x_i)^2.
+\end{equation}\]</span> Wir werden später für den allgemeinen Fall der multiplen Regression (für die Interessierten) eine allgemeine Herleitung machen für die Lösung dieses Problems. Für die einfache Regression ist die Lösung (ohne Beweis) <span class="math display">\[\begin{equation}
+  \label{eq:1}
+  \hat\beta_1=\frac{\sum(y_i-\bar{y})(x_i-\bar{x})}{\sum(x_i-\bar{x})^2},\qquad
+  \hat\beta_0=\bar{y}-\hat\beta_1\bar{x}.
+\end{equation}\]</span> </p>
+<p>Bei der einfach Regression gilt zudem <span class="math display">\[
+\hat\beta_1=\frac{\sum(y_i-\bar{y})(x_i-\bar{x})}{\sum(x_i-\bar{x})^2}=\frac{s_y}{s_x}r.
+\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-elmhurst" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-elmhurst-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-elmhurst-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-elmhurst-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.5: Universitäre Unterstützung nach Familieneinkommen
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die <a href="#fig-plot-elmhurst" class="quarto-xref">Abbildung&nbsp;<span>6.5</span></a> zeigt die finanzielle Unterstützung durch die Universität Elmhurst (Illinois) in Abhängigkeit vom Familieneinkommen <span class="citation" data-cites="bertrand">(<a href="references.html#ref-bertrand" role="doc-biblioref">Bertrand and Mullainathan, n.d.</a>)</span>. Die gestrichelte Linie wurde mit der Methode der Summe der Absolutwerte der Residuen und die ausgezogene Linie mit der Kleinst-Quadrat-Methode berechnet. Beide Varianten würden ein plausibles Modell ergeben, aber die Kleinst-Quadrat-Methode hat sich als Standard etabliert.</p>
+<p>Die Berechnung der Geradengleichung überlassen wir i.d.R. <code>R</code>. Hier die Formeln für die Berechnung von Hand für die einfache lineare Regression:</p>
+<p><strong>Berechnung der geschätzten Steigung</strong></p>
+<p><span class="math display">\[\hat{\beta}_1 = \frac{s_y}{s_x}r\]</span> wobei <span class="math inline">\(s_y\)</span> die Standardabweichung von <span class="math inline">\(Y\)</span>, <span class="math inline">\(s_x\)</span> die Standardabweichung von <span class="math inline">\(X\)</span> und <span class="math inline">\(r\)</span> der Korrelationskoeffizient nach Pearson ist.</p>
+<p><strong>Berechnung des geschätzten Achsenabschnitts</strong></p>
+<p><span class="math display">\[\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}\]</span><br>
+wobei <span class="math inline">\(\bar{y}\)</span> der Mittelwert von <span class="math inline">\(y\)</span> und <span class="math inline">\(\bar{x}\)</span> der Mittelwert von <span class="math inline">\(x\)</span> ist.</p>
+<p>Wir müssen das nicht von Hand berechnen. in <code>R</code> benutzen wir die Funktion zum Anpassen lineare Modelle <code>lm()</code>, eine der wichtigsten Funktionen in diesem Kurs.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>function (formula, data, subset, weights, na.action, method = "qr", 
+    model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, 
+    contrasts = NULL, offset, ...) 
+NULL</code></pre>
+</div>
+</div>
+<p>Siehe auch das Help-File <code>?lm</code>.</p>
+<p>Zum Anpassen des Modells:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lineares Modell erstellen und Zusammenfassung ausgeben</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>lm_bookstore <span class="ot">&lt;-</span> <span class="fu">lm</span>(Buecher <span class="sc">~</span> Studierende, <span class="at">data =</span> bookstore)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_bookstore)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Buecher ~ Studierende, data = bookstore)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.01515 -0.72083 -0.02424  0.56894  2.98485 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   8.9333     3.1148   2.868   0.0167 *  
+Studierende   0.6864     0.0936   7.333  2.5e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.388 on 10 degrees of freedom
+Multiple R-squared:  0.8432,    Adjusted R-squared:  0.8275 
+F-statistic: 53.77 on 1 and 10 DF,  p-value: 2.504e-05</code></pre>
+</div>
+</div>
+<p>Für unser Beispiel berechnet <code>R</code> für die Koeffizienten</p>
+<ul>
+<li><span class="math inline">\(\hat{\beta}_0\)</span> = 8.93 (Intercept)<br>
+</li>
+<li><span class="math inline">\(\hat{\beta}_1\)</span> = 0.69</li>
+</ul>
+<p>eingesetzt in den linearen Prädiktor resultiert</p>
+<p><span class="math display">\[\widehat{Buecher} = 8.93 + 0.69 \times Studierende\]</span></p>
+<p><strong>Interpretation</strong></p>
+<ul>
+<li><span class="math inline">\(\hat{\beta}_0\)</span> Achsenabschnitt: wenn keine Studierenden den Statistikkurs belegen (<span class="math inline">\(x=0\)</span>)</li>
+<li><span class="math inline">\(\hat{\beta}_1\)</span> Steigung: Pro zusätzliche Studierende steigt der Buchverkauf um 0.69 Bücher.</li>
+</ul>
+<p>Unser Modell ermöglicht uns, eine Vorhersage zu machen für Werte, die wir so bisher noch gar nicht beobachtet haben. Wir können jetzt die Anzahl Bücher schätzen, die der Buchhändler im nächsten Semester, in dem 33 Studierende eingeschrieben sind, verkaufen wird, indem wir die Zahl 33 für x einsetzen.</p>
+<p><span class="math display">\[\widehat{Buecher}_{x = 33} = 8.93 + 0.69 \times 33 = 31.7\]</span></p>
+<p>Unser Modell sagt voraus, dass der Buchhändler 32 (31.7) Statistikbücher im nächsten Semester verkaufen wird.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-book-x33" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-book-x33-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-book-x33-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-book-x33-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.6: Buchhandlung: Vorhersage für 33 Stud.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="warum-man-nicht-über-die-gemessenen-daten-hinaus-extrapolieren-sollte" class="level3" data-number="6.4.4">
+<h3 data-number="6.4.4" class="anchored" data-anchor-id="warum-man-nicht-über-die-gemessenen-daten-hinaus-extrapolieren-sollte"><span class="header-section-number">6.4.4</span> Warum man nicht über die gemessenen Daten hinaus extrapolieren sollte</h3>
+<p>Die Regressionsgleichung ist nur für den gemessenen Datenbereich gültig. Was dabei herauskommt, wenn man die Vorhersage über den gemessenen Datenbereich hinaus extrapoliert zeigt das folgende Beispiel.</p>
+<p>Im September 2004 publizierte das Magazin <a href="https://www.nature.com/articles/431525a#MOESM1">Nature</a> einen Artikel, in dem die Entwicklung der olympischen Siegerzeiten über 100m Sprint zwischen Männern und Frauen seit 1900 verglichen wurden. Die Autoren machten die Vorhersage, dass im Jahre 2156 die Frauen die 100m-Distanz schneller laufen werden als die Männer <span class="citation" data-cites="tatem2004">(<a href="references.html#ref-tatem2004" role="doc-biblioref">Tatem et al. 2004</a>)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-100m-sprint" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-100m-sprint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-100m-sprint-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-100m-sprint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.7: Olympische Zeit für 100m-Sprint
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Steigung bei den Frauen ist etwas stärker negativ als bei den Männern (<span class="math inline">\(b_{1, f}\)</span> = -0.02, <span class="math inline">\(b_{1,m}\)</span> = -0.01). Das heisst, dass die Frauen in den Jahren 1928 bis 2004 ihre Geschwindigkeit im Durchschnitt um 0.01 Sekunden mehr steigern konnten als die Männer: Frauen wurden im Durchschnitt pro Jahr um 0.02 Sekunden schneller, Männer um 0.01 Sekunden.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-100m-extrapol" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-100m-extrapol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-100m-extrapol-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-100m-extrapol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.8: Zeit für 100m-Sprint Frauen extrapoliert
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Autoren des Artikels haben nun berechnet, wie sich die Laufzeiten in Zukunft entwickeln werden. Extrapoliert man die Regressionsgleichung der olympischen Zeiten für 100m-Sprint über den Messzeitraum hinaus, überschneiden sich die Regressionsgeraden im Jahr 2156. Ab dann überholen die Frauen die Männer!</p>
+<p>Man kann die Extrapolation jedoch noch weiter treiben: Wenn die Regressionsgleichung über den Messzeitraum hinaus gültig wäre, würden Frauen ab dem Jahr 2637 weniger als 0 Sekunden für den 100m-Lauf benötigen und in der Zeit zurück reisen!</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-100m-zero" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-100m-zero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-100m-zero-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-100m-zero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.9: Zeit für 100m-Sprint Frauen bis ins Jahr 2800 extrapoliert
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir lernen daraus, dass die Regressionsgerade immer nur für den effektiv gemessenen Datenbereich gültig ist.</p>
+</section>
+<section id="sec-das-bestimmtheitsmass-r2" class="level3" data-number="6.4.5">
+<h3 data-number="6.4.5" class="anchored" data-anchor-id="sec-das-bestimmtheitsmass-r2"><span class="header-section-number">6.4.5</span> Das Bestimmtheitsmass <span class="math inline">\(R^2\)</span></h3>
+<p>Das Bestimmtheitsmass <span class="math inline">\(R^2\)</span> …</p>
+<ul>
+<li>sagt uns, wieviel Prozent der Streuung der abhängigen Variable <span class="math inline">\(Y\)</span> durch die unabhängige Variable <span class="math inline">\(x\)</span> erklärt wird. Anders formuliert: Wieviel Prozent der Änderung in <span class="math inline">\(Y\)</span> von einem Datenpunkt zum anderen durch <span class="math inline">\(x\)</span> erklärbar ist.</li>
+<li>kann Werte zwischen 0 und 1 annehmen (0 bis 100%).</li>
+<li>ist bei der einfachen linearen Regression das Quadrat des Korrelationskoeffizienten nach Pearson: <span class="math inline">\(R^2 = r^2\)</span>.</li>
+<li>ist umso grösser, je geringer Daten um die Regressionsgerade streuen.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-r2-examples" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-r2-examples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-r2-examples-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-r2-examples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.10: Wie die Streuung der Daten R2 beeinglusst
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Eine Variable <span class="math inline">\(y\)</span> kann folglich umso besser durch die Variable <span class="math inline">\(x\)</span> erklärt werden, je größer die Korrelation <span class="math inline">\(r\)</span> zwischen beiden Variablen dem Betrag nach ist. Anders formuliert: Je größer <span class="math inline">\(R^2\)</span> ist, desto besser ist die Anpassung der Regressionsgeraden an die Daten.</p>
+<p><span class="math inline">\(R^2\)</span> lässt sich auch mit einer anderen Herangehensweise berechnen. Wie gross wären die Residuen, wenn wir keine Prädiktorvariable haben, also mit dem Modell <span class="math inline">\(Y_i=\beta_0+\epsilon_i\)</span>, einem Modell nur mit Intercept?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-total-SS" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-total-SS-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-total-SS-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-total-SS-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.11: Totale Variabilität
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wenn man alle diese Abstände in <a href="#fig-plot-total-SS" class="quarto-xref">Abbildung&nbsp;<span>6.11</span></a> quadriert und aufsummiert, dann bekommt man die totalen Sum of Squares, kurz <span class="math inline">\(SS_{total}\)</span>. In unserem Fall ist <span class="math inline">\(SS_{total} = 122.92\)</span>.</p>
+<p>Wie gross sind die Sum of Squares, wenn wir nun eine Prädiktorvariable hinzufügen? Diese Abbildung haben Sie oben schon gesehen:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-res-SS" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-res-SS-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-res-SS-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-res-SS-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.12: Verbleibende Variabilität nach Hinzunahme der Prädiktorvariable
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wenn man nun diese Abstände in <a href="#fig-plot-res-SS" class="quarto-xref">Abbildung&nbsp;<span>6.12</span></a> quadriert und aufsummiert, dann kommt man auf die verbleibenden Sum of Squares, kurs <span class="math inline">\(SS_{residuals}\)</span>. Man sieht, dass sich die Abstände verkleinert haben: <span class="math inline">\(SS_{residuals} = 19.28\)</span>.</p>
+<p>Man kann sich nun fragen, um wie viel die Prädiktorvariable die Sum of Squares reduziert hat:<br>
+</p>
+<p><span class="math inline">\(SS_{model} = SS_{total} - SS_{residuals} = 122.92 - 19.28 = 103.64\)</span><br>
+</p>
+<p>Wenn man diesen Anteil in Prozent ausrechnet, dann erhält man genau <span class="math inline">\(R^2\)</span>:</p>
+<p><span class="math inline">\(R^2 = \frac{SS_{model}}{SS_{total}} = \frac{103.64}{122.92} = 0.8432\)</span></p>
+<p>Die Sum of Squares reduzieren sich um 84.32% –&gt; Von der ursprünglichen Variabilität der abhängigen Variable kann mit Hilfe der Prädiktorvariable 84.32% erklärt werden.</p>
+</section>
+</section>
+<section id="einfache-lineare-regression-in-r" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="einfache-lineare-regression-in-r"><span class="header-section-number">6.5</span> Einfache lineare Regression in <code>R</code></h2>
+<section id="modell-erstellen-und-output-interpretieren" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="modell-erstellen-und-output-interpretieren"><span class="header-section-number">6.5.1</span> Modell erstellen und Output interpretieren</h3>
+<p>Zur Erläuterung des R-Outputs verwenden wir die Fragestellung aus der Buchhandlung. Es werden nur die wichtigsten Angaben erläutert. Eine detaillierte Beschreibung des Outputs findet man z.B. <a href="https://feliperego.github.io/blog/2015/10/23/Interpreting-Model-Output-In-R">hier</a></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ein lineares Modell berechnen</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Buecher <span class="sc">~</span> Studierende, <span class="at">data =</span> bookstore)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Zusammenfassung des Modells anzeigen</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Buecher ~ Studierende, data = bookstore)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.01515 -0.72083 -0.02424  0.56894  2.98485 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   8.9333     3.1148   2.868   0.0167 *  
+Studierende   0.6864     0.0936   7.333  2.5e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.388 on 10 degrees of freedom
+Multiple R-squared:  0.8432,    Adjusted R-squared:  0.8275 
+F-statistic: 53.77 on 1 and 10 DF,  p-value: 2.504e-05</code></pre>
+</div>
+</div>
+<p><strong>Erläuterung zum Output</strong></p>
+<p>Unter <code>Call:</code> sehen wir noch einmal die Formel, also was die abhängige und was die unabhängige Variable ist.</p>
+<p>Im nächsten Abschnitt <code>Residuals:</code> sehen wir einige Lagemasse für die Residuen, welche einen ersten Anhaltspunkt dazu geben, ob die Residuen symmetrisch um 0 verteilt sind. Weiter unten wird aber noch genauer auf die Residuendiagnostik eingegangen.</p>
+<p>Der Teil <code>Coefficients:</code> ist der wichtigste Abschnitt des Outputs hier sehen wir unter <code>Estimate</code> die geschätzten Koeffizenten <span class="math inline">\(\hat{\beta}_0\)</span> (Intercept) und <span class="math inline">\(\hat{\beta}_1\)</span> (Studierende). In den Spalten dahinter folgen der Standardfehler, der <span class="math inline">\(t\)</span>-Wert und der P-Wert für die jeweiligen Koeffizienten. Meistens interessiert die Frage, ob die Steigung von 0 verschieden ist (Steigung = 0 bedeutet kein Zusammenhang). Die Hypothesen zu dieser Frage, also bzgl. <span class="math inline">\(\beta_1\)</span> sind:</p>
+<ul>
+<li><span class="math inline">\(H_0: \beta_1 = 0\)</span></li>
+<li><span class="math inline">\(H_A: \beta_1 \neq 0\)</span></li>
+</ul>
+<p><span class="math inline">\(\beta_0\)</span> bezieht sich auf die Frage, wie viele Bücher man mit 0 Studierenden verkauft. Die Hypothese bzgl. <span class="math inline">\(\beta_0\)</span> lauten:</p>
+<ul>
+<li><span class="math inline">\(H_0: \beta_0 = 0\)</span></li>
+<li><span class="math inline">\(H_A: \beta_0 \neq 0\)</span></li>
+</ul>
+<p>Die Hypothese bzgl. dieser Quantität ist meistens nicht von Interesse.</p>
+<p>Die <code>lm()</code>-Funktion braucht immer die <span class="math inline">\(t\)</span>-Verteilung mit <span class="math inline">\(n-p\)</span> Freiheitsgraden, um P-Werte zu berechnen. <span class="math inline">\(p\)</span> ist dabei die Anzahl Parameter, hier <span class="math inline">\(p=2\)</span>.</p>
+<p>Ist der P-Wert kleiner als das Signifikanzniveau, das meist auf <span class="math inline">\(\alpha\)</span> =0.05 festgelegt wird, wird die entsprechende Nullhypothese verworfen..</p>
+<p>Meist interessiert nur der P-Wert für den Test der Steigung <span class="math inline">\(\beta_1\)</span>. Im vorliegenden Fall ist <span class="math inline">\(p &lt; 0.001\)</span>, was uns schlussfolgern lässt, dass ein signifikanter Zusammenhang zwischen der Anzahl verkaufter Bücher und der Anzahl Studierenden vorliegt.</p>
+<p>Mit dem Standardfehler und der Anzahl Freiheitsgraden <span class="math inline">\(df\)</span> (siehe unten im Output) können wir ein Konfidenzintervall für z.B. <span class="math inline">\(\beta_1\)</span> berechen:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fl">0.6864</span> <span class="co"># Siehe Output</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fl">0.0936</span> <span class="co"># Siehe Output</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>CI95<span class="ot">&lt;-</span>b1<span class="sc">+</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)<span class="sc">*</span><span class="fu">qt</span>(<span class="fl">0.975</span>,<span class="dv">10</span>)<span class="sc">*</span>se</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>CI95</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4778462 0.8949538</code></pre>
+</div>
+</div>
+<p>Wir können die Information auch direkt aus dem Modellobjekt extrahieren, das verhindert Rundungsprobleme:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>b1<span class="ot">&lt;-</span><span class="fu">summary</span>(model)<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>se<span class="ot">&lt;-</span><span class="fu">summary</span>(model)<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">2</span>]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>CI95<span class="ot">&lt;-</span>b1<span class="sc">+</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)<span class="sc">*</span><span class="fu">qt</span>(<span class="fl">0.975</span>,<span class="dv">10</span>)<span class="sc">*</span>se</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>CI95</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4778009 0.8949263</code></pre>
+</div>
+</div>
+<p>Natürlich gibt es auch dafür eine eigene R-Funktion, welche zum gleichen Ergebnis führt:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                2.5 %     97.5 %
+(Intercept) 1.9930720 15.8735947
+Studierende 0.4778009  0.8949263</code></pre>
+</div>
+</div>
+<p>Wir sehen, dass das Konfidenzintervall für <span class="math inline">\(\beta_1\)</span> den Nullwert nicht beinhaltet, was kongruent mit dem P-Wert ist.</p>
+<p>Noch weiter unten im Output steht <code>Residual standard error</code>. Die Benennung ist etwas unglücklich: Dieser Wert ist die Standardabweichung der Residuen. Weil die Residuen in einem linearen Modell aber die Fehler schätzen, wurde wohl dieser Begriff gewählt.</p>
+<p>In der zweitletzten Zeile sehen Sie <code>Multiple R-squared</code>, also <span class="math inline">\(R^2\)</span>. Das <code>Adjusted R-squared</code> und die <code>F-Statistics</code> sind erst bei der multiplen linearen Regression von Bedeutung, diese wird im nächsten Kapitel behandelt.</p>
+</section>
+</section>
+<section id="residuenanalyse" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="residuenanalyse"><span class="header-section-number">6.6</span> Residuenanalyse</h2>
+<p>Die Annahmen für die lineare Regression waren:</p>
+<ul>
+<li>Die Fehler haben Erwartungswert 0</li>
+<li>Die Fehler sind unabhängig</li>
+<li>Die Fehler haben gleiche Varianz.</li>
+<li>Für Tests und Konfidenzintervallen bezüglich den Parametern müssen die Fehler zusätzlich normalverteilt sein (oder <span class="math inline">\(n\)</span> gross).</li>
+</ul>
+<p>Da wir die Fehler <span class="math inline">\(\epsilon_i\)</span> nicht kennen, untersuchen wir die Voraussetzungen mit den Residuen <span class="math inline">\(r_i\)</span>:</p>
+<ol type="1">
+<li>Die Residuen sind voneinander unabhängig (schwierig zu prüfen, abhängig vom Studiendesign)</li>
+<li>Die Streuung der Residuen ist über den Bereich von <span class="math inline">\(x\)</span> konstant (Homoskedastizität).</li>
+<li>Die Residuen sind normalverteilt (oder grosses <span class="math inline">\(n\)</span>, dann gilt zentraler Grenzwertsatz).</li>
+</ol>
+<p><strong>Achtung: Die lineare Regression macht keinerlei Annahmen bezügliche der Verteilung der Variablen selber! die Annahme einer Normalverteilung bezieht sich nur auf die Fehler!</strong></p>
+<section id="diagnostische-plots" class="level3" data-number="6.6.1">
+<h3 data-number="6.6.1" class="anchored" data-anchor-id="diagnostische-plots"><span class="header-section-number">6.6.1</span> Diagnostische Plots</h3>
+<p>Die Verteilung der Residuen (als Schätzer für die Fehler <span class="math inline">\(\epsilon_i\)</span>) wird anhand eines QQ-Plots der Residuen geprüft. Die Streung der Residuen anhand eines Plots, der die gefitteten Werte auf der x-Achse und die Residuen auf der y-Achse darstellt.</p>
+<p>In <code>R</code> kann über die Funktion <code>plot(model)</code> eine Serie von 4 diagnostischen Plots ausgegeben werden. Der erste Plot erlaubt die Beurteilung der Homoskedastizität, der zweite Plot ist ein QQ-Plot.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modell erstellen, wenn nicht schon gemacht</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Buecher <span class="sc">~</span> Studierende, <span class="at">data =</span> bookstore)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># über 'which' wählen wir die ersten beiden Plots </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model, <span class="at">which =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="06_simple_linear-regression_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="06_simple_linear-regression_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretation-der-plots" class="level3" data-number="6.6.2">
+<h3 data-number="6.6.2" class="anchored" data-anchor-id="interpretation-der-plots"><span class="header-section-number">6.6.2</span> Interpretation der Plots:</h3>
+<ul>
+<li>QQ-Plot: Die Punkte sind einigermassen auf der Linie und wir entscheiden auf Normalverteilung der Residuen. Bei kleinen Stichproben wie im vorliegenden Fall ist die Entscheidung meist nicht ganz sicher möglich.</li>
+<li>Residuen vs.&nbsp;gefittete Werte: Die Streuung der Residuen wird von links nach rechts, d.h. mit zunehmender geschätzter Zahl an verkauften Büchern etwas grösser. Streng genommen ist damit die Voraussetzung nicht erfüllt, dass die Streuung der Residuen über den gesamten Messbereich gleich ist und es liegt Heteroskedastizität vor. Jedoch gilt auch hier: bei kleinen Stichproben ist die Entscheidung meist nicht ganz sicher möglich.</li>
+</ul>
+</section>
+<section id="was-bedeutet-es-wenn-die-voraussetzungen-nicht-erfüllt-sind" class="level3" data-number="6.6.3">
+<h3 data-number="6.6.3" class="anchored" data-anchor-id="was-bedeutet-es-wenn-die-voraussetzungen-nicht-erfüllt-sind"><span class="header-section-number">6.6.3</span> Was bedeutet es, wenn die Voraussetzungen nicht erfüllt sind?</h3>
+<ul>
+<li>Signifikanztests und Konfidenzintervalle für die Koeffizienten haben nicht die erwarteten Eigenschaften und werden dadurch schlecht interpretierbar.</li>
+<li>Die Koeffizienten sind immer noch gültig!</li>
+</ul>
+</section>
+<section id="beispielplots-zu-homo--und-heteroskedastizität" class="level3" data-number="6.6.4">
+<h3 data-number="6.6.4" class="anchored" data-anchor-id="beispielplots-zu-homo--und-heteroskedastizität"><span class="header-section-number">6.6.4</span> Beispielplots zu Homo- und Heteroskedastizität</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-exampl-heteroscedasticity" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-exampl-heteroscedasticity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-exampl-heteroscedasticity-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-exampl-heteroscedasticity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.13: Beispiele für Homoskedastizität, bzw. Heteroskedastizität
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Nur Abb. c) erfüllt die Bedingung für Homoskedastizität. In Abb. a) bilden die Residuen ein Muster, was die Annahme verletzt, dass die Residuen zufällig um die Null-Linie herum streuen. In Abb. b) und d) ist die Verteilung heteroskedastisch; mit zunehmendem x nimmt auch die Streuung der Residuen um die Null-Linie herum zu.</p>
+</section>
+</section>
+<section id="sec-einfache-lineare-regression-mit-dichotomen-praediktorvariablen" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="sec-einfache-lineare-regression-mit-dichotomen-praediktorvariablen"><span class="header-section-number">6.7</span> Dichotomer Prädiktor</h2>
+<p>Im Beispiel mit den Büchern war die unabhängige Variable eine quantitative Variable. Man kann eine lineare Regression aber auch mit qualitativen (kategorischen) unabhängigen Variablen verwenden. Zur Illustration dieser Situation wird der Datensatz zu den embryonalen Stammzellen (ESC) verwendet, welchen Sie bereits aus dem Kaptiel 4 kennen (Hat die Behandlung mit embryonalen Stammzellen (ESC) einen Effekt auf die Pumpfunktion des Herzens nach einem Herzinfarkt?). Wir untersuchen also den linearen Zusammenhang zwischen der Gruppenzugehörigkeit und der Pumpfunktion.</p>
+<p>Die folgende Tabelle enthält die Kennzahlen aus einem Experiment, bei dem der Effekt von ESC bei Schafen, die einen Herzinfarkt erlitten hatten, geprüft wurde. Jedes dieser Schafe wurde randomisiert der Gruppe ESC oder der Kontrollgruppe zugewiesen, dann wurde ihre Herzkapazität (Auswurffraktion) gemessen <span class="citation" data-cites="ménard2005">(<a href="references.html#ref-ménard2005" role="doc-biblioref">Ménard et al. 2005</a>)</span>. Ein positiver Wert entspricht einer Steigerung der Auswurffraktion, was einer besseren Erholung entspricht.</p>
+<p>Codebook für den Datensatz <code>stemcell</code> .</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 69%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">trtm</td>
+<td style="text-align: left;">Behandlung: <code>ctrl</code> = Kontrolle, <code>esc</code>= embryonale Stammzellen</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">before</td>
+<td style="text-align: left;">Baseline: Auswurffraktion vor der Behandlung</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">after</td>
+<td style="text-align: left;">Follow-Up: Auswurffraktion nach der Behandlung</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Differenz</td>
+<td style="text-align: left;"><code>after</code> - <strong><code>before</code></strong></td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-layout-align="center">
+<div id="tbl-stem-cell-stat" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-stem-cell-stat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;6.2: ESC-Daten: Effekt der Behandlung
+</figcaption>
+<div aria-describedby="tbl-stem-cell-stat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="lightable-classic cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">trmt</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">m</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">s</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ctrl</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">-4.33</td>
+<td style="text-align: right;">2.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">esc</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">3.50</td>
+<td style="text-align: right;">5.17</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Die Kennzahlen zeigen, dass die Auswurffraktion in der Kontrollgruppe CTRL um durchschnittlich -4.33% abgenommen und in der Interventionsgruppe ESC um 3.5% zugenommen hat. Die absolute Mittelwertsdifferenz beträgt somit 7.83%.</p>
+<p>In <a href="#fig-plot-lin-reg-binary-pred" class="quarto-xref">Abbildung&nbsp;<span>6.14</span></a> werden diese Daten in einem Streudiagramm eingezeichnet. Dafür wird die Gruppe <code>ctrl</code> mit 0 codiert und die Gruppe <code>esc</code> mit 1. Die Regressionslinie (rot) ist ebenfalls eingezeichnet. Vielleicht ahnen Sie schon, worauf das Ganze hinausläuft?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-plot-lin-reg-binary-pred" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-lin-reg-binary-pred-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_simple_linear-regression_files/figure-html/fig-plot-lin-reg-binary-pred-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-lin-reg-binary-pred-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;6.14: Streudiagramm wenn die unabhängige Variable dichotom skaliert ist
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der Output für der linearen Regression sieht wie folgt aus:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Differenz <span class="sc">~</span> trmt, <span class="at">data =</span> stem_cell)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Differenz ~ trmt, data = stem_cell)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.2500 -2.2500 -0.6667  2.3958 10.7500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)   -4.333      1.382  -3.135  0.00639 **
+trmtesc        7.833      1.955   4.007  0.00102 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.147 on 16 degrees of freedom
+Multiple R-squared:  0.5009,    Adjusted R-squared:  0.4697 
+F-statistic: 16.06 on 1 and 16 DF,  p-value: 0.001016</code></pre>
+</div>
+</div>
+<p>Was bedeuten nun die Regressionskoeffizienten? <span class="math inline">\(\hat{\beta}_0\)</span> ist die durchschnittliche Differenz, wenn <span class="math inline">\(x = 0\)</span>. <span class="math inline">\(x = 0\)</span> ist gleichbedeutend mit “das Schaf ist in der Kontrollgruppe”. Also ist <span class="math inline">\(\hat{\beta}_0\)</span> die durchschnittliche Differenz der Schafe in der Kontrollguppe: <span class="math inline">\(\hat{\beta}_0 = -4.33%\)</span>. Sie können diese Aussage mit den deskriptiven Angaben weiter oben verifizieren.</p>
+<p><span class="math inline">\(\hat{\beta}_1\)</span> ist die geschätzte Steigung. Also um wie viel sich die durchschnittliche Differenz ändert, wenn sich x um 1 erhöht. “x um 1 erhöht” ist gleichbedeutend mit “das Schaf ist in der Interventionsgruppe”. Das heisst wenn das Schaf in der Interventionsgruppe ist, dann ist die durchschnittliche Differenz 7.83% höher als wenn es in der Kontrollguppe ist: <span class="math inline">\(\hat{\beta}_1 = 7.83\)</span>. <span class="math inline">\(\hat{\beta}_1\)</span> ist also nichts anderes als die geschätzte Mittelwertsdifferenz! (Auch hier können Sie mit den obigen deskriptiven Statistiken verifizieren).</p>
+<p>Der Standardfehler für diese Mittelwertsdifferenz beträgt 1.955, somit beträgt der <span class="math inline">\(t\)</span>-Wert von 4.007, was einen P-Wert von 0.00102 ergibt. Wenn Sie nun denken, dass ein Zwischengruppen-<span class="math inline">\(t\)</span>-Test (mit Annahme von homogenen Varianzen!) zum gleichen Resultat kommen müsste, dann haben Sie absolut recht!</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">t.test</span>(Differenz <span class="sc">~</span> trmt, <span class="at">data =</span> stem_cell, <span class="at">var.equal =</span> <span class="cn">TRUE</span>),<span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Two Sample t-test
+
+data:  Differenz by trmt
+t = -4.01, df = 16, p-value = 0.001
+alternative hypothesis: true difference in means between group ctrl and group esc is not equal to 0
+95 percent confidence interval:
+ -11.9773  -3.6894
+sample estimates:
+mean in group ctrl  mean in group esc 
+           -4.3333             3.5000 </code></pre>
+</div>
+</div>
+<p>Ein Zweistichproben <span class="math inline">\(t\)</span>-Test mit homogenen Varianzen und eine einfache lineare Regression mit der Gruppe als dichotomer Prädiktorvariable sind äquivalent und führen <em>exakt</em> zum gleichen Resultat!</p>
+</section>
+<section id="anhang-hilfreiche-r-codes-für-die-einfache-lineare-regression" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="anhang-hilfreiche-r-codes-für-die-einfache-lineare-regression"><span class="header-section-number">6.8</span> Anhang: hilfreiche <code>R</code> Codes für die einfache lineare Regression</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erstellen der Variablen x und y</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.5</span>, <span class="sc">-</span>.<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="fl">4.5</span>, <span class="dv">6</span>, <span class="fl">5.5</span>, <span class="dv">6</span>, <span class="fl">6.5</span>, <span class="fl">7.5</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Streudiagramm erstellen</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Einfache lineare Regression rechnen und Resultat in R-Objekt speichern</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>lm.xy <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Zusammenfassung des Modells anschauen</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.xy)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Vertrauensintervalle der Koeffizienten ausgeben</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(lm.xy)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Regressionslinie in Streudiagramm einzeichnen</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(lm.xy)</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuenplot</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm.xy, <span class="at">which =</span> <span class="dv">1</span>)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="co"># QQ-Plot der Residuen</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm.xy, <span class="at">which =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bertrand" class="csl-entry" role="listitem">
+Bertrand, Marianne, and Sendhil Mullainathan. n.d. <em>Replication Data for: Are Emily and Greg More Employable Than Lakisha and Jamal? A Field Experiment on Labor Market Discrimination</em>. <a href="https://doi.org/10.3886/E116023V1">https://doi.org/10.3886/E116023V1</a>.
+</div>
+<div id="ref-ménard2005" class="csl-entry" role="listitem">
+Ménard, Claudine, Albert A. Hagège, Onnik Agbulut, et al. 2005. <span>“Transplantation of Cardiac-Committed Mouse Embryonic Stem Cells to Infarcted Sheep Myocardium: A Preclinical Study.”</span> <em>The Lancet</em> 366 (9490): 1005–12. <a href="https://doi.org/10.1016/S0140-6736(05)67380-1">https://doi.org/10.1016/S0140-6736(05)67380-1</a>.
+</div>
+<div id="ref-tatem2004" class="csl-entry" role="listitem">
+Tatem, Andrew J., Carlos A. Guerra, Peter M. Atkinson, and Simon I. Hay. 2004. <span>“Momentous Sprint at the 2156 Olympics?”</span> <em>Nature</em> 431 (7008): 525–25. <a href="https://doi.org/10.1038/431525a">https://doi.org/10.1038/431525a</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./05_correlation.html" class="pagination-link" aria-label="Korrelation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Korrelation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./07_multiple_linear-regression.html" class="pagination-link" aria-label="Multiple lineare Regression">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple lineare Regression</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
