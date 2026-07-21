@@ -274,7 +274,7 @@ Für das Verständnis der Denkweise in der Statistik ist es ausserordentlich wic
 
 Zur Verdeutlichung führen wir ein simuliertes Experiment durch: Wir wissen, dass der IQ normalverteilt ist und, dass der Populationsmittelwert des IQ-Scores bei $\mu = 100$ und die Standardabweichung bei $\sigma = 15$ liegt. Jetzt ziehen wir je 1000 Stichproben aus der Population im Umfang $n = 5$, $n = 25$, $n = 100$ und stellen die ermittelten Stichprobenmittelwerte als Histogramm dar.
 
-```{r samplingvar-combined-fig, cache = TRUE, fig.align='center'}
+```{r samplingvar-combined-fig, fig.align='center'}
 #| label: fig-plot-sampling-var 
 #| fig.cap: "Stichprobenvariabilität für Mittelwerte von jeweils 1000 Stichproben" 
 
