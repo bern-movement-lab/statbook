@@ -30,6 +30,9 @@ book:
 
 bibliography: references.bib
 
+filters:
+  - auto-dark # see https://github.com/gadenbuie/quarto-auto-dark
+
 format:
   html:
     theme: journal
